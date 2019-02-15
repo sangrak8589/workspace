@@ -2,11 +2,66 @@
 <html lang="en">
 
 <head>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 
+
+  <style>
+    #grid-container {
+      display: grid;
+      grid-template-columns: 50% 50%;
+      grid-template-rows: 220px 30px auto;
+      grid-template-areas:
+        'intro .'
+        'contact contact'
+        'col-1 col-2'
+    }
+
+    #intro {
+      grid-area: intro;
+    }
+
+    #contact {
+      grid-area: contact;
+      display: flex;
+      justify-content: space-around;
+      background-color: black;
+      color: white;
+    }
+
+    #col-1 {
+      grid-area: col-1;
+      height: 800px;
+      background-color: gray;
+    }
+
+    #col-2 {
+      grid-area: col-2;
+      height: 800px;
+      background-color: orange;
+    }
+  </style>
 </head>
 
 <body>
-  Hello world!
+  <div id="grid-container">
+    <div id="intro">
+      <h1>Lukas Herman</h1>
+      <h4>Full Stack Developer</h4>
+      <p>Passionate about coding. Write technical blog. Maintain server. Enjoy being a full stack developer and learning
+        new things every day. Expert in Go, Python, Angular, Linux, and Docker. Happy to relocate.</p>
+    </div>
+    <div id="contact">
+      <div><i class="fas fa-file-contract"></i>lherman.cs@gmail.com</div>
+      <div>8646243757</div>
+      <div>Easley, SC</div>
+      <div><a href="https://linkedin.com/in/lukas-herman">linkedin.com/in/lukas-herman</a></div>
+      <div><a href="https://github.com/lherman-cs">github.com/lherman-cs</a></div>
+    </div>
+    <div id="col-1"></div>
+    <div id="col-2"></div>
+  </div>
+
 </body>
 
 </html>
