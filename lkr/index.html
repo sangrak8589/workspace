@@ -2,10 +2,111 @@
 <html lang="en">
 
 <head>
+    <title>Statismic</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js">
+    </script>
+    <style>
+        #grid-container {
+            display: grid;
+            grid-template-columns: 50% 50%;
+            grid-template-areas:
+                'options scatter'
+                'options residuals';
+
+        }
+
+        #scatter {
+            grid-area: scattter;
+            position: relative;
+            height: 350px;
+            width: 425px;
+        }
+
+        #residuals {
+            position: relative;
+            left: 500px;
+            bottom: 250px;
+            height: 350px;
+            width: 425px;
+        }
+    </style>
 </head>
 
 <body>
-  your workspace is here
+    <textarea name="options" id="options" cols="30" rows="10">
+        <font size="5">Bivariate Data</font>
+        <br>Scatterplot
+        <br><br>Click to add points to the scatterplot.
+        <br><br>
+        <input type="checkbox" name="regline" value="Regline"> Show regression line<br>
+        <input type="checkbox" name="resid" value="residuals"> Show residuals<br><br>
+        Number of Points: 11 <br>
+        Correlation Coefficient: 0.80 <br><br>
+        <button type="button">Download Scatterplot </button>
+    </textarea>
+    <div id="scatter">
+    </div>
+    <script>
+        var trace1 = {
+            x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 4.5],
+            y: [6.5, 3.5, 7, 4, 3.9, 5, 10, 5.2, 8, 6.4],
+            mode: 'markers',
+            type: 'scatter',
+            name: "",
+        };
+
+        var regline = {
+            x: [0, 10],
+            y: [4.8, 7],
+            mode: 'lines',
+            type: 'scatter',
+            name: 'regression line',
+        };
+
+        var data = [trace1, regline];
+        var layout = {
+            xaxis: {
+                range: [0, 10.5]
+            },
+            yaxis: {
+                range: [0, 10.5]
+            },
+            title: 'Scatterplot'
+        };
+        Plotly.newPlot('scatter', data, layout);
+    </script>
+
+    <div id="residuals"></div>
+    <script>
+        var points1 = {
+            x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 4.5],
+            y: [6.5, 3.5, 7, 4, 3.9, 5, 10, 5.2, 8, 6.4],
+            mode: 'markers',
+            type: 'scatter',
+        };
+
+        var regline = {
+            x: [0, 10],
+            y: [4.8, 8.2],
+            mode: 'lines',
+            type: 'scatter',
+            name: 'regression line',
+        };
+
+        var data1 = [points1, regline];
+
+        var layout = {
+            xaxis: {
+                range: [0, 10.5]
+            },
+            yaxis: {
+                range: [0, 10.5]
+            },
+            title: 'Residuals and LSRL'
+
+        };
+        Plotly.newPlot('residuals', data1, layout);
+    </script>
 </body>
 
 </html>
