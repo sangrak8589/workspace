@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Statismic</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js">
+    </script>
+    <style>
+        .pagination a {
+            color: black;
+            float: left;
+            text-decoration: none;
+            padding: 7px 14px;
+            transition: background-color .3s;
+            border: 1px solid rgb(204, 172, 172)
+        }
+
+        .pagination a.active {
+            background-color: blueviolet;
+            color: whitesmoke;
+            border: 1px solid blueviolet;
+        }
+
+        .pagination a:hover:not(.active) {
+            background-color: rgb(204, 172, 172);
+        }
+
+        #grid-container {
+            display: grid;
+            grid-template-columns: 50% 20% 30%;
+            grid-template-rows: 20% 30% 50%;
+            grid-template-areas:
+                'rguess GamePlot'
+                'DataTextBox GamePlot'
+                'options guesses-table guesses-scatter';
+
+        }
+
+        #guesses-table {
+            grid-area: guesses-table;
+            border: solid;
+            border-spacing: 2px;
+            position: relative;
+        }
+
+        table td {
+            border-left: 1px solid darkblue;
+        }
+
+        table td:first-child {
+            border-left: none;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgb(224, 230, 241);
+        }
+
+        #DataTextBox {
+            grid-area: DataTextBox;
+            border: darkblue solid;
+        }
+
+        #guesses-scatter {
+            grid-area: guesses-scatter;
+            position: relative;
+        }
+
+        #GamePlot {
+            grid-area: GamePlot;
+            position: relative;
+            height: 350px;
+            width: 425px;
+        }
+
+        #corr {
+            position: relative;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="grid-container">
+        <div id='rguess'>
+            <font size="5">Bivariate Data</font>
+            <br><br>
+            <div class="pagination">
+                <a href="#">Scatterplot</a>
+                <a href="#" class="active">Guessing Game</a>
+            </div> <br>
+            <br><br>Guess for Correlation r:
+            <input type="text" name="r" value="0.00"><br>
+            <input type="submit" value="Enter Guess">
+            <br><br>Upload/Edit Data: <br>
+        </div>
+        <textarea rows="6" cols="40" id="DataTextBox">
+    1.22 4.55 3.33 1.11 8.01 2.90 7.34
+    2.36 7.92 9.99 2.54 7.34 9.23 8.72
+    9.90 1.00 0.57 2.59 6.27 5.34 9.58
+    3.87 3.76 4.59 4.15 9.00 3.50 3.25
+    3.86 5.70 6.03 4.70 6.09 3.60 4.75
+    </textarea>
+        <br><br>
+        <div id="options">
+            <button type="button">New Sample</button>
+            <button type="button">Reset</button>
+            <br><br>
+            <input type="checkbox" name="regline" value="Regline"> Display regression line<br>
+            <input type="checkbox" name="table1" value="guesses table"> Display table of actual values and guesses<br>
+            <input type="checkbox" name="scatterplot" value="scatter"> Display scatterplot of correlation between
+            guesses and <br> correlation of the data
+        </div>
+        <table id="guesses-table">
+            <th></th>
+            <tr>
+                <td>#</td>
+                <td>Guesses</td>
+                <td>Actual</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>0.65</td>
+                <td>0.70</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>-0.10</td>
+                <td>-0.19</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>0.00</td>
+                <td>0.25</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>0.75</td>
+                <td>0.68</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>-1</td>
+                <td>-0.92</td>
+            </tr>
+        </table>
+        <div id="GamePlot">
+            <!-- Plotly chart will be drawn inside this DIV -->
+        </div>
+        <script>
+            var trace1 = {
+                x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 4.5],
+                y: [6, 1.5, 3.6, 4, 3.9, 9.5, 5, 10, 8, 6.4],
+                mode: 'markers',
+                type: 'scatter',
+            };
+
+            var data = [trace1];
+            var layout = {
+                xaxis: {
+                    range: [0, 10]
+                },
+                yaxis: {
+                    range: [0, 10.5]
+                },
+                title: 'What is r for this scatterplot?'
+            };
+            Plotly.newPlot('GamePlot', data, layout);
+        </script>
+
+        <div id="guesses-scatter"></div>
+        <script>
+            var guess = {
+                x: [0.65, -0.10, 0.00, 0.75, -1],
+                y: [0.70, -0.19, 0.25, 0.68, -0.92],
+                mode: 'markers',
+                type: 'scatter',
+            };
+
+            var data1 = [guess];
+
+            var layout = {
+                xaxis: {
+                    range: [-1.15, 1.15]
+                },
+                yaxis: {
+                    range: [-1.15, 1.15]
+                },
+                title: 'Guesses versus Actual Correlation'
+
+            };
+            Plotly.newPlot('guesses-scatter', data1, layout);
+        </script>
+
+        <div id='corr'>Correlation=x.xx</div>
+    </div>
+</body>
+
+</html>
