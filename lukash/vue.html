@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+</head>
+
+<body>
+
+  <div id="alert">
+    <button @click="this.myAlert">alert</button>
+    <button @click="this.myAlert">alert2</button>
+    <button @click="this.myAlert">alert3</button>
+    <button @click="this.myAlert">alert4</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    new Vue({
+      el: "#alert",
+      methods: {
+        myAlert() {
+          window.alert('hello');
+        }
+      }
+    });
+  </script>
+
+</body>
+
+</html>
