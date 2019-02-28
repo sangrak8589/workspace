@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<title>Stat class</title>
+
+<style>
+  d {
+  color: white;
+  font-size: 20px;
+}
+h1 {
+  background: url(http://apod.nasa.gov/apod/image/0603/coma_misti.jpg) -80px -80px;
+  color: red;
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  font-weight: bold;
+  font-size: 100px;
+  font-family: arial, helvetica;
+  width: 600px;
+  margin: 50px auto;
+  text-align: center;
+}
+input[type=text], select {
+  
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+input[type=submit] {
+  width: 100%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+body {
+  background-image: url('/images/confidenceInterval.jpg');
+  height: 100%;
+  width: 100%;
+  background-position: center;
+  background-size: cover;
+}
+.grid-container{
+  display: grid;
+  grid-template-rows: 1fr 6fr;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: 'header header'
+  'data graph';
+  
+  grid-gap: 10px;
+  width: 100vw;
+  height: 100vh;
+}
+.header{
+  grid-area: header;
+  font-size: 50px;
+  text-align: center;
+ 
+}
+.form{
+  display: flex;
+  grid-area: data;
+  justify-content: center;
+  justify-items: center;
+  
+}
+.graph{
+  display: flex;
+  grid-area: graph;
+  justify-content: center;
+  justify-items: center;
+ 
+}
+</style>
+
+<body>
+
+
+
+
+
+
+  <div class="grid-container" id="alert">
+    <div class="header">
+      <h1>Confidence Interval</h1>
+
+      <button type="button" v-if="!seen" v-on:click="seen = !seen">What is confidence interval?</button>
+      <p style="font-size:22px; padding: 10px" v-if="seen">a range of values so defined that there is a specified
+        probability that the
+        value
+        of a parameter
+        lies within it.<br></p>
+    </div>
+    <div class="form" id="alert">
+
+      <form>
+        <d>Sample Mean:</d> <br><input type="text" name="Sample Mean" value=""><br>
+        <d>Sample Size:</d> <br><input type="text" name="Sample Size" value=""><br>
+        <d>Standard Deviation:</d> <br><input type="text" name="Standard Deviation" value=""><br>
+        <d>Confidence Level: </d><br><input type="text" name="Confidence Level" value=""><br>
+        <input type="submit" value="Submit">
+      </form>
+    </div>
+    <div class="graph">
+      <img src="images/confidence.png" alt="Flowers in Chania" width="80%" height="40%">
+
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    new Vue({
+      el: "#alert",
+      methods: {
+        myAlert() {
+          window.alert('hello');
+        },
+        myAlert2() {
+          window.alert('goodbye');
+        }
+      },
+      data: {
+        message: 'helo',
+        seen: false
+      }
+    });
+  </script>
+
+
+</body>
+
+</html>
