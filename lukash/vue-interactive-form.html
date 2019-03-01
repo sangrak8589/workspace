@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+</head>
+
+<body>
+  <!-- Code From https://www.w3schools.com/css/tryit.asp?filename=trycss_form_border -->
+  <!-- from tutorial https://www.w3schools.com/css/css_form.asp -->
+  <div id="alert">
+
+    <p>Text fields with borders:</p>
+
+    <form>
+      <!-- The label tag is not nessisary for a form to work -->
+      <label>First Name</label>
+      <!--Use at least this many perameters-->
+      <input type="text">
+      <label for="lname">Last Name</label>
+      <!-- Extra perameters you can add -->
+      <input type="text" id="lname" name="lname">
+      <label>GPA</label>
+      <input type="number">
+      <label>Age</label>
+      <input type="number">
+    </form>
+
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    new Vue({
+      el: "#alert",
+      methods: {
+      }
+    });
+  </script>
+
+</body>
+
+</html>
+
+<style>
+  input[type=text] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 2px solid red;
+    border-radius: 4px;
+  }
+
+  input[type=number] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 2px solid blue;
+    border-radius: 4px;
+  }
+</style>
