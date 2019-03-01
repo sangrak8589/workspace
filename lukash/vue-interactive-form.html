@@ -20,9 +20,15 @@
       <!-- Extra perameters you can add -->
       <input type="text" id="lname" name="lname">
       <label>GPA</label>
-      <input type="number">
+      <input type="number" v-model="gpa">
       <label>Age</label>
-      <input type="number">
+      <input type="number" v-model="age">
+      <input type="checkbox" v-model="showAge">Show Age</input>
+
+      <div>{{gpa}}</div>
+      <div v-show="showAge">My age is {{age}}</div>
+
+      <button @click="printGPA">Click Me NOW!</button>
     </form>
 
 
@@ -32,7 +38,25 @@
   <script>
     new Vue({
       el: "#alert",
+      data: {
+        gpa: 2.5,
+        age: 19,
+        showAge: false
+      },
       methods: {
+        printGPA() {
+          window.alert(this.gpa)
+        }
+      },
+
+      watch: {
+        gpa(val) {
+          if (val >= 4) { this.gpa = 4; }
+          else { this.gpa = Math.abs(val); }
+        },
+        age(val) {
+          this.age = Math.abs(Math.round(val));
+        }
       }
     });
   </script>
@@ -41,7 +65,7 @@
 
 </html>
 
-<style>
+<style scoped>
   input[type=text] {
     width: 100%;
     padding: 12px 20px;
@@ -58,5 +82,9 @@
     box-sizing: border-box;
     border: 2px solid blue;
     border-radius: 4px;
+  }
+
+  button {
+    color: red;
   }
 </style>
