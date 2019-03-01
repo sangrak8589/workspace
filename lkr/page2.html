@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Statismic</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js">
     </script>
@@ -56,6 +57,13 @@
         #options {
             grid-area: options;
         }
+
+        @media only screen and (max-width:620px) {
+
+            /* For mobile phones: */
+            * {
+                width: 100%;
+            }
     </style>
 </head>
 
@@ -64,8 +72,8 @@
         <div id="options">
             <font size="5">Bivariate Data</font><br><br>
             <div class="pagination">
-                <a href="#" class="active">Scatterplot</a>
-                <a href="#">Guessing Game</a>
+                <a href="./page2.html" class="active">Scatterplot</a>
+                <a href="./page1.html">Guessing Game</a>
             </div>
             <br><br>Click to add points to the scatterplot.
             <br><br>
@@ -73,10 +81,13 @@
             <input type="checkbox" name="resid" value="residuals"> Show residuals<br><br>
             Number of Points: 11 <br>
             Correlation Coefficient: 0.80 <br><br>
-            <button type="button">Download Scatterplot </button>
+            <div id="alert">
+                <button @click="this.loadPlot()">Download Scatterplot </button>
+            </div>
         </div>
-        <div id="scatter">
-        </div>
+
+    </div>
+    <div id="scatter">
         <script>
             var trace1 = {
                 x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -106,7 +117,7 @@
             };
             Plotly.newPlot('scatter', data, layout);
         </script>
-
+        <br><br>
         <div id="residuals"></div>
         <script>
             var points1 = {
@@ -189,6 +200,20 @@
             Plotly.newPlot('residuals', data1, layout);
         </script>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"> </script>
+    <script>
+        new Vue({
+            el: "#alert",
+            methods: {
+                loadPlot() {
+                    window.alert('congrats. You pushed the button');
+                },
+                bye() {
+                    window.alert('hello');
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>
