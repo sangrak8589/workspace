@@ -3,11 +3,8 @@
 <title>Stat class</title>
 
 <style>
-  d {
-  color: white;
-  font-size: 20px;
-}
-h1 {
+
+  h1 {
   background: url(http://apod.nasa.gov/apod/image/0603/coma_misti.jpg) -80px -80px;
   color: red;
   -webkit-text-fill-color: transparent;
@@ -43,7 +40,7 @@ input[type=submit]:hover {
   background-color: #45a049;
 }
 body {
-  /* background-image: url('/images/confidenceInterval.jpg'); */
+  background-image: url('/images/confidenceInterval.jpg');
   height: 100%;
   width: 100%;
   background-position: center;
@@ -103,15 +100,15 @@ body {
     <div class="form" id="alert">
 
       <form>
-        Sample Mean:<br><input type="text" name="Sample Mean" value=""><br>
-        Sample Size: <br><input type="text" name="Sample Size" value=""><br>
-        Standard Deviation: <br><input type="text" name="Standard Deviation" value=""><br>
-        Confidence Level: <br><input type="text" name="Confidence Level" value=""><br>
+        <d>Sample Mean:</d> <br><input type="text" name="Sample Mean" value=""><br>
+        <d>Sample Size:</d> <br><input type="text" name="Sample Size" value=""><br>
+        <d>Standard Deviation:</d> <br><input type="text" name="Standard Deviation" value=""><br>
+        <d>Confidence Level: </d><br><input type="text" name="Confidence Level" value=""><br>
         <input type="submit" value="Submit">
       </form>
     </div>
     <div class="graph">
-      <img src="images/confidence.png" alt="Flowers in Chania" width="80%" height="40%">
+      <img src="images/confidence.png" width="80%" height="40%">
 
     </div>
   </div>
@@ -120,15 +117,10 @@ body {
     new Vue({
       el: "#alert",
       methods: {
-        myAlert() {
-          window.alert('hello');
-        },
-        myAlert2() {
-          window.alert('goodbye');
-        }
+
       },
       data: {
-        message: 'helo',
+
         seen: false
       }
     });
