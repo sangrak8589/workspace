@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        .pages {
+            display: inline-block;
+            margin: 20px;
+            background-color: gray;
+            padding: 20px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .active {
+            background-color: yellow;
+        }
+    </style>
+</head>
+
+<body>
+    <p>Several of you have multi-page designs. This is a sort of radio-button
+        where always only one button will be clicked at any given time, and
+        you an program-atically get access to the know which is clicked </p>
+    <div id="app">
+        <div class="pages" :class="{ active: pageIdx == index}" v-for="(page, index) in pages" :key="index"
+            @click="pageIdx = index">
+            {{ page }}
+        </div>
+        <h2>Which page is clicked? Page {{pageIdx+1}}</h2>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                pages: [
+                    "Page 1",
+                    "Page 2",
+                    "Page 3"
+                ],
+                pageIdx: 0
+            }
+        })
+    </script>
+</body>
+
+</html>
