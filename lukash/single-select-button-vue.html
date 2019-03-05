@@ -19,12 +19,15 @@
 </head>
 
 <body>
+    <p>Several of you have multi-page designs. This is a sort of radio-button
+        where always only one button will be clicked at any given time, and
+        you an program-atically get access to the know which is clicked </p>
     <div id="app">
         <div class="pages" :class="{ active: pageIdx == index}" v-for="(page, index) in pages" :key="index"
             @click="pageIdx = index">
             {{ page }}
         </div>
-        <h2>Which page is clicked??? {{pageIdx}}</h2>
+        <h2>Which page is clicked? Page {{pageIdx+1}}</h2>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script>
