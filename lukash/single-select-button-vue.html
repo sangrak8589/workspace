@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        .pages {
+            display: inline-block;
+            margin: 20px;
+            background-color: gray;
+            padding: 20px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .active {
+            background-color: yellow;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="pages" :class="{ active: pageIdx == index}" v-for="(page, index) in pages" :key="index"
+            @click="pageIdx = index">
+            {{ page }}
+        </div>
+        <h2>Which page is clicked??? {{pageIdx}}</h2>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                pages: [
+                    "Page 1",
+                    "Page 2",
+                    "Page 3"
+                ],
+                pageIdx: 0
+            }
+        })
+    </script>
+</body>
+
+</html>
