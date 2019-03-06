@@ -3,80 +3,85 @@
 <title>Stat class</title>
 
 <style>
-
   h1 {
-  background: url(http://apod.nasa.gov/apod/image/0603/coma_misti.jpg) -80px -80px;
-  color: red;
-  -webkit-text-fill-color: transparent;
-  -webkit-background-clip: text;
-  font-weight: bold;
-  font-size: 100px;
-  font-family: arial, helvetica;
-  width: 600px;
-  margin: 50px auto;
-  text-align: center;
-}
-input[type=text], select {
-  
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-input[type=submit] {
-  width: 100%;
-  background-color: #4CAF50;
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-input[type=submit]:hover {
-  background-color: #45a049;
-}
-body {
-  background-image: url('/images/confidenceInterval.jpg');
-  height: 100%;
-  width: 100%;
-  background-position: center;
-  background-size: cover;
-}
-.grid-container{
-  display: grid;
-  grid-template-rows: 1fr 6fr;
-  grid-template-columns: 1fr 1fr;
-  grid-template-areas: 'header header'
-  'data graph';
-  
-  grid-gap: 10px;
-  width: 100vw;
-  height: 100vh;
-}
-.header{
-  grid-area: header;
-  font-size: 50px;
-  text-align: center;
- 
-}
-.form{
-  display: flex;
-  grid-area: data;
-  justify-content: center;
-  justify-items: center;
-  
-}
-.graph{
-  display: flex;
-  grid-area: graph;
-  justify-content: center;
-  justify-items: center;
- 
-}
+    background: url(http://apod.nasa.gov/apod/image/0603/coma_misti.jpg) -80px -80px;
+    color: red;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    font-weight: bold;
+    font-size: 100px;
+    font-family: arial, helvetica;
+    width: 600px;
+    margin: 50px auto;
+    text-align: center;
+  }
+
+  input[type=text],
+  select {
+
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+
+  .button {
+    background-color: #4CAF50;
+    /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+  }
+
+  body {
+    background-image: url('/images/confidenceInterval.jpeg');
+    height: 100%;
+    width: 100%;
+    background-position: center;
+    background-size: cover;
+  }
+
+  .grid-container {
+    display: grid;
+    grid-template-rows: 1fr 6fr;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: 'header header'
+      'data graph';
+
+    grid-gap: 10px;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .header {
+    grid-area: header;
+    font-size: 50px;
+    text-align: center;
+
+  }
+
+  .form {
+    display: flex;
+    grid-area: data;
+    justify-content: center;
+    justify-items: center;
+
+  }
+
+  .graph {
+    display: flex;
+    grid-area: graph;
+    justify-content: center;
+    justify-items: center;
+
+  }
 </style>
 
 <body>
@@ -86,25 +91,28 @@ body {
 
 
 
-  <div class="grid-container" id="alert">
+  <div class="grid-container" id="alert" style="overflow:hidden;">
     <div class="header">
       <h1>Confidence Interval</h1>
 
-      <button type="button" v-if="!seen" v-on:click="seen = !seen">What is confidence interval?</button>
+      <button type="button" class="button" v-on:click="seen = !seen">What is confidence interval?</button>
       <p style="font-size:22px; padding: 10px" v-if="seen">a range of values so defined that there is a specified
         probability that the
         value
         of a parameter
         lies within it.<br></p>
+      <p style="font-size:22px; padding: 10px" v-if="done"> means is {{mean}} <br>
+        size is {{size}} <br> standard deviation is {{ deviation}} <br> confidence level is {{confidence}}
+        confidence interval is TBA<br></p>
     </div>
     <div class="form" id="alert">
 
       <form>
-        <d>Sample Mean:</d> <br><input type="text" name="Sample Mean" value=""><br>
-        <d>Sample Size:</d> <br><input type="text" name="Sample Size" value=""><br>
-        <d>Standard Deviation:</d> <br><input type="text" name="Standard Deviation" value=""><br>
-        <d>Confidence Level: </d><br><input type="text" name="Confidence Level" value=""><br>
-        <input type="submit" value="Submit">
+        <d>Sample Mean:</d> <br><input type="text" v-model="mean" name="Sample Mean" value=""><br>
+        <d>Sample Size:</d> <br><input type="text" v-model="size" name="Sample Size" value=""><br>
+        <d>Standard Deviation:</d> <br><input type="text" v-model="deviation" name="Standard Deviation" value=""><br>
+        <d>Confidence Level: </d><br><input type="text" v-model="confidence" name="Confidence Level" value=""><br>
+        <button type="button" class="button" v-on:click="done = !done">Submit</button>
       </form>
     </div>
     <div class="graph">
@@ -117,11 +125,19 @@ body {
     new Vue({
       el: "#alert",
       methods: {
+        // calculate(mean, size, deviation, confidence){
+        //   return(mean + ())
+        // }
+
 
       },
       data: {
-
-        seen: false
+        mean: 0,
+        size: 0,
+        deviation: 0,
+        confidence: 0,
+        seen: false,
+        done: false
       }
     });
   </script>
