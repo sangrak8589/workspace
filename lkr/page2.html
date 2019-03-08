@@ -32,17 +32,19 @@
 
         #grid-container {
             display: grid;
-            grid-template-columns: 50% 50%;
-            grid-template-rows: 300px 300px;
+            grid-template-columns: 25% 25% 50%;
+            grid-template-rows: 50% 50%;
             grid-template-areas:
                 'options scatter'
-                'options residuals';
-
+                'results scatter'
+                '. residuals';
         }
 
         #scatter {
             grid-area: scatter;
             position: relative;
+            left: 100%;
+            bottom: 10px;
             height: 350px;
             width: 425px;
         }
@@ -50,20 +52,47 @@
         #residuals {
             grid-area: residuals;
             position: relative;
+            bottom: 50px;
+            left: 100%;
             height: 350px;
             width: 425px;
         }
 
         #options {
             grid-area: options;
+            bottom: 500px;
+        }
+
+        #results {
+            grid-area: results;
+            position: relative;
         }
 
         @media only screen and (max-width:620px) {
-
-            /* For mobile phones: */
-            * {
-                width: 100%;
+            #grid-container {
+                grid-template-columns: 100%;
+                grid-template-rows: 20% 25% 25% 30%;
+                grid-template-areas:
+                    'options'
+                    'scatter'
+                    'results'
+                    'residuals';
             }
+
+            #residuals {
+                bottom: 0px;
+                left: 0px;
+            }
+
+            #results {
+                top: 0px;
+            }
+
+            #scatter {
+                bottom: 0px;
+                left: 0px;
+            }
+        }
     </style>
 </head>
 
@@ -76,134 +105,137 @@
                 <a href="./page1.html">Guessing Game</a>
             </div>
             <br><br>Click to add points to the scatterplot.
-            <br><br>
-            <input type="checkbox" name="regline" value="Regline"> Show regression line<br>
-            <input type="checkbox" name="resid" value="residuals"> Show residuals<br><br>
+        </div>
+        <div id="results">
+            <input type="checkbox" v-model="regline"> Show regression line<br>
+            <input type="checkbox" v-model="residuals"> Show residuals<br><br>
             Number of Points: 11 <br>
             Correlation Coefficient: 0.80 <br><br>
-            <div id="alert">
-                <button @click="this.loadPlot()">Download Scatterplot </button>
-            </div>
+            <button @click="this.loadPlot()">Download Scatterplot </button>
         </div>
+        <div id="scatter">
+            <script>
+                var trace1 = {
+                    x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                    y: [6.5, 3.5, 7, 4, 3.9, 5, 10, 5.2, 8, 6.4],
+                    mode: 'markers',
+                    type: 'scatter',
+                    name: "points",
+                };
 
-    </div>
-    <div id="scatter">
-        <script>
-            var trace1 = {
-                x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-                y: [6.5, 3.5, 7, 4, 3.9, 5, 10, 5.2, 8, 6.4],
-                mode: 'markers',
-                type: 'scatter',
-                name: "points",
-            };
+                var regline = {
+                    x: [0, 10],
+                    y: [4.8, 7],
+                    mode: 'lines',
+                    type: 'scatter',
+                    name: 'regression line',
+                };
 
-            var regline = {
-                x: [0, 10],
-                y: [4.8, 7],
-                mode: 'lines',
-                type: 'scatter',
-                name: 'regression line',
-            };
-
-            var data = [trace1, regline];
-            var layout = {
-                xaxis: {
-                    range: [0, 10.5]
-                },
-                yaxis: {
-                    range: [0, 10.5]
-                },
-                title: 'Scatterplot'
-            };
-            Plotly.newPlot('scatter', data, layout);
-        </script>
+                var data = [trace1, regline];
+                var layout = {
+                    xaxis: {
+                        range: [0, 10.5]
+                    },
+                    yaxis: {
+                        range: [0, 10.5]
+                    },
+                    title: 'Scatterplot'
+                };
+                Plotly.newPlot('scatter', data, layout);
+            </script>
+        </div>
         <br><br>
-        <div id="residuals"></div>
-        <script>
-            var points1 = {
-                x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 4.5],
-                y: [1.48, -1.74, 1.54, -1.68, -2, -1.12, 3.66, -1.36, 1.22, -0.6],
-                mode: 'markers',
-                type: 'scatter',
-            };
-            var line1 = {
-                x: [1, 1],
-                y: [0, 1.48],
-                type: 'line',
-            };
-            var line2 = {
-                x: [2, 2],
-                y: [0, -1.74],
-                type: 'line',
-            };
-            var line3 = {
-                x: [3, 3],
-                y: [0, 1.54],
-                type: 'line',
-            };
-            var line4 = {
-                x: [4, 4],
-                y: [0, -1.68],
-                type: 'line',
-            };
-            var line5 = {
-                x: [5, 5],
-                y: [0, -2],
-                type: 'line',
-            };
-            var line6 = {
-                x: [6, 6],
-                y: [0, -1.12],
-                type: 'line',
-            };
-            var line7 = {
-                x: [7, 7],
-                y: [0, 3.66],
-                type: 'line',
-            };
-            var line8 = {
-                x: [8, 8],
-                y: [0, -1.36],
-                type: 'line',
-            };
-            var line9 = {
-                x: [9, 9],
-                y: [0, 1.22],
-                type: 'line',
-            };
-            var line10 = {
-                x: [10, 10],
-                y: [0, -0.6],
-                type: 'line',
-            };
+        <div id="residuals">
+            <script>
+                var points1 = {
+                    x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 4.5],
+                    y: [1.48, -1.74, 1.54, -1.68, -2, -1.12, 3.66, -1.36, 1.22, -0.6],
+                    mode: 'markers',
+                    type: 'scatter',
+                };
+                var line1 = {
+                    x: [1, 1],
+                    y: [0, 1.48],
+                    type: 'line',
+                };
+                var line2 = {
+                    x: [2, 2],
+                    y: [0, -1.74],
+                    type: 'line',
+                };
+                var line3 = {
+                    x: [3, 3],
+                    y: [0, 1.54],
+                    type: 'line',
+                };
+                var line4 = {
+                    x: [4, 4],
+                    y: [0, -1.68],
+                    type: 'line',
+                };
+                var line5 = {
+                    x: [5, 5],
+                    y: [0, -2],
+                    type: 'line',
+                };
+                var line6 = {
+                    x: [6, 6],
+                    y: [0, -1.12],
+                    type: 'line',
+                };
+                var line7 = {
+                    x: [7, 7],
+                    y: [0, 3.66],
+                    type: 'line',
+                };
+                var line8 = {
+                    x: [8, 8],
+                    y: [0, -1.36],
+                    type: 'line',
+                };
+                var line9 = {
+                    x: [9, 9],
+                    y: [0, 1.22],
+                    type: 'line',
+                };
+                var line10 = {
+                    x: [10, 10],
+                    y: [0, -0.6],
+                    type: 'line',
+                };
 
-            var regline = {
-                x: [0, 10],
-                y: [0, 0],
-                mode: 'lines',
-                type: 'scatter',
-            };
+                var regline = {
+                    x: [0, 10],
+                    y: [0, 0],
+                    mode: 'lines',
+                    type: 'scatter',
+                };
 
-            var data1 = [points1, line1, line2, line3, line4, line5,
-                line6, line7, line8, line9, line10, regline];
+                var data1 = [points1, line1, line2, line3, line4, line5,
+                    line6, line7, line8, line9, line10, regline];
 
-            var layout = {
-                xaxis: {
-                    range: [0, 10.5]
-                },
-                yaxis: {
-                    range: [-4, 4]
-                },
-                title: 'Standardized Residuals',
-                showlegend: false,
-            };
-            Plotly.newPlot('residuals', data1, layout);
-        </script>
+                var layout = {
+                    xaxis: {
+                        range: [0, 10.5]
+                    },
+                    yaxis: {
+                        range: [-4, 4]
+                    },
+                    title: 'Standardized Residuals',
+                    showlegend: false,
+                };
+                Plotly.newPlot('residuals', data1, layout);
+            </script>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"> </script>
     <script>
         new Vue({
-            el: "#alert",
+            el: "#grid-container",
+            data: {
+                regline: false,
+                residuals: false
+            },
             methods: {
                 loadPlot() {
                     window.alert('congrats. You pushed the button');
