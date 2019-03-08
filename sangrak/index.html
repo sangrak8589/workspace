@@ -18,7 +18,9 @@
         }
 
         body {
-            background-color: rgba(13, 134, 94, 0.438);
+
+            background-image: url(background.jpg);
+            background-size: 100%;
         }
 
         .grid-container {
@@ -59,7 +61,7 @@
 
         .topright {
             position: absolute;
-            top: 80px;
+            top: 60px;
             right: 380px;
             font-size: 18px;
         }
@@ -73,14 +75,14 @@
 
         .middleright {
             position: absolute;
-            top: 770px;
+            top: 800px;
             right: 900px;
             font-size: 18px;
         }
 
         .relativeFreqTitlePosition {
             position: absolute;
-            top: 400px;
+            top: 380px;
             right: 260px;
             font-size: 18px;
         }
@@ -94,7 +96,7 @@
 
         .contingencyTableTitlePosition {
             position: absolute;
-            top: 650px;
+            top: 620px;
             right: 390px;
             font-size: 18px;
         }
@@ -111,10 +113,10 @@
 <body>
 
 
-    <h1 align="center">Analyzing Data From Contingency Tables</h1>
+    <h1 style="color:black;" align="center" ;>Analyzing Data From Contingency Tables</h1>
 
     <form action="/action_page.php">
-        Choose the number of rows (Max: 4 Rows):<br>
+        <p style="color:black;"> <strong>Choose the number of rows (Max: 4 Rows): </strong></p>
         <select name="Rows" style="width:80px; height:30px;">
             <option value="one">1</option>
             <option value="two">2</option>
@@ -122,7 +124,7 @@
             <option value="four">4</option>
         </select>
         <br><br>
-        Choose the number of columns (Max: 4 Columns):<br>
+        <p style="color:black;"> <strong>Choose the number of columns (Max: 4 Columns): </strong></p>
         <select name="Columns" style="width:80px; height:30px;">
             <option value="one">1</option>
             <option value="two">2</option>
@@ -133,7 +135,7 @@
     </form>
 
 
-    <p> Showing Contingency Table For Selected Size</p>
+    <p style="color:black;"> <strong>Contingency Table For Selected Size </strong> </p>
 
     <div class="grid-container">
         <div class="grid-item"></div>
@@ -156,7 +158,7 @@
     </div>
     <br><br>
 
-    <p> Enter Data Below</p>
+    <p style="color:black;"> <strong> Enter Data Below </strong></p>
 
     <div class="grid-container">
         <div class="grid-item">
@@ -263,7 +265,7 @@
 
 
     <form action="/action_page.php">
-        How do you want your data graphically shown? <br>
+        <p style="color:black;"> <strong> How do you want your data graphically shown? </strong></p>
         <select name="graphs" style="width:80px; height:30px;">
             <option value="Bar">Bar</option>
             <option value="Pie">Pie</option>
@@ -272,7 +274,9 @@
         <br><br>
     </form>
 
-    <div class="topright">Graphical Representation</div>
+    <div class="topright">
+        <p style="color:black;"> <strong> Graphical Representation </strong></p>
+    </div>
     <div class="graphPosition"><img src="https://www.mathsisfun.com/data/images/bar-chart-example.svg" alt="Bar Graph">
     </div>
 
@@ -285,7 +289,9 @@
 
     </div>
 
-    <div class="relativeFreqTitlePosition">Frequency and Relative Frequency Table</div>
+    <div class="relativeFreqTitlePosition">
+        <p style="color:black;"> <strong> Frequency and Relative Frequency Table </strong></p>
+    </div>
     <div class="relativeFreqPosition">
         <div class="frequency-grid-container">
             <div class="grid-item">Variable</div>
@@ -311,7 +317,9 @@
         </div>
     </div>
 
-    <div class="contingencyTableTitlePosition">The Contingency Table</div>
+    <div class="contingencyTableTitlePosition">
+        <p style="color:black;"> <strong> The Contingency Table</strong> </p>
+    </div>
     <div class="contingencyTablePosition">
         <div class="grid-containerContingency">
             <div class="grid-item"></div>
