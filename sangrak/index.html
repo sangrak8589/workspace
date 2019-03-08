@@ -18,10 +18,19 @@
         }
 
         body {
-            background-color: rgba(81, 7, 165, 0.438);
+            background-color: rgba(13, 134, 94, 0.438);
         }
 
         .grid-container {
+            display: grid;
+            grid-template-columns: 150px 150px 150px 150px;
+            background-color: rgb(35, 124, 212);
+            padding: 10px;
+            width: 600px;
+            position: relative;
+        }
+
+        .frequency-grid-container {
             display: grid;
             grid-template-columns: 80px 80px 80px 80px;
             background-color: rgb(35, 124, 212);
@@ -64,8 +73,8 @@
 
         .middleright {
             position: absolute;
-            top: 400px;
-            right: 660px;
+            top: 770px;
+            right: 900px;
             font-size: 18px;
         }
 
@@ -101,233 +110,238 @@
 
 <body>
 
-    <body>
 
-        <h1 align="center">Analyzing Data From Contingency Tables</h1>
+    <h1 align="center">Analyzing Data From Contingency Tables</h1>
 
-        <form action="/action_page.php">
-            Choose the number of rows (Max: 4 Rows):<br>
-            <select name="Rows" style="width:80px; height:30px;">
-                <option value="one">1</option>
-                <option value="two">2</option>
-                <option value="three">3</option>
-                <option value="four">4</option>
-            </select>
-            <br><br>
-            Choose the number of columns (Max: 4 Columns):<br>
-            <select name="Columns" style="width:80px; height:30px;">
-                <option value="one">1</option>
-                <option value="two">2</option>
-                <option value="three">3</option>
-                <option value="four">4</option>
-            </select>
-
-        </form>
-
-
-        <p> Showing Contingency Table For Selected Size</p>
-
-        <div class="grid-container">
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-
-        </div>
+    <form action="/action_page.php">
+        Choose the number of rows (Max: 4 Rows):<br>
+        <select name="Rows" style="width:80px; height:30px;">
+            <option value="one">1</option>
+            <option value="two">2</option>
+            <option value="three">3</option>
+            <option value="four">4</option>
+        </select>
         <br><br>
+        Choose the number of columns (Max: 4 Columns):<br>
+        <select name="Columns" style="width:80px; height:30px;">
+            <option value="one">1</option>
+            <option value="two">2</option>
+            <option value="three">3</option>
+            <option value="four">4</option>
+        </select>
 
-        <p> Enter Data Below</p>
+    </form>
 
-        <div class="grid-container">
-            <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-            </div>
-            <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-            </div>
-            <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-            </div>
-            <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-            </div>
-            <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-            </div>
-            <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-            </div>
-            <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-            </div>
-            <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-            </div>
-            <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-            </div>
-            <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-            </div>
-            <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-            </div>
-            <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-            </div>
-            <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-            </div>
-            <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-            </div>
-            <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-            </div>
-            <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-            </div>
+
+    <p> Showing Contingency Table For Selected Size</p>
+
+    <div class="grid-container">
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+
+    </div>
+    <br><br>
+
+    <p> Enter Data Below</p>
+
+    <div class="grid-container">
+        <div class="grid-item">
+            <form action="/action_page.php">
+                <input name="rows" type="text" size="5">
+            </form>
         </div>
-
-        <br><br>
-
-
-        <form action="/action_page.php">
-            How do you want your data graphically shown? <br>
-            <select name="graphs" style="width:80px; height:30px;">
-                <option value="Bar">Bar</option>
-                <option value="Pie">Pie</option>
-                <option value="Histogram">Histogram</option>
-            </select>
-            <br><br>
-        </form>
-
-        <div class="topright">Graphical Representation</div>
-        <div class="graphPosition"><img src="https://www.mathsisfun.com/data/images/bar-chart-example.svg"
-                alt="Bar Graph"></div>
-
-        <!-- Write your comments here -->
-        <!--<div class="middleright"><button class="button">ANALYZE!</button></div>-->
-        <div class="middleright">
-            <button id="alert" @click="this.myAlert">ANALYZE!</button>
-
-
-
+        <div class="grid-item">
+            <form action="/action_page.php">
+                <input name="rows" type="text" size="5">
+            </form>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-        <script>
-            new Vue({
-                el: "#alert",
-                methods: {
-                    myAlert() {
-                        window.alert('Analyzing the data! This might take a couple of seconds!');
-                    }
+        <div class="grid-item">
+            <form action="/action_page.php">
+                <input name="rows" type="text" size="5">
+            </form>
+        </div>
+        <div class="grid-item">
+            <form action="/action_page.php">
+                <input name="rows" type="text" size="5">
+            </form>
+        </div>
+        <div class="grid-item">
+            <form action="/action_page.php">
+                <input name="rows" type="text" size="5">
+            </form>
+        </div>
+        <div class="grid-item">
+            <form action="/action_page.php">
+                <input name="rows" type="number" size="5" v-model="quantitative">
+            </form>
+        </div>
+        <div class="grid-item">
+            <form action="/action_page.php">
+                <input name="rows" type="number" size="5" v-model="quantitative">
+            </form>
+        </div>
+        <div class="grid-item">
+            <form action="/action_page.php">
+                <input name="rows" type="number" size="5" v-model="quantitative">
+            </form>
+        </div>
+        <div class="grid-item">
+            <form action="/action_page.php">
+                <input name="rows" type="text" size="5">
+            </form>
+        </div>
+        <div class="grid-item">
+            <form action="/action_page.php">
+                <input name="rows" type="number" size="5" v-model="quantitative">
+            </form>
+        </div>
+        <div class="grid-item">
+            <form action="/action_page.php">
+                <input name="rows" type="number" size="5" v-model="quantitative">
+            </form>
+        </div>
+        <div class="grid-item">
+            <form action="/action_page.php">
+                <input name="rows" type="number" size="5" v-model="quantitative">
+            </form>
+        </div>
+        <div class="grid-item">
+            <form action="/action_page.php">
+                <input name="rows" type="text" size="5">
+            </form>
+        </div>
+        <div class="grid-item">
+            <form action="/action_page.php">
+                <input name="rows" type="number" size="5" v-model="quantitative">
+            </form>
+        </div>
+        <div class="grid-item">
+            <form action="/action_page.php">
+                <input name="rows" type="number" size="5" v-model="quantitative">
+            </form>
+        </div>
+        <div class="grid-item">
+            <form action="/action_page.php">
+                <input name="rows" type="number" size="5" v-model="quantitative">
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        new Vue({
+            el: "#alert",
+            methods: {
+                myAlert() {
+                    window.alert('Analyzing the data! This might take a couple of seconds!');
                 }
-            });
-        </script>
+            },
+            watch: {
+                quantitative(val) {
+                    if (val < 0) { this.gpa = 0; }
+                }
+            }
+        });
+    </script>
 
-        <div class="relativeFreqTitlePosition">Frequency and Relative Frequency Table</div>
-        <div class="relativeFreqPosition">
-            <div class="grid-container">
-                <div class="grid-item">Variable</div>
-                <div class="grid-item">Frequency</div>
-                <div class="grid-item">Relative Freq</div>
-                <div class="grid-item">%</div>
-                <div class="grid-item">A</div>
-                <div class="grid-item">4</div>
-                <div class="grid-item">0.14</div>
-                <div class="grid-item">14</div>
-                <div class="grid-item">B</div>
-                <div class="grid-item">12</div>
-                <div class="grid-item">0.43</div>
-                <div class="grid-item">43</div>
-                <div class="grid-item">C</div>
-                <div class="grid-item">10</div>
-                <div class="grid-item">0.36</div>
-                <div class="grid-item">36</div>
-                <div class="grid-item">D</div>
-                <div class="grid-item">2</div>
-                <div class="grid-item">0.07</div>
-                <div class="grid-item">7</div>
-            </div>
+    <br><br>
+
+
+    <form action="/action_page.php">
+        How do you want your data graphically shown? <br>
+        <select name="graphs" style="width:80px; height:30px;">
+            <option value="Bar">Bar</option>
+            <option value="Pie">Pie</option>
+            <option value="Histogram">Histogram</option>
+        </select>
+        <br><br>
+    </form>
+
+    <div class="topright">Graphical Representation</div>
+    <div class="graphPosition"><img src="https://www.mathsisfun.com/data/images/bar-chart-example.svg" alt="Bar Graph">
+    </div>
+
+    <!-- Write your comments here -->
+    <!--<div class="middleright"><button class="button">ANALYZE!</button></div>-->
+    <div class="middleright">
+        <button id="alert" @click="this.myAlert">ANALYZE!</button>
+
+
+
+    </div>
+
+    <div class="relativeFreqTitlePosition">Frequency and Relative Frequency Table</div>
+    <div class="relativeFreqPosition">
+        <div class="frequency-grid-container">
+            <div class="grid-item">Variable</div>
+            <div class="grid-item">Frequency</div>
+            <div class="grid-item">Relative Freq</div>
+            <div class="grid-item">%</div>
+            <div class="grid-item">A</div>
+            <div class="grid-item">4</div>
+            <div class="grid-item">0.14</div>
+            <div class="grid-item">14</div>
+            <div class="grid-item">B</div>
+            <div class="grid-item">12</div>
+            <div class="grid-item">0.43</div>
+            <div class="grid-item">43</div>
+            <div class="grid-item">C</div>
+            <div class="grid-item">10</div>
+            <div class="grid-item">0.36</div>
+            <div class="grid-item">36</div>
+            <div class="grid-item">D</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">0.07</div>
+            <div class="grid-item">7</div>
         </div>
+    </div>
 
-        <div class="contingencyTableTitlePosition">The Contingency Table</div>
-        <div class="contingencyTablePosition">
-            <div class="grid-containerContingency">
-                <div class="grid-item"></div>
-                <div class="grid-item">A</div>
-                <div class="grid-item">B</div>
-                <div class="grid-item">C</div>
-                <div class="grid-item">D</div>
-                <div class="grid-item">Total</div>
-                <div class="grid-item">Male</div>
-                <div class="grid-item">2</div>
-                <div class="grid-item">4</div>
-                <div class="grid-item">3</div>
-                <div class="grid-item">1</div>
-                <div class="grid-item">10</div>
-                <div class="grid-item">Female</div>
-                <div class="grid-item">2</div>
-                <div class="grid-item">8</div>
-                <div class="grid-item">7</div>
-                <div class="grid-item">1</div>
-                <div class="grid-item">18</div>
-                <div class="grid-item">Total</div>
-                <div class="grid-item">4</div>
-                <div class="grid-item">12</div>
-                <div class="grid-item">10</div>
-                <div class="grid-item">2</div>
-                <div class="grid-item">28</div>
+    <div class="contingencyTableTitlePosition">The Contingency Table</div>
+    <div class="contingencyTablePosition">
+        <div class="grid-containerContingency">
+            <div class="grid-item"></div>
+            <div class="grid-item">A</div>
+            <div class="grid-item">B</div>
+            <div class="grid-item">C</div>
+            <div class="grid-item">D</div>
+            <div class="grid-item">Total</div>
+            <div class="grid-item">Male</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">4</div>
+            <div class="grid-item">3</div>
+            <div class="grid-item">1</div>
+            <div class="grid-item">10</div>
+            <div class="grid-item">Female</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">8</div>
+            <div class="grid-item">7</div>
+            <div class="grid-item">1</div>
+            <div class="grid-item">18</div>
+            <div class="grid-item">Total</div>
+            <div class="grid-item">4</div>
+            <div class="grid-item">12</div>
+            <div class="grid-item">10</div>
+            <div class="grid-item">2</div>
+            <div class="grid-item">28</div>
 
-            </div>
-            <br><br>
         </div>
-    </body>
+        <br><br>
+    </div>
+
 </body>
 
 </html>
