@@ -41,11 +41,14 @@
   }
 
   body {
-    /* background-image: url('./images/confidenceInterval.jpeg'); */
+    /* background-image: url('./images/background1.jpeg'); */
     height: 100%;
     width: 100%;
     background-position: center;
     background-size: cover;
+    background-repeat: no-repeat;
+    margin: auto;
+    padding: 0;
   }
 
   .grid-container {
@@ -56,8 +59,9 @@
       'data graph';
 
     grid-gap: 10px;
-    width: 100vw;
-    height: 100vh;
+    max-width: 100%;
+    max-height: 90vh;
+    overflow: hidden;
   }
 
   .header {
