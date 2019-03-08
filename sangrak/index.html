@@ -253,6 +253,7 @@
             watch: {
                 age(val) {
                     if (val < 0) { this.age = 0; }
+                    else { this.age = Math.abs(val); }
                 }
             }
         });
