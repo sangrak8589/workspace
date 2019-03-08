@@ -115,7 +115,7 @@
 
     <h1 style="color:black;" align="center" ;>Analyzing Data From Contingency Tables</h1>
 
-    <form action="/action_page.php">
+    <form>
         <p style="color:black;"> <strong>Choose the number of rows (Max: 4 Rows): </strong></p>
         <select name="Rows" style="width:80px; height:30px;">
             <option value="one">1</option>
@@ -160,87 +160,88 @@
 
     <p style="color:black;"> <strong> Enter Data Below </strong></p>
 
-    <div class="grid-container">
+    <div class="grid-container" id="alert">
         <div class="grid-item">
-            <form action="/action_page.php">
+            <form>
                 <input name="rows" type="text" size="5">
             </form>
         </div>
         <div class="grid-item">
-            <form action="/action_page.php">
+            <form>
                 <input name="rows" type="text" size="5">
             </form>
         </div>
         <div class="grid-item">
-            <form action="/action_page.php">
+            <form>
                 <input name="rows" type="text" size="5">
             </form>
         </div>
         <div class="grid-item">
-            <form action="/action_page.php">
+            <form>
                 <input name="rows" type="text" size="5">
             </form>
         </div>
         <div class="grid-item">
-            <form action="/action_page.php">
+            <form>
+                <input name="rows" type="text" size="5">
+            </form>
+        </div>
+        <div class="grid-item" id="alert">
+            <form>
+                <input name="rows" type="number" size="5" v-model.number="age">
+            </form>
+        </div>
+        <div class="grid-item">
+            <form>
+                <input name="rows" type="number" size="5" v-model.number="age">
+            </form>
+        </div>
+        <div class="grid-item">
+            <form>
+                <input name="rows" type="number" size="5" v-model.number="age">
+            </form>
+        </div>
+        <div class="grid-item">
+            <form>
                 <input name="rows" type="text" size="5">
             </form>
         </div>
         <div class="grid-item">
-            <form action="/action_page.php">
-                <input name="rows" type="number" size="5" v-model="age">
+            <form>
+                <input name="rows" type="number" size="5" v-model.number="age">
             </form>
         </div>
         <div class="grid-item">
-            <form action="/action_page.php">
-                <input name="rows" type="number" size="5" v-model="age">
+            <form>
+                <input name="rows" type="number" size="5" v-model.number="age">
             </form>
         </div>
         <div class="grid-item">
-            <form action="/action_page.php">
-                <input name="rows" type="number" size="5" v-model="age">
+            <form>
+                <input name="rows" type="number" size="5" v-model.number="age">
             </form>
         </div>
         <div class="grid-item">
-            <form action="/action_page.php">
+            <form>
                 <input name="rows" type="text" size="5">
             </form>
         </div>
         <div class="grid-item">
-            <form action="/action_page.php">
-                <input name="rows" type="number" size="5" v-model="age">
+            <form>
+                <input name="rows" type="number" size="5" v-model.number="age">
             </form>
         </div>
         <div class="grid-item">
-            <form action="/action_page.php">
-                <input name="rows" type="number" size="5" v-model="age">
+            <form>
+                <input name="rows" type="number" size="5" v-model.number="age">
             </form>
         </div>
         <div class="grid-item">
-            <form action="/action_page.php">
-                <input name="rows" type="number" size="5" v-model="age">
+            <form>
+                <input name="rows" type="number" size="5" v-model.number="age">
             </form>
         </div>
-        <div class="grid-item">
-            <form action="/action_page.php">
-                <input name="rows" type="text" size="5">
-            </form>
-        </div>
-        <div class="grid-item">
-            <form action="/action_page.php">
-                <input name="rows" type="number" size="5" v-model="age">
-            </form>
-        </div>
-        <div class="grid-item">
-            <form action="/action_page.php">
-                <input name="rows" type="number" size="5" v-model="age">
-            </form>
-        </div>
-        <div class="grid-item">
-            <form action="/action_page.php">
-                <input name="rows" type="number" size="5" v-model="age">
-            </form>
-        </div>
+        <div>{{age}}</div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -264,7 +265,7 @@
     <br><br>
 
 
-    <form action="/action_page.php">
+    <form>
         <p style="color:black;"> <strong> How do you want your data graphically shown? </strong></p>
         <select name="graphs" style="width:80px; height:30px;">
             <option value="Bar">Bar</option>
