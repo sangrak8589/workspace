@@ -21,8 +21,8 @@
         .grid-container {
             display: grid;
             grid-template-areas:
-                'prop graph1 graph2'
-                'mean . graph3'
+                'prop graph3 graph2'
+                'mean graph1 .'
                 '. . .';
             grid-gap: 20px;
         }
@@ -30,14 +30,12 @@
         .graph1 {
             width: 300px;
             height: 300px;
-            background-color: gray;
             grid-area: graph1;
         }
 
         .graph2 {
             width: 300px;
             height: 300px;
-            background-color: pink;
             grid-area: graph2;
         }
 
@@ -51,14 +49,17 @@
 </head>
 
 <body>
-    <div class="grid-container">
+    <div id="app" class="grid-container">
         <div class="prop grid-items">
             <h3>Simulating Confidence Intervals</h3>
             <div class="row"><button>Proportions</button><button>Means</button></div>
-            <div class="row">Population Proportion: <input type="text" size="2"></div>
-            <div class="row">Sample Size: <input type="text" size="2"></div>
-            <div class="row">Confidence Level: <input type="text" size="2"> %</div>
-            <div class="row">Number of Iterations: <input type="text" size="2"></div>
+            <div class="row">Population Proportion: <input type="number" size="2" v-model="popProp"></div>
+            <div class="row">Sample Size: <input type="number" size="2" v-model="sampleSize"></div>
+            <div class="row">Confidence Level: <input type="number" size="2" v-model="confInt"> %</div>
+            <div class="row">Number of Iterations: <input type="number" size="2" v-model="numIt"></div>
+            <div class="row">
+                <button id="alert" @click="this.myAlert">Enter</button>
+            </div>
         </div>
         <div class="mean grid-items">
             <div class="row">Population Distribution: <select>
@@ -67,25 +68,56 @@
                     <option value="bimodal">bimodal</option>
                     <option value="bell shaped">Bell shaped</option>
                 </select></div>
-            <div class="row">Population Mean: <input type="text" size="2"></div>
-            <div class="row">Population Standard Deviation: <input type="text" size="2"></div>
-            <div class="row">Sample Size: <input type="text" size="2"></div>
-            <div class="row">Confidence Level: <input type="text" size="2"> %</div>
-            <div class="row">Number of Iterations: <input type="text" size="2"></div>
+            <div class="row">Population Mean: <input type="number" size="2" v-model="popMean"></div>
+            <div class="row">Population Standard Deviation: <input type="number" size="2" v-model="popStDev"></div>
+            <div class="row">Sample Size: <input type="number" size="2" v-model="meanSampleSize"></div>
+            <div class="row">Confidence Level: <input type="number" size="2" v-model="meanConfInt"> %</div>
+            <div class="row">Number of Iterations: <input type="number" size="2" v-model="meanNumIt"></div>
+            <div class="row"><button>Enter</button></div>
         </div>
         <div class="graph1 grid-items">
             <h4>Confidence Intervals</h4>
-            <!-- graph1 -->
+            <img src="https://stats.idre.ucla.edu/wp-content/uploads/2016/02/cidemocrw1.png">
         </div>
         <div class="graph2 grid-items">
             <h4>Population Distribution</h4>
-            <!-- graph2 -->
+            <img src="https://store.fmi.uni-sofia.bg/fmi/statist/education/IntroBook/sbgraph/normal00.gif">
         </div>
         <div class="graph3 grid-items">
             <h4>Sample Statistics</h4>
-            <!-- graph3 -->
+            <!---graph 3--->
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"> </script>
+    <script>
+        new Vue({
+            el: "#app",
+            methods: {
+                myAlert() {
+                    window.alert('view results!');
+                }
+            },
+            data: {
+                isProportions: true,
+                popProp: 0.5,
+                sampleSize: 30,
+                confInt: 95,
+                numIt: 10,
+                popMean: 5,
+                popStDev: 0.5,
+                meanSampleSize: 30,
+                meanConfInt: 95,
+                meanNumIt: 10
+            },
+            watch: {
+                popProp(val) {
+                    if (val > 1) { this.popProp = 1; }
+                    else { this.popProp = Math.abs(val); }
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>
