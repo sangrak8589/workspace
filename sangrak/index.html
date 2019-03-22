@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <style>
+    <style scoped>
         .button {
             background-color: rgb(44, 73, 167);
             border: none;
@@ -22,90 +22,100 @@
             background-size: 100%;
         }
 
-        .grid-container {
+        .grid-CSS-container {
+            min-height: 100%;
             display: grid;
-            grid-template-columns: 150px 150px 150px 150px;
-            background-color: rgb(35, 124, 212);
-            padding: 10px;
-            width: 600px;
-            position: relative;
+            grid-template:
+                'input'auto 'short-graph'minmax(200px, 400px) 'long-graph'minmax(200px, 400px) 'output'auto / minmax(300px, auto);
+            grid-gap: 1.5em;
         }
 
-        .frequency-grid-container {
-            display: grid;
-            grid-template-columns: 80px 80px 80px 80px;
-            background-color: rgb(35, 124, 212);
-            padding: 10px;
-            width: 320px;
-            position: relative;
-        }
+        @media screen and (min-width: 792px) {
+            .grid-container {
+                display: grid;
+                grid-template-columns: 150px 150px 150px 150px;
+                background-color: rgb(35, 124, 212);
+                padding: 10px;
+                width: 600px;
+                position: relative;
+            }
 
-        .grid-containerContingency {
-            display: grid;
-            grid-template-columns: 80px 80px 80px 80px 80px 80px;
-            background-color: rgb(35, 124, 212);
-            padding: 10px;
-            width: 480px;
-            position: relative;
-        }
+            .frequency-grid-container {
+                display: grid;
+                grid-template-columns: 80px 80px 80px 80px;
+                background-color: rgb(35, 124, 212);
+                padding: 10px;
+                width: 320px;
+                position: relative;
+            }
 
-        .grid-item {
-            background-color: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(0, 0, 0, 0.8);
-            padding: 10px;
-            font-size: 10px;
-            text-align: center;
-            position: relative;
-        }
+            .grid-containerContingency {
+                display: grid;
+                grid-template-columns: 80px 80px 80px 80px 80px 80px;
+                background-color: rgb(35, 124, 212);
+                padding: 10px;
+                width: 480px;
+                position: relative;
+            }
+
+            .grid-item {
+                background-color: rgba(255, 255, 255, 0.8);
+                border: 1px solid rgba(0, 0, 0, 0.8);
+                padding: 10px;
+                font-size: 10px;
+                text-align: center;
+                position: relative;
+            }
 
 
-        .topright {
-            position: absolute;
-            top: 60px;
-            right: 380px;
-            font-size: 18px;
-        }
+            .topright {
+                position: absolute;
+                top: 60px;
+                right: 380px;
+                font-size: 18px;
+            }
 
-        .graphPosition {
-            position: absolute;
-            top: 120px;
-            right: 200px;
-            font-size: 18px;
-        }
+            .graphPosition {
+                position: absolute;
+                top: 120px;
+                right: 200px;
+                font-size: 18px;
+            }
 
-        .middleright {
-            position: absolute;
-            top: 800px;
-            right: 900px;
-            font-size: 18px;
-        }
+            .middleright {
+                position: absolute;
+                top: 800px;
+                right: 900px;
+                font-size: 18px;
+            }
 
-        .relativeFreqTitlePosition {
-            position: absolute;
-            top: 380px;
-            right: 260px;
-            font-size: 18px;
-        }
+            .relativeFreqTitlePosition {
+                position: absolute;
+                top: 380px;
+                right: 260px;
+                font-size: 18px;
+            }
 
-        .relativeFreqPosition {
-            position: absolute;
-            top: 430px;
-            right: 200px;
-            font-size: 18px;
-        }
+            .relativeFreqPosition {
+                position: absolute;
+                top: 430px;
+                right: 200px;
+                font-size: 18px;
+            }
 
-        .contingencyTableTitlePosition {
-            position: absolute;
-            top: 620px;
-            right: 390px;
-            font-size: 18px;
-        }
+            .contingencyTableTitlePosition {
+                position: absolute;
+                top: 620px;
+                right: 390px;
+                font-size: 18px;
+            }
 
-        .contingencyTablePosition {
-            position: absolute;
-            top: 680px;
-            right: 40px;
-            font-size: 18px;
+            .contingencyTablePosition {
+                position: absolute;
+                top: 680px;
+                right: 40px;
+                font-size: 18px;
+            }
         }
     </style>
 </head>
