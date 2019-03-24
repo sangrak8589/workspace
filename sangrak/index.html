@@ -108,7 +108,7 @@
 </head>
 
 <body>
-    <div class="grid-container">
+    <div id="app" class="grid-container">
         <form class="input grid-items">
             <p style="color:black;"> <strong>Choose the number of rows (Max: 4 Rows): </strong></p>
             <select name="Rows" style="width:80px; height:30px;">
@@ -149,62 +149,62 @@
             <div class="contingencyGridTableActual">
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="text" size="5">
+                        <input name="rows" type="number" size="5" v-model="enterData">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="text" size="5">
+                        <input name="rows" type="number" size="5" v-model="enterData">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="text" size="5">
+                        <input name="rows" type="number" size="5" v-model="enterData">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="text" size="5">
+                        <input name="rows" type="number" size="5" v-model="enterData">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="text" size="5">
+                        <input name="rows" type="number" size="5" v-model="enterData">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="text" size="5">
+                        <input name="rows" type="number" size="5" v-model="enterData">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="text" size="5">
+                        <input name="rows" type="number" size="5" v-model="enterData">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="text" size="5">
+                        <input name="rows" type="number" size="5" v-model="enterData">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="text" size="5">
+                        <input name="rows" type="number" size="5" v-model="enterData">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="text" size="5">
+                        <input name="rows" type="number" size="5" v-model="enterData">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="text" size="5">
+                        <input name="rows" type="number" size="5" v-model="enterData">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="text" size="5">
+                        <input name="rows" type="number" size="5" v-model="enterData">
                     </form>
                 </div>
             </div>
@@ -288,10 +288,19 @@
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script>
         new Vue({
-            el: "#alert",
+            el: "#app",
             methods: {
                 myAlert() {
                     window.alert('Analyzing the data! This might take a couple of seconds!');
+                }
+            },
+            data: {
+                enterData: 5,
+            },
+            watch: {
+                enterData(val) {
+                    if (val > 10000) { this.enterData = 10000; }
+                    else { this.enterData = Math.abs(val); }
                 }
             }
         });
