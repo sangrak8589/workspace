@@ -50,7 +50,7 @@
             <div class="row">Confidence Level: <input type="number" size="2" v-model="confInt"> %</div>
             <div class="row">Number of Iterations: <input type="number" size="2" v-model="numIt"></div>
             <div class="row">
-                <button @click="this.renderGraph">Enter</button>
+                <button>Enter</button>
             </div>
         </div>
         <div class="confidence grid-items">
@@ -88,7 +88,6 @@
             },
             methods: {
                 renderGraph() {
-                    // var ctx = document.getElementById("myChart");
                     console.log("asdfghj");
                     let ctx = this.$refs.plot;
                     const chart = new Chart(ctx, {
@@ -108,9 +107,10 @@
                             }
                         }
                     });
-                    console.log(chart);
                 }
-
+            },
+            mounted() {
+                this.renderGraph();
             }
         });
     </script>
