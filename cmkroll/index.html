@@ -4,117 +4,113 @@
 <head>
     <title>Confidence Intervals</title>
     <style>
-        .row {
-            margin: 20px;
-        }
-
-        .prop {
-            color: black;
-            grid-area: prop;
-        }
-
-        .mean {
-            color: black;
-            grid-area: mean;
-        }
-
-        .grid-container {
+        .gridcontainer {
+            min-height: 100%;
             display: grid;
-            grid-template-areas:
-                'prop graph3 graph2'
-                'mean graph1 .'
-                '. . .';
-            grid-gap: 20px;
+            grid-template:
+                "title""confidence"
+                "input""confidence"
+                "bar""confidence"
+
         }
 
-        .graph1 {
-            width: 300px;
-            height: 300px;
-            grid-area: graph1;
+        #pageSelection {
+            cursor: pointer;
+            margin: 0px;
+            padding: 10px 40px;
+            text-align: center;
+            border: 1px black;
+            border-style: solid;
+            min-width: 45%;
         }
 
-        .graph2 {
-            width: 300px;
-            height: 300px;
-            grid-area: graph2;
-        }
-
-        .graph3 {
-            width: 300px;
-            height: 300px;
-            background-color: rgb(177, 233, 94);
-            grid-area: graph3;
+        .selected {
+            background-color: #00838F;
         }
     </style>
 </head>
 
-<body>
-    <div id="app" class="grid-container">
-        <div class="prop grid-items">
-            <h3>Simulating Confidence Intervals</h3>
-            <div class="row"><button>Proportions</button><button>Means</button></div>
+
+
+<body style="margin: 0;">
+    <div id="app" class="gridcontainer">
+
+        <div id="title grid-items">
+            <h2 style="text-align: center; margin: 20px;">Simulating Confidence Intervals</h2>
+            <div style="margin: 10px;text-align: center; display: flex;">
+                <div id="pageSelection" :class="{selected: pageIdx == index}" v-for="(page, index) in pages"
+                    :key:="index" @click="pageIdx = index">
+                    {{ page }}
+                </div>
+            </div>
+        </div>
+        <div id="input grid-items" style="margin: 20px;">
             <div class="row">Population Proportion: <input type="number" size="2" v-model="popProp"></div>
             <div class="row">Sample Size: <input type="number" size="2" v-model="sampleSize"></div>
             <div class="row">Confidence Level: <input type="number" size="2" v-model="confInt"> %</div>
             <div class="row">Number of Iterations: <input type="number" size="2" v-model="numIt"></div>
             <div class="row">
-                <button id="alert" @click="this.myAlert">Enter</button>
+                <button @click="this.renderGraph">Enter</button>
             </div>
         </div>
-        <div class="mean grid-items">
-            <div class="row">Population Distribution: <select>
-                    <option value="skewed">Skewed</option>
-                    <option value="uniform">uniform</option>
-                    <option value="bimodal">bimodal</option>
-                    <option value="bell shaped">Bell shaped</option>
-                </select></div>
-            <div class="row">Population Mean: <input type="number" size="2" v-model="popMean"></div>
-            <div class="row">Population Standard Deviation: <input type="number" size="2" v-model="popStDev"></div>
-            <div class="row">Sample Size: <input type="number" size="2" v-model="meanSampleSize"></div>
-            <div class="row">Confidence Level: <input type="number" size="2" v-model="meanConfInt"> %</div>
-            <div class="row">Number of Iterations: <input type="number" size="2" v-model="meanNumIt"></div>
-            <div class="row"><button>Enter</button></div>
-        </div>
-        <div class="graph1 grid-items">
+        <div class="confidence grid-items">
             <h4>Confidence Intervals</h4>
             <img src="https://stats.idre.ucla.edu/wp-content/uploads/2016/02/cidemocrw1.png">
         </div>
-        <div class="graph2 grid-items">
-            <h4>Population Distribution</h4>
-            <img src="https://store.fmi.uni-sofia.bg/fmi/statist/education/IntroBook/sbgraph/normal00.gif">
-        </div>
-        <div class="graph3 grid-items">
+        <div class="bar grid-items">
             <h4>Sample Statistics</h4>
-            <!---graph 3--->
+            <p>Bar chart, use your imagination</p>
+            <canvas ref="plot" width="200" height="200"></canvas>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"> </script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
     <script>
         new Vue({
             el: "#app",
-            methods: {
-                myAlert() {
-                    window.alert('view results!');
-                }
-            },
             data: {
-                isProportions: true,
-                popProp: 0.5,
-                sampleSize: 30,
-                confInt: 95,
-                numIt: 10,
-                popMean: 5,
-                popStDev: 0.5,
-                meanSampleSize: 30,
-                meanConfInt: 95,
-                meanNumIt: 10
+                pages: [
+                    "Proportion",
+                    "Mean"
+                ],
+                pageIdx: 0,
+                data: [{
+                    x: -10,
+                    y: 0
+                }, {
+                    x: 0,
+                    y: 10
+                }, {
+                    x: 10,
+                    y: 5
+                }]
             },
-            watch: {
-                popProp(val) {
-                    if (val > 1) { this.popProp = 1; }
-                    else { this.popProp = Math.abs(val); }
+            methods: {
+                renderGraph() {
+                    // var ctx = document.getElementById("myChart");
+                    console.log("asdfghj");
+                    let ctx = this.$refs.plot;
+                    const chart = new Chart(ctx, {
+                        type: 'scatter',
+                        data: {
+                            datasets: [{
+                                label: 'Scatter Dataset',
+                                data: this.data
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                xAxes: [{
+                                    type: 'linear',
+                                    position: 'bottom'
+                                }]
+                            }
+                        }
+                    });
+                    console.log(chart);
                 }
+
             }
         });
     </script>
