@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <title>Stat class</title>
-
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <style>
   h1 {
     background: url(./images/confidenceInterval.jpg) -80px -80px;
@@ -115,17 +115,33 @@
         <d>Sample Mean:</d> <br><input type="text" v-model="mean" name="Sample Mean" value=""><br>
         <d>Sample Size:</d> <br><input type="text" v-model="size" name="Sample Size" value=""><br>
         <d>Standard Deviation:</d> <br><input type="text" v-model="deviation" name="Standard Deviation" value=""><br>
-        <d>Confidence Level: </d><br><input type="text" v-model="confidence" name="Confidence Level" value=""><br>
+        <!-- <d>Confidence Level: </d><br><input type="text" v-model="confidence" name="Confidence Level" value=""><br> -->
+        <select name="Confidence Level" v-model="confidence">
+          <option value=0.80>80%</option>
+          <option value=0.90>90%</option>
+          <option value=0.95>95%</option>
+          <option value=0.99>99%</option>
+        </select>
         <button type="button" class="button" v-on:click="done = !done">Submit</button>
       </form>
     </div>
-    <div class="graph">
-      <img src="images/confidence.png" width="80%" height="40%">
+    <div id="app">
+      <label for="x">X</label>
+      <input type="number" id="x" v-model="x">
+      <label for="y">Y</label>
+      <input type="number" id="y" v-model="y">
+      <button @click="add">Add</button>
 
+      <div ref="plot" style="width:600px;height:250px;"></div>
+      <div>{{ x }}, {{ y }}</div>
     </div>
+
+
+  </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script>
+
     new Vue({
       el: "#alert",
       methods: {
@@ -136,12 +152,61 @@
 
       },
       data: {
-        mean: 0,
-        size: 0,
-        deviation: 0,
-        confidence: 0,
+        mean: 60,
+        size: 60,
+        deviation: 72,
+        confidence: 0.95,
         seen: false,
-        done: false
+        done: false,
+        x: 0,
+        y: 0,
+
+
+      },
+      mounted() {
+        console.log(this.confidenceIntervalLeft());
+
+      },
+      methods: {
+
+        standardError() {
+          return (Math.sqrt((this.deviation * this.deviation) / this.size)).toFixed(2)
+        },
+        async findZ() {
+          const resp = await fetch("./z-table.json");
+
+          const table = await resp.json();
+
+
+
+
+          return (table[this.confidence].z1 + table[this.confidence].z2);
+
+        },
+
+        confidenceIntervalLeft() {
+          console.log(this.mean);
+          console.log(this.findZ());
+          console.log(this.standardError());
+          return (this.mean - (this.findZ()) * this.standardError())
+
+        },
+        confidenceIntervalRight() {
+
+          return (this.mean + (findZ()) * standardError())
+
+        },
+
+        add() {
+
+          this.data[0].x.push(this.x);
+          this.data[0].y.push(this.y)
+          const TESTER = this.$refs.plot;
+          Plotly.plot(TESTER, this.data, {
+            margin: { t: 0 }
+          });
+
+        }
       }
     });
   </script>
