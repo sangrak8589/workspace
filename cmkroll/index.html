@@ -8,16 +8,36 @@
             min-height: 100%;
             display: grid;
             grid-template:
-                "title""confidence"
-                "input""confidence"
-                "bar""confidence"
+                'input'
+                'confidence-intervals'
+                'sample-statistics'
+        }
 
+        @media screen and (min-width: 792px) {
+            .gridcontainer {
+                min-height: 100%;
+                display: grid;
+                grid-template:
+                    'input confidence-intervals'minmax(200px, 400px) 'sample-statistics confidence-intervals'minmax(200px, 400px) /400px auto
+            }
+        }
+
+        #input {
+            grid-area: input;
+        }
+
+        #confidence-intervals {
+            grid-area: confidence-intervals;
+        }
+
+        #sample-statistics {
+            grid-area: sample-statistics;
         }
 
         #pageSelection {
             cursor: pointer;
             margin: 0px;
-            padding: 10px 40px;
+            padding: 10px;
             text-align: center;
             border: 1px black;
             border-style: solid;
@@ -34,34 +54,42 @@
 
 <body style="margin: 0;">
     <div id="app" class="gridcontainer">
-
-        <div id="title grid-items">
-            <h2 style="text-align: center; margin: 20px;">Simulating Confidence Intervals</h2>
-            <div style="margin: 10px;text-align: center; display: flex;">
-                <div id="pageSelection" :class="{selected: pageIdx == index}" v-for="(page, index) in pages"
-                    :key:="index" @click="pageIdx = index">
-                    {{ page }}
+        <div id="input">
+            <div id="title grid-items">
+                <h2 style="text-align: center; margin: 20px;">Simulating Confidence Intervals</h2>
+                <div style="margin: 10px;text-align: center; display: flex;">
+                    <div id="pageSelection" :class="{selected: pageIdx == index}" v-for="(page, index) in pages"
+                        :key:="index" @click="pageIdx = index">
+                        {{ page }}
+                    </div>
+                </div>
+            </div>
+            <div id="input grid-items" style="margin: 20px;">
+                <div class="row">Population Proportion: <input type="number" size="2" v-model="popProp"></div>
+                <div class="row">Sample Size: <input type="number" size="2" v-model="sampleSize"></div>
+                <div class="row">Confidence Level: <input type="number" size="2" v-model="confInt"> %</div>
+                <div class="row">Number of Iterations: <input type="number" size="2" v-model="numIt"></div>
+                <div class="row">
+                    <button id="alert" @click="this.myAlert">Enter</button>
                 </div>
             </div>
         </div>
-        <div id="input grid-items" style="margin: 20px;">
-            <div class="row">Population Proportion: <input type="number" size="2" v-model="popProp"></div>
-            <div class="row">Sample Size: <input type="number" size="2" v-model="sampleSize"></div>
-            <div class="row">Confidence Level: <input type="number" size="2" v-model="confInt"> %</div>
-            <div class="row">Number of Iterations: <input type="number" size="2" v-model="numIt"></div>
-            <div class="row">
-                <button>Enter</button>
+
+        <div id="sample-statistics">
+            <div class="grid-items">
+                <h4>Sample Statistics</h4>
+                <p>Bar chart, use your imagination</p>
+                <canvas ref="plot" width="200" height="200"></canvas>
             </div>
         </div>
-        <div class="confidence grid-items">
-            <h4>Confidence Intervals</h4>
-            <img src="https://stats.idre.ucla.edu/wp-content/uploads/2016/02/cidemocrw1.png">
+
+        <div id="confidence-intervals">
+            <div class="grid-items">
+                <h4>Confidence Intervals</h4>
+                <img src="https://stats.idre.ucla.edu/wp-content/uploads/2016/02/cidemocrw1.png" width="200">
+            </div>
         </div>
-        <div class="bar grid-items">
-            <h4>Sample Statistics</h4>
-            <p>Bar chart, use your imagination</p>
-            <canvas ref="plot" width="200" height="200"></canvas>
-        </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -87,6 +115,9 @@
                 }]
             },
             methods: {
+                myAlert() {
+                    window.alert('view results!');
+                },
                 renderGraph() {
                     console.log("asdfghj");
                     let ctx = this.$refs.plot;
