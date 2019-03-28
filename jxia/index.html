@@ -1,98 +1,116 @@
 <!DOCTYPE html>
 <html>
-<title>Stat class</title>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<style>
-  h1 {
-    background: url(./images/confidenceInterval.jpg) -80px -80px;
-    color: red;
-    -webkit-text-fill-color: transparent;
-    -webkit-background-clip: text;
-    font-weight: bold;
-    font-size: 100px;
-    font-family: arial, helvetica;
-    width: 600px;
-    margin: 50px auto;
-    text-align: center;
-  }
 
-  input[type=text],
-  select {
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stat class</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    h1 {
+      background: url(./images/confidenceInterval.jpg) -80px -80px;
 
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-
-  .button {
-    background-color: #4CAF50;
-    /* Green */
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-  }
-
-  @media screen and (max-width:900px) {
-    .header {
-      visibility: hidden;
+      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text;
+      font-weight: bold;
+      font-size: 100px;
+      font-family: arial, helvetica;
+      width: 600px;
+      margin: 50px auto;
+      text-align: center;
     }
-  }
 
-  body {
-    /* background-image: url('./images/background1.jpeg'); */
-    height: 100%;
-    width: 100%;
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    margin: auto;
-    padding: 0;
-  }
+    input[type=text],
+    select {
 
-  .grid-container {
-    display: grid;
-    grid-template-rows: 1fr 6fr;
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas: 'header header'
-      'data graph';
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
 
-    grid-gap: 10px;
-    max-width: 100%;
-    max-height: 90vh;
-    overflow: hidden;
-  }
+    .button {
+      background-color: #4CAF50;
+      /* Green */
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+    }
 
-  .header {
-    grid-area: header;
-    font-size: 50px;
-    text-align: center;
 
-  }
+    .grid-container {
+      display: grid;
+      grid-template-rows: 1fr 6fr;
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+        'header header'
+        'form graph';
 
-  .form {
-    display: flex;
-    grid-area: data;
-    justify-content: center;
-    justify-items: center;
+      grid-gap: 10px;
+      max-width: 100%;
+      max-height: 90vh;
+      overflow: hidden;
 
-  }
+    }
 
-  .graph {
-    display: flex;
-    grid-area: graph;
-    justify-content: center;
-    justify-items: center;
+    @media screen and (max-width:500px) {
+      h1 {
+        font-size: 20px;
+      }
 
-  }
-</style>
+      .grid-container {
+        /* padding-bottom: 30px; */
+        min-height: min-content;
+
+        grid-template-rows: 1fr 3fr 3fr;
+        grid-template-areas:
+          'header'
+          'form'
+          'graph'
+      }
+    }
+
+    body {
+      /* background-image: url('./images/background1.jpeg'); */
+      height: 100%;
+      width: 100%;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      margin: auto;
+      padding: 0;
+    }
+
+
+    .header {
+      grid-area: header;
+      /* font-size: 50px; */
+      text-align: center;
+
+    }
+
+    .form {
+      display: flex;
+      grid-area: form;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .graph {
+      display: flex;
+      grid-area: graph;
+      justify-content: center;
+      justify-items: center;
+
+    }
+  </style>
+</head>
 
 <body>
 
@@ -102,6 +120,8 @@
 
 
   <div class="grid-container" id="alert">
+
+
     <div class="header">
       <h1>Confidence Interval</h1>
 
@@ -113,8 +133,10 @@
         lies within it.<br></p>
       <p style="font-size:22px; padding: 10px" v-if="done"> means is {{mean}} <br>
         size is {{size}} <br> standard deviation is {{ deviation}} <br> confidence level is {{confidence}}
-        confidence interval is <br></p>
+        confidence interval is {{left}} to {{right}} <br></p>
     </div>
+
+
     <div class="form" id="alert">
 
       <form>
@@ -131,14 +153,17 @@
         <button type="button" class="button" v-on:click="done = !done">Submit</button>
       </form>
     </div>
-    <div id="app">
+
+
+
+    <div id="app" class="graph">
       <label for="x">X</label>
       <input type="number" id="x" v-model="x">
       <label for="y">Y</label>
       <input type="number" id="y" v-model="y">
       <button @click="add">Add</button>
 
-      <div ref="plot" style="width:600px;height:250px;"></div>
+      <div ref="plot" class="graph"></div>
       <div>{{ x }}, {{ y }}</div>
     </div>
 
@@ -166,16 +191,18 @@
         done: false,
         x: 0,
         y: 0,
-
-
-
+        left: 0,
+        right: 0
       },
       mounted() {
-        console.log(this.confidenceIntervalLeft());
+        console.log(this.confidenceInterval());
 
       },
       methods: {
-
+        onSubmit() {
+          this.seen = true;
+          this.confidenceIntervalLeft();
+        },
         standardError() {
           return (Math.sqrt((this.deviation * this.deviation) / this.size)).toFixed(2)
         },
@@ -190,21 +217,15 @@
           return (table[this.confidence].z1 + table[this.confidence].z2);
 
         },
-
-        async confidenceIntervalLeft() {
-          console.log(this.mean);
+        async confidenceInterval() {
 
           const temp = await this.findZ();
-          console.log(temp);
-          console.log(this.standardError());
-          return (this.mean - (temp * this.standardError()))
+
+          this.left = (this.mean - (temp * this.standardError()));
+          this.right = (this.mean + (temp * this.standardError()));
 
         },
-        confidenceIntervalRight() {
 
-          return (this.mean + (findZ()) * standardError())
-
-        },
 
         add() {
 
