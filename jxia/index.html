@@ -1,88 +1,116 @@
 <!DOCTYPE html>
 <html>
-<title>Stat class</title>
 
-<style>
-  h1 {
-    background: url(./images/confidenceInterval.jpg) -80px -80px;
-    color: red;
-    -webkit-text-fill-color: transparent;
-    -webkit-background-clip: text;
-    font-weight: bold;
-    font-size: 100px;
-    font-family: arial, helvetica;
-    width: 600px;
-    margin: 50px auto;
-    text-align: center;
-  }
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stat class</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    h1 {
+      background: url(./images/confidenceInterval.jpg) -80px -80px;
 
-  input[type=text],
-  select {
+      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text;
+      font-weight: bold;
+      font-size: 60px;
+      font-family: arial, helvetica;
+      width: 600px;
+      margin: 50px auto;
+      text-align: center;
+    }
 
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
+    input[type=text],
+    select {
 
-  .button {
-    background-color: #4CAF50;
-    /* Green */
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-  }
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
 
-  body {
-    /* background-image: url('./images/confidenceInterval.jpeg'); */
-    height: 100%;
-    width: 100%;
-    background-position: center;
-    background-size: cover;
-  }
+    .button {
+      background-color: #4CAF50;
+      /* Green */
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+    }
 
-  .grid-container {
-    display: grid;
-    grid-template-rows: 1fr 6fr;
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas: 'header header'
-      'data graph';
 
-    grid-gap: 10px;
-    width: 100vw;
-    height: 100vh;
-  }
+    .grid-container {
+      display: grid;
+      grid-template-rows: 1fr 8fr;
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+        'header header'
+        'form graph';
 
-  .header {
-    grid-area: header;
-    font-size: 50px;
-    text-align: center;
+      grid-gap: 10px;
+      max-width: 100%;
+      max-height: 90vh;
+      /* overflow: hidden; */
 
-  }
+    }
 
-  .form {
-    display: flex;
-    grid-area: data;
-    justify-content: center;
-    justify-items: center;
+    @media screen and (max-width:500px) {
+      h1 {
+        font-size: 20px;
+      }
 
-  }
+      .grid-container {
+        /* padding-bottom: 30px; */
+        min-height: min-content;
 
-  .graph {
-    display: flex;
-    grid-area: graph;
-    justify-content: center;
-    justify-items: center;
+        grid-template-rows: 1fr 3fr 3fr;
+        grid-template-areas:
+          'header'
+          'form'
+          'graph'
+      }
+    }
 
-  }
-</style>
+    body {
+      /* background-image: url('./images/background1.jpeg'); */
+      height: 100%;
+      width: 100%;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      margin: auto;
+      padding: 0;
+    }
+
+
+    .header {
+      grid-area: header;
+      /* font-size: 50px; */
+      text-align: center;
+
+    }
+
+    .form {
+      display: flex;
+      grid-area: form;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .graph {
+      display: flex;
+      grid-area: graph;
+      justify-content: center;
+      justify-items: center;
+
+    }
+  </style>
+</head>
 
 <body>
 
@@ -91,7 +119,9 @@
 
 
 
-  <div class="grid-container" id="alert" style="overflow:hidden;">
+  <div class="grid-container" id="alert">
+
+
     <div class="header">
       <h1>Confidence Interval</h1>
 
@@ -101,27 +131,41 @@
         value
         of a parameter
         lies within it.<br></p>
-      <p style="font-size:22px; padding: 10px" v-if="done"> means is {{mean}} <br>
+      <p style="font-size:22px;" v-if="done"> means is {{mean}} <br>
         size is {{size}} <br> standard deviation is {{ deviation}} <br> confidence level is {{confidence}}
-        confidence interval is TBA<br></p>
+        confidence interval is {{left}} to {{right}} <br></p>
     </div>
+
+
     <div class="form" id="alert">
 
       <form>
         <d>Sample Mean:</d> <br><input type="text" v-model="mean" name="Sample Mean" value=""><br>
         <d>Sample Size:</d> <br><input type="text" v-model="size" name="Sample Size" value=""><br>
         <d>Standard Deviation:</d> <br><input type="text" v-model="deviation" name="Standard Deviation" value=""><br>
-        <d>Confidence Level: </d><br><input type="text" v-model="confidence" name="Confidence Level" value=""><br>
-        <button type="button" class="button" v-on:click="done = !done">Submit</button>
+        <!-- <d>Confidence Level: </d><br><input type="text" v-model="confidence" name="Confidence Level" value=""><br> -->
+        <select name="Confidence Level" v-model="confidence">
+          <option value=0.80>80%</option>
+          <option value=0.90>90%</option>
+          <option value=0.95>95%</option>
+          <option value=0.99>99%</option>
+        </select>
+        <button type="button" class="button" v-on:click="onSubmit()">Submit</button>
       </form>
     </div>
-    <div class="graph">
-      <img src="images/confidence.png" width="80%" height="40%">
+
+
+
+    <div id="app" class="graph">
 
     </div>
+
+
+  </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script>
+
     new Vue({
       el: "#alert",
       methods: {
@@ -132,12 +176,123 @@
 
       },
       data: {
-        mean: 0,
-        size: 0,
-        deviation: 0,
-        confidence: 0,
+        mean: 1.5,
+        size: 60,
+        deviation: 5,
+        confidence: 0.95,
         seen: false,
-        done: false
+        done: false,
+        x: 0,
+        y: 0,
+        left: 0,
+        right: 0,
+      },
+      mounted() {
+
+
+      },
+      methods: {
+        onSubmit() {
+          this.done = true;
+          this.confidenceInterval();
+          this.add();
+        },
+        standardError() {
+          return (Math.sqrt((this.deviation * this.deviation) / this.size)).toFixed(2)
+        },
+        async findZ() {
+          const resp = await fetch("./z-table.json");
+
+          const table = await resp.json();
+
+
+
+
+          return (table[this.confidence].z1 + table[this.confidence].z2);
+
+        },
+        async confidenceInterval() {
+
+          const temp = await this.findZ();
+          console.log(temp);
+          console.log(this.standardError());
+          this.left = this.mean - (temp * this.standardError());
+          this.right = this.mean + (temp * this.standardError());
+          console.log(this.left);
+          console.log(this.right);
+          console.log(temp * this.standardError());
+
+        },
+
+
+        add() {
+
+          var trace1 = {
+            x: [],
+            y: [],
+            type: 'scatter'
+          };
+
+//           var layout = {
+//   title: 'Confidence Interval',
+//   xaxis: {
+//     range: [-10, 10]
+//   },
+//   yaxis: {
+//     range: [0, 0.5]
+//   },
+//   width: 500,
+//   height: 500,
+//   shapes: [
+
+//     //line vertical
+
+//     {
+//       type: 'line',
+//       x0: this.left,
+//       y0: 0,
+//       x1: this.left,
+//       y1: 0.1,
+//       line: {
+//         color: 'rgb(55, 128, 191)',
+//         width: 3
+//       }
+//     },
+
+//     {
+//       type: 'line',
+//       x0: this.right,
+//       y0: 0,
+//       x1: this.right,
+//       y1: 0.1,
+//       line: {
+//         color: 'rgb(55, 128, 191)',
+//         width: 3
+//       }
+//     },
+
+ 
+//   ]
+// };
+
+
+          var i, j;
+          for(i = -10; i < 10; i++){
+            trace1.x.push(i);
+            trace1.y.push(
+              (1/(this.deviation * Math.sqrt(6.28)))
+              *Math.pow(2.718,
+              -(Math.pow(i - this.mean,2)/(2*Math.pow(this.deviation,2)))))
+          }
+            
+
+          var data = [trace1];
+          console.log(trace1.x);
+          console.log(trace1.y);
+
+          Plotly.newPlot('app', data);
+
+        }
       }
     });
   </script>
