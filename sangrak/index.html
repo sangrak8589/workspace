@@ -1,296 +1,311 @@
 <!DOCTYPE html>
-<html>
-        <head>
-                <style>
-                .button {
-                    background-color: rgb(44, 73, 167);
-                    border: none;
-                    color: white;
-                    padding: 15px 32px;
-                    text-align: center;
-                    text-decoration: none;
-                    display: inline-block;
-                    font-size: 16px;
-                    margin: 4px 2px;
-                    cursor: pointer;
-}
-                body {
-                    background-color: rgba(81, 7, 165, 0.438);
-                }
-                .grid-container {
-                  display: grid;
-                  grid-template-columns: 80px 80px 80px 80px;
-                  background-color: rgb(35, 124, 212);
-                  padding: 10px;
-                  width: 320px;
-                }
-                .grid-containerContingency {
-                  display: grid;
-                  grid-template-columns: 80px 80px 80px 80px 80px 80px;
-                  background-color: rgb(35, 124, 212);
-                  padding: 10px;
-                  width: 480px;
-                  position: relative;
-                }
-                .grid-item {
-                  background-color: rgba(255, 255, 255, 0.8);
-                  border: 1px solid rgba(0, 0, 0, 0.8);
-                  padding: 10px;
-                  font-size: 10px;
-                  text-align: center;
-                  position: relative;
-                }
-                .topright {
-                    position: absolute;
-                    top: 80px;
-                    right:380px;
-                    font-size: 18px;
-                }
-                .graphPosition {
-                    position: absolute;
-                    top: 120px;
-                    right:200px;
-                    font-size: 18px;
-                }
-                .middleright {
-                    position: absolute;
-                    top: 400px;
-                    right:660px;
-                    font-size: 18px;
-                }
-                .relativeFreqTitlePosition {
-                    position: absolute;
-                    top: 400px;
-                    right:260px;
-                    font-size: 18px;
-                }
-                .relativeFreqPosition {
-                    position: absolute;
-                    top: 430px;
-                    right:200px;
-                    font-size: 18px;
-                }
-                .contingencyTableTitlePosition {
-                    position: absolute;
-                    top: 650px;
-                    right:390px;
-                    font-size: 18px;
-                }
-                .contingencyTablePosition {
-                    position: absolute;
-                    top: 680px;
-                    right:40px;
-                    font-size: 18px;
-                }
-                </style>
-                </head>
-                <body>
+<html lang="en">
+
+<head>
+    <h1 style="color:black;" align="center" ;>Analyzing Data From Contingency Tables</h1>
+    <style scoped>
+        body {
+            background-image: url(background.jpg);
+            background-size: 100%;
+        }
+
+        .frequencyGridContainer {
+            display: grid;
+            grid-template-columns: 80px 80px 80px 80px;
+            background-color: rgb(35, 124, 212);
+            padding: 10px;
+            width: 320px;
+            position: relative;
+        }
+
+        .gridContainerContingency {
+            display: grid;
+            grid-template-columns: 80px 80px 80px 80px 80px 80px;
+            background-color: rgb(35, 124, 212);
+            padding: 10px;
+            width: 480px;
+            position: relative;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-areas:
+                'input graph'
+                'contingencyGridTable freqRelativeFreqTable'
+                'contingencyDataTable contingencyResultTable'
+                'analyzeButton analyzeButton';
+            grid-gap: 20px;
+        }
+
+        @media screen and (min-width: 792px) {
+            .gridcontainer {
+                padding: 10px;
+                min-height: 100%;
+                display: grid;
+                grid-template:
+                    'input graph'
+                    'contingencyGridTable freqRelativeFreqTable'
+                    'contingencyDataTable contingencyResultTable'
+                    'analyzeButton analyzeButton'
+                    / minmax(15em, 40%) minmax(30em, 60%);
+                grid-gap: 20px;
+            }
+        }
+
+        .analyzeButton {
+            grid-area: analyzeButton;
+            display: flex;
+            justify-content: space-around;
+            color: white;
+        }
+
+        .contingencyGridTable {
+            grid-area: contingencyGridTable
+        }
+
+        .contingencyDataTable {
+            grid-area: contingencyDataTable
+        }
+
+        .freqRelativeFreqTable {
+            grid-area: freqRelativeFreqTable
+        }
+
+        .contingencyResultTable {
+            grid-area: contingencyResultTable
+        }
+
+        .contingencyGridTableActual {
+            display: grid;
+            grid-template-columns: 150px 150px 150px;
+            background-color: rgb(35, 124, 212);
+            padding: 10px;
+            width: 450px;
+            position: relative;
+        }
+
+        .grid-item {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            font-size: 10px;
+            text-align: center;
+            position: relative;
+        }
+
+        .input {
+            color: black;
+            grid-area: input;
+        }
+
+        .graph {
+            width: 300px;
+            height: 300px;
+
+            grid-area: graph;
+        }
+    </style>
+</head>
+
 <body>
-
-<h1 align="center">Analyzing Data From Contingency Tables</h1>
-
-<form action="/action_page.php">
-    Choose the number of rows (Max: 4 Rows):<br>
-    <select name="Rows" style="width:80px; height:30px;"> 
-      <option value="one">1</option>
-      <option value="two">2</option>
-      <option value="three">3</option>
-      <option value="four">4</option>
-    </select>
-    <br><br>
-    Choose the number of columns (Max: 4 Columns):<br>
-    <select name="Columns" style="width:80px; height:30px;"> 
-            <option value="one">1</option>
-            <option value="two">2</option>
-            <option value="three">3</option>
-            <option value="four">4</option>
-          </select>
-    
-  </form>
-
-
-<p> Showing Contingency Table For Selected Size</p>
-
-<div class="grid-container">
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>  
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>  
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>  
-        <div class="grid-item"></div>  
-        <div class="grid-item"></div>  
-        <div class="grid-item"></div>  
-        <div class="grid-item"></div>  
-        <div class="grid-item"></div>  
-        <div class="grid-item"></div>  
-        <div class="grid-item"></div>  
-        
-</div>
-<br><br>
-
-<p> Enter Data Below</p>
-
-<div class="grid-container">
-        <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
+    <div id="app" class="grid-container">
+        <form class="input grid-items">
+            <p style="color:black;"> <strong>Choose the number of rows (Max: 4 Rows): </strong></p>
+            <select name="Rows" style="width:80px; height:30px;">
+                <option value="one">1</option>
+                <option value="two">2</option>
+                <option value="three">3</option>
+                <option value="four">4</option>
+            </select>
+            <br><br>
+            <p style="color:black;"> <strong>Choose the number of columns (Max: 4 Columns): </strong></p>
+            <select name="Columns" style="width:80px; height:30px;">
+                <option value="one">1</option>
+                <option value="two">2</option>
+                <option value="three">3</option>
+                <option value="four">4</option>
+            </select>
+        </form>
+        <div class="contingencyGridTable grid-items">
+            <p style="color:black;"> <strong>Contingency Table For Selected Size </strong> </p>
+            <div class="contingencyGridTableActual">
+                <div class="grid-item"></div>
+                <div class="grid-item"></div>
+                <div class="grid-item"></div>
+                <div class="grid-item"></div>
+                <div class="grid-item"></div>
+                <div class="grid-item"></div>
+                <div class="grid-item"></div>
+                <div class="grid-item"></div>
+                <div class="grid-item"></div>
+                <div class="grid-item"></div>
+                <div class="grid-item"></div>
+                <div class="grid-item"></div>
+            </div>
         </div>
-        <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
+
+        <div class="contingencyDataTable grid-items">
+            <p style="color:black;"> <strong> Enter Data Below </strong></p>
+            <div class="contingencyGridTableActual">
+                <div class="grid-item">
+                    <form>
+                        <input name="rows" type="number" size="5" v-model="enterData">
+                    </form>
+                </div>
+                <div class="grid-item">
+                    <form>
+                        <input name="rows" type="number" size="5" v-model="enterData">
+                    </form>
+                </div>
+                <div class="grid-item">
+                    <form>
+                        <input name="rows" type="number" size="5" v-model="enterData">
+                    </form>
+                </div>
+                <div class="grid-item">
+                    <form>
+                        <input name="rows" type="number" size="5" v-model="enterData">
+                    </form>
+                </div>
+                <div class="grid-item">
+                    <form>
+                        <input name="rows" type="number" size="5" v-model="enterData">
+                    </form>
+                </div>
+                <div class="grid-item">
+                    <form>
+                        <input name="rows" type="number" size="5" v-model="enterData">
+                    </form>
+                </div>
+                <div class="grid-item">
+                    <form>
+                        <input name="rows" type="number" size="5" v-model="enterData">
+                    </form>
+                </div>
+                <div class="grid-item">
+                    <form>
+                        <input name="rows" type="number" size="5" v-model="enterData">
+                    </form>
+                </div>
+                <div class="grid-item">
+                    <form>
+                        <input name="rows" type="number" size="5" v-model="enterData">
+                    </form>
+                </div>
+                <div class="grid-item">
+                    <form>
+                        <input name="rows" type="number" size="5" v-model="enterData">
+                    </form>
+                </div>
+                <div class="grid-item">
+                    <form>
+                        <input name="rows" type="number" size="5" v-model="enterData">
+                    </form>
+                </div>
+                <div class="grid-item">
+                    <form>
+                        <input name="rows" type="number" size="5" v-model="enterData">
+                    </form>
+                </div>
+            </div>
+
         </div>
-        <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-        </div>  
-        <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
+        <div class="analyzeButton grid-items">
+            <div></div>
+            <button id="alert" @click="this.myAlert">ANALYZE!</button>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
         </div>
-        <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
+        <div class="freqRelativeFreqTable grid-items">
+            <p style="color:black;"> <strong> Frequency and Relative Frequency Table </strong></p>
+            <div class="frequencyGridContainer">
+                <div class="grid-item">Variable</div>
+                <div class="grid-item">Frequency</div>
+                <div class="grid-item">Relative Freq</div>
+                <div class="grid-item">%</div>
+                <div class="grid-item">A</div>
+                <div class="grid-item">4</div>
+                <div class="grid-item">0.14</div>
+                <div class="grid-item">14</div>
+                <div class="grid-item">B</div>
+                <div class="grid-item">12</div>
+                <div class="grid-item">0.43</div>
+                <div class="grid-item">43</div>
+                <div class="grid-item">C</div>
+                <div class="grid-item">10</div>
+                <div class="grid-item">0.36</div>
+                <div class="grid-item">36</div>
+                <div class="grid-item">D</div>
+                <div class="grid-item">2</div>
+                <div class="grid-item">0.07</div>
+                <div class="grid-item">7</div>
+            </div>
+
+            <br><br>
         </div>
-        <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-        </div>  
-        <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
+        <div class="graph grid-items">
+            <p style="color:black;"> <strong> Graphical Representation </strong></p>
+            <img src="https://www.mathsisfun.com/data/images/bar-chart-example.svg" alt="Bar Graph">
         </div>
-        <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
+
+
+        <div class="contingencyResultTable grid-items">
+            <p style="color:black;"> <strong> The Contingency Table</strong> </p>
+            <div class="gridContainerContingency">
+                <div class="grid-item"></div>
+                <div class="grid-item">A</div>
+                <div class="grid-item">B</div>
+                <div class="grid-item">C</div>
+                <div class="grid-item">D</div>
+                <div class="grid-item">Total</div>
+                <div class="grid-item">Male</div>
+                <div class="grid-item">2</div>
+                <div class="grid-item">4</div>
+                <div class="grid-item">3</div>
+                <div class="grid-item">1</div>
+                <div class="grid-item">10</div>
+                <div class="grid-item">Female</div>
+                <div class="grid-item">2</div>
+                <div class="grid-item">8</div>
+                <div class="grid-item">7</div>
+                <div class="grid-item">1</div>
+                <div class="grid-item">18</div>
+                <div class="grid-item">Total</div>
+                <div class="grid-item">4</div>
+                <div class="grid-item">12</div>
+                <div class="grid-item">10</div>
+                <div class="grid-item">2</div>
+                <div class="grid-item">28</div>
+
+            </div>
         </div>
-        <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-        </div>  
-        <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-        </div>  
-        <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-        </div>  
-        <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-        </div>  
-        <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-        </div>  
-        <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-        </div>  
-        <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-        </div>  
-        <div class="grid-item">
-                <form action="/action_page.php">
-                    <input name="rows" type="text" size="5">
-                </form>
-        </div>  
-      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        new Vue({
+            el: "#app",
+            methods: {
+                myAlert() {
+                    window.alert('Analyzing the data! This might take a couple of seconds!');
+                }
+            },
+            data: {
+                enterData: 5,
+            },
+            watch: {
+                enterData(val) {
+                    if (val > 10000) { this.enterData = 10000; }
+                    else { this.enterData = Math.abs(val); }
+                }
+            }
+        });
+    </script>
 
-<br><br>
-
-
-<form action="/action_page.php">
-    How do you want your data graphically shown? <br>
-    <select name="graphs" style="width:80px; height:30px;"> 
-      <option value="Bar">Bar</option>
-      <option value="Pie">Pie</option>
-      <option value="Histogram">Histogram</option>
-    </select>
-    <br><br>
-  </form>
-
-  <div class="topright">Graphical Representation</div>
-  <div class="graphPosition"><img src="https://www.mathsisfun.com/data/images/bar-chart-example.svg" alt="Bar Graph"></div>
-  
-  <div class="middleright"><button class="button">ANALYZE!</button></div>
-
-  <div class="relativeFreqTitlePosition">Frequency and Relative Frequency Table</div>
-  <div class="relativeFreqPosition">
-  <div class="grid-container">
-        <div class="grid-item">Variable</div>
-        <div class="grid-item">Frequency</div>
-        <div class="grid-item">Relative Freq</div>  
-        <div class="grid-item">%</div>
-        <div class="grid-item">A</div>
-        <div class="grid-item">4</div>  
-        <div class="grid-item">0.14</div>
-        <div class="grid-item">14</div>
-        <div class="grid-item">B</div>  
-        <div class="grid-item">12</div>  
-        <div class="grid-item">0.43</div>  
-        <div class="grid-item">43</div>  
-        <div class="grid-item">C</div>  
-        <div class="grid-item">10</div>  
-        <div class="grid-item">0.36</div>  
-        <div class="grid-item">36</div>   
-        <div class="grid-item">D</div> 
-        <div class="grid-item">2</div> 
-        <div class="grid-item">0.07</div>   
-        <div class="grid-item">7</div>
-</div>
-</div>
-
-<div class="contingencyTableTitlePosition">The Contingency Table</div>
-<div class="contingencyTablePosition">
-        <div class="grid-containerContingency">
-              <div class="grid-item"></div>
-              <div class="grid-item">A</div>
-              <div class="grid-item">B</div>  
-              <div class="grid-item">C</div>
-              <div class="grid-item">D</div>
-              <div class="grid-item">Total</div>  
-              <div class="grid-item">Male</div>
-              <div class="grid-item">2</div>
-              <div class="grid-item">4</div>  
-              <div class="grid-item">3</div>  
-              <div class="grid-item">1</div>  
-              <div class="grid-item">10</div>  
-              <div class="grid-item">Female</div>  
-              <div class="grid-item">2</div>  
-              <div class="grid-item">8</div>  
-              <div class="grid-item">7</div>     
-              <div class="grid-item">1</div> 
-              <div class="grid-item">18</div> 
-              <div class="grid-item">Total</div> 
-              <div class="grid-item">4</div> 
-              <div class="grid-item">12</div> 
-              <div class="grid-item">10</div> 
-              <div class="grid-item">2</div> 
-              <div class="grid-item">28</div>  
-                   
-      </div>
-      <br><br>
-      </div>
 </body>
+
 </html>
