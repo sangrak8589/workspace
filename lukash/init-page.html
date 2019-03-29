@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+</head>
+
+<body>
+    <div id="alert">
+    </div>
+    <h3>There is a funtion, called hello which is called whenever the page loads, you can do initialization tasks using
+        this
+        technique</h3>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+
+        new Vue({
+            el: "#alert",
+            // functions, make as many as you like
+            methods: {
+                hello() {
+                    window.alert('hello');
+                }
+            },
+            // Call function before page loads
+            beforeMount() {
+                this.hello();
+            }
+        });
+    </script>
+
+</body>
+
+</html>

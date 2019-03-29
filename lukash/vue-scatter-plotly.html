@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Plot</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <label for="x">X</label>
+        <input type="number" id="x" v-model="x">
+        <label for="y">Y</label>
+        <input type="number" id="y" v-model="y">
+        <button @click="add">Add</button>
+
+        <div ref="plot" style="width:600px;height:250px;"></div>
+        <div>{{ x }}, {{ y }}</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                x: 0,
+                y: 0,
+                data: [
+                    {
+                        x: [],
+                        y: []
+                    }
+                ]
+            },
+            methods: {
+                add() {
+                    // TESTER = document.getElementById('tester');
+                    this.data[0].x.push(this.x);
+                    this.data[0].y.push(this.y)
+
+                    const TESTER = this.$refs.plot;
+                    Plotly.plot(TESTER, this.data, {
+                        margin: { t: 0 }
+                    });
+                    // alert(`${this.x}, ${this.y}`)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
