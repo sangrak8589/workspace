@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <style>
+        .row {
+            margin: 20px;
+        }
+
+        .prop {
+            color: black;
+            grid-area: prop;
+        }
+
+        .mean {
+            color: black;
+            grid-area: mean;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-areas:
+                'prop graph3 graph2'
+                'mean graph1 .'
+                '. . .';
+            grid-gap: 20px;
+        }
+
+        .graph1 {
+            width: 300px;
+            height: 300px;
+            grid-area: graph1;
+        }
+
+        .graph2 {
+            width: 300px;
+            height: 300px;
+            grid-area: graph2;
+        }
+
+        .graph3 {
+            width: 300px;
+            height: 300px;
+            background-color: rgb(177, 233, 94);
+            grid-area: graph3;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" class="grid-container">
+        <div class="mean grid-items">
+            <div class="row">Population Distribution: <select>
+                    <option value="skewed">Skewed</option>
+                    <option value="uniform">uniform</option>
+                    <option value="bimodal">bimodal</option>
+                    <option value="bell shaped">Bell shaped</option>
+                </select></div>
+            <div class="row">Population Mean: <input type="number" size="2" v-model="popMean"></div>
+            <div class="row">Population Standard Deviation: <input type="number" size="2" v-model="popStDev"></div>
+            <div class="row">Sample Size: <input type="number" size="2" v-model="meanSampleSize"></div>
+            <div class="row">Confidence Level: <input type="number" size="2" v-model="meanConfInt"> %</div>
+            <div class="row">Number of Iterations: <input type="number" size="2" v-model="meanNumIt"></div>
+            <div class="row"><button>Enter</button></div>
+        </div>
+        <div class="graph1 grid-items">
+            <h4>Confidence Intervals</h4>
+            <img src="https://stats.idre.ucla.edu/wp-content/uploads/2016/02/cidemocrw1.png">
+        </div>
+        <div class="graph2 grid-items">
+            <h4>Population Distribution</h4>
+            <img src="https://store.fmi.uni-sofia.bg/fmi/statist/education/IntroBook/sbgraph/normal00.gif">
+        </div>
+        <div class="graph3 grid-items">
+            <h4>Sample Statistics</h4>
+            <!---graph 3--->
+        </div>
+    </div>
+</body>

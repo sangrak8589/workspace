@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Confidence Intervals</title>
+    <style>
+        #pageSelection {
+            cursor: pointer;
+            margin: 0px;
+            padding: 10px 40px;
+            text-align: center;
+            border: 1px black;
+            border-style: solid;
+            min-width: 45%;
+        }
+
+        .selected {
+            background-color: #00838F;
+        }
+    </style>
+</head>
+
+
+
+<body style="margin: 0;">
+    <div id="app">
+
+        <div id="title">
+            <h2 style="text-align: center; margin: 20px;">Simulating Confidence Intervals</h2>
+            <div style="margin: 10px;text-align: center; display: flex;">
+                <div id="pageSelection" :class="{selected: pageIdx == index}" v-for="(page, index) in pages"
+                    :key:="index" @click="pageIdx = index">
+                    {{ page }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                pages: [
+                    "Proportion",
+                    "Mean"
+                ],
+                pageIdx: 1
+            }
+        })
+    </script>
+</body>
+
+</html>
