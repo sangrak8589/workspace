@@ -55,7 +55,7 @@
       grid-gap: 10px;
       max-width: 100%;
       max-height: 90vh;
-      overflow: hidden;
+      /* overflow: hidden; */
 
     }
 
@@ -176,16 +176,16 @@
 
       },
       data: {
-        mean: 60,
+        mean: 1.5,
         size: 60,
-        deviation: 72,
+        deviation: 5,
         confidence: 0.95,
         seen: false,
         done: false,
         x: 0,
         y: 0,
         left: 0,
-        right: 0
+        right: 0,
       },
       mounted() {
 
@@ -214,9 +214,13 @@
         async confidenceInterval() {
 
           const temp = await this.findZ();
-
-          this.left = (this.mean - (temp * this.standardError()));
-          this.right = (this.mean + (temp * this.standardError()));
+          console.log(temp);
+          console.log(this.standardError());
+          this.left = this.mean - (temp * this.standardError());
+          this.right = this.mean + (temp * this.standardError());
+          console.log(this.left);
+          console.log(this.right);
+          console.log(temp * this.standardError());
 
         },
 
@@ -224,18 +228,67 @@
         add() {
 
           var trace1 = {
-            x: [1, 2, 3, 4],
-            y: [10, 15, 13, 17],
+            x: [],
+            y: [],
             type: 'scatter'
           };
 
-          var trace2 = {
-            x: [1, 2, 3, 4],
-            y: [16, 5, 11, 9],
-            type: 'scatter'
-          };
+//           var layout = {
+//   title: 'Confidence Interval',
+//   xaxis: {
+//     range: [-10, 10]
+//   },
+//   yaxis: {
+//     range: [0, 0.5]
+//   },
+//   width: 500,
+//   height: 500,
+//   shapes: [
 
-          var data = [trace1, trace2];
+//     //line vertical
+
+//     {
+//       type: 'line',
+//       x0: this.left,
+//       y0: 0,
+//       x1: this.left,
+//       y1: 0.1,
+//       line: {
+//         color: 'rgb(55, 128, 191)',
+//         width: 3
+//       }
+//     },
+
+//     {
+//       type: 'line',
+//       x0: this.right,
+//       y0: 0,
+//       x1: this.right,
+//       y1: 0.1,
+//       line: {
+//         color: 'rgb(55, 128, 191)',
+//         width: 3
+//       }
+//     },
+
+ 
+//   ]
+// };
+
+
+          var i, j;
+          for(i = -10; i < 10; i++){
+            trace1.x.push(i);
+            trace1.y.push(
+              (1/(this.deviation * Math.sqrt(6.28)))
+              *Math.pow(2.718,
+              -(Math.pow(i - this.mean,2)/(2*Math.pow(this.deviation,2)))))
+          }
+            
+
+          var data = [trace1];
+          console.log(trace1.x);
+          console.log(trace1.y);
 
           Plotly.newPlot('app', data);
 
