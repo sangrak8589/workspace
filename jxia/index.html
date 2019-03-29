@@ -12,7 +12,7 @@
       -webkit-text-fill-color: transparent;
       -webkit-background-clip: text;
       font-weight: bold;
-      font-size: 80px;
+      font-size: 60px;
       font-family: arial, helvetica;
       width: 600px;
       margin: 50px auto;
@@ -46,7 +46,7 @@
 
     .grid-container {
       display: grid;
-      grid-template-rows: 1fr 6fr;
+      grid-template-rows: 1fr 8fr;
       grid-template-columns: 1fr 1fr;
       grid-template-areas:
         'header header'
@@ -131,7 +131,7 @@
         value
         of a parameter
         lies within it.<br></p>
-      <p style="font-size:22px; padding: 10px" v-if="done"> means is {{mean}} <br>
+      <p style="font-size:22px;" v-if="done"> means is {{mean}} <br>
         size is {{size}} <br> standard deviation is {{ deviation}} <br> confidence level is {{confidence}}
         confidence interval is {{left}} to {{right}} <br></p>
     </div>
@@ -157,14 +157,7 @@
 
 
     <div id="app" class="graph">
-      <label for="x">X</label>
-      <input type="number" id="x" v-model="x">
-      <label for="y">Y</label>
-      <input type="number" id="y" v-model="y">
-      <button @click="add">Add</button>
 
-      <div ref="plot" class="graph"></div>
-      <div>{{ x }}, {{ y }}</div>
     </div>
 
 
@@ -195,13 +188,14 @@
         right: 0
       },
       mounted() {
-        console.log(this.confidenceInterval());
+
 
       },
       methods: {
         onSubmit() {
           this.done = true;
           this.confidenceInterval();
+          this.add();
         },
         standardError() {
           return (Math.sqrt((this.deviation * this.deviation) / this.size)).toFixed(2)
@@ -229,12 +223,21 @@
 
         add() {
 
-          this.data[0].x.push(this.x);
-          this.data[0].y.push(this.y)
-          const TESTER = this.$refs.plot;
-          Plotly.plot(TESTER, this.data, {
-            margin: { t: 0 }
-          });
+          var trace1 = {
+            x: [1, 2, 3, 4],
+            y: [10, 15, 13, 17],
+            type: 'scatter'
+          };
+
+          var trace2 = {
+            x: [1, 2, 3, 4],
+            y: [16, 5, 11, 9],
+            type: 'scatter'
+          };
+
+          var data = [trace1, trace2];
+
+          Plotly.newPlot('app', data);
 
         }
       }
