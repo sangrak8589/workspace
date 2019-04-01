@@ -10,31 +10,21 @@
             margin: 5px;
         }
 
-        /* Note: you have one warning: 
-        "
-        [Deprecation] Percentages row tracks and gutters for indefinite height
-         grid containers will be resolved against the intrinsic height 
-         instead of being treated as auto and zero respectively. This change 
-         will happen in M70, around October 2018. See
-          https://www.chromestatus.com/feature/6708326821789696 for more details.
-          "
-
-          Depricated means no longer supported, there are other ways to define your grid
-          ex. https://github.com/Statismic/ui/blob/master/pages/app/simulations/coin.vue
-          https://www.youtube.com/watch?v=ZPtpzuRajzM
-            - this lady is a css ninja master and we love her
-         */
-
         #grid-container {
             min-height: 100%;
             display: grid;
             /* grid-template: */
             /* 'input'auto 'game-plot'minmax(200px, 400px) 'guesses-table'minmax(100px, 300px) 'guesses-scatter'minmax(200px, 400px) / minmax(200px, 400px); */
-            grid-template-columns: 1fr 2em 5fr;
-            grid-template-rows: 1fr 1fr;
+            grid-template-columns: 1fr 2em 2fr;
+            grid-template-rows: 0.25fr 1fr 1fr auto;
             grid-template-areas:
-                'input . game-plot'
-                'guesses-table . guesses-scatter';
+                'rguess . .'
+                'datatextbox . game-plot'
+                'optsAndtable . guesses-scatter';
+        }
+
+        #optsAndtable {
+            grid-area: optsAndtable;
         }
 
         #guesses-table {
@@ -56,13 +46,9 @@
             background-color: rgb(224, 230, 241);
         }
 
-        #input {
-            grid-area: input;
-        }
-
         #rguess {
             grid-area: rguess;
-            position: relative;
+            /* position: relative; */
         }
 
         #datatextbox {
@@ -74,9 +60,9 @@
 
         #guesses-scatter {
             grid-area: guesses-scatter;
-            height: 300%;
-            top: -100px;
-            position: relative;
+            /* height: 300%;
+            top: -100px; */
+            /* position: relative; */
         }
 
         #options {
@@ -87,84 +73,85 @@
         #game-plot {
             grid-area: game-plot;
             /* position: relative; */
-            height: 100%;
-            width: 50%;
+            /* height: 100%;
+            width: 50%; */
         }
 
         @media only screen and (max-width: 620px) {
             #grid-container {
                 grid-template-columns: 100%;
-                grid-template-rows: 1fr 1fr 1fr 1fr 1fr 3fr;
+                grid-template-rows: 0.75fr 0.25fr 0.5fr 0.3fr 1fr auto;
                 grid-template-areas:
                     'game-plot'
                     'rguess'
                     'datatextbox'
                     'options'
-                    'guesses-table'
-                    'guesses-scatter';
+                    'guesses-scatter'
+                    'guesses-table';
+            }
+
+            #rguess {
+                grid-area: rguess;
             }
 
             #options {
-                top: 10%;
+                top: 0%;
             }
 
             #guesses-table {
-                width: 90%;
+                /* width: 90%; */
                 left: 0px;
-                top: -600px;
+                top: 100px;
             }
 
             #datatextbox {
-                bottom: -30px;
+                bottom: 0px;
                 width: 90%;
             }
 
             #game-plot {
-                height: 100%;
-                width: 75%;
+                /* height: 100%;
+                width: 75%; */
                 left: 0%;
             }
 
             #guesses-scatter {
-                height: 200%;
+                /* height: 200%;
                 width: 150%;
-                /*left: 50%; */
+                left: 50%; */
             }
+
         }
     </style>
 </head>
 
 <body>
-    <div id="app">
-
-        <div id="grid-container">
-            <!-- Try reorganizing your grid so that you have 4 pieces: input, guess table, game plot, guess plot? -->
-            <!-- you could make input  a long thin column to give the others more space -->
-            <div id="input">
-                <div id='rguess'>
-                    <h3>Bivariate Data</h3>
-                    Guess for Correlation r:
-                    <input type="number" v-model="rguess" step="0.1"><br>
-                    <input type="button" value="Enter Guess" @click="enterGuess">
-                </div>
-                Data:
-                <div id="datatextbox">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>X</th>
-                                <th>Y</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-                <!-- <ul>
+    <div id="grid-container">
+        <!-- Try reorganizing your grid so that you have 4 pieces: input, guess table, game plot, guess plot? -->
+        <!-- you could make input  a long thin column to give the others more space -->
+        <div id='rguess'>
+            <h3>Bivariate Data</h3>
+            Guess for Correlation r:
+            <input type="number" v-model="rguess" step="0.1"><br>
+            <input type="button" value="Enter Guess" @click="enterGuess">
+        </div>
+        <div id="datatextbox">
+            <table>
+                <thead>
+                    <tr>
+                        <th>X</th>
+                        <th>Y</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <!-- <ul>
                         <li v-for="num in numpoints">
                             ( <input type=number v-model="inputdata[num]">, <input type=number
                                 v-model="inputdata[num2]">)</li>
                     </ul> -->
-            </div>
+        <div id="optsAndtable">
             <div id="options">
                 <br>
                 <button @click="generatedata">New Sample</button>
@@ -180,35 +167,28 @@
                 guesses and correlation of the data</input>
             </div>
 
+            <table id="guesses-table" ref="guessesTable" v-show="displayGuessTable ">
+                <!-- NOTE! example of dynamic table in repo, (which is what I assume you will need) -->
+                <thead>
+                    <tr>
+                        <td>#</td>
+                        <td>Guesses</td>
+                        <td>Actual</td>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+
+            </table>
         </div>
-
-
-
-        <table id="guesses-table" ref="guessesTable" v-show="displayGuessTable ">
-            <!-- NOTE! example of dynamic table in repo, (which is what I assume you will need) -->
-            <thead>
-                <tr>
-                    <td>#</td>
-                    <td>Guesses</td>
-                    <td>Actual</td>
-                </tr>
-            </thead>
-            <tbody></tbody>
-
-        </table>
-
         <div id="game-plot" ref="game"></div>
 
         <div id="guesses-scatter" ref="guess" v-show="displayScatter"></div>
 
     </div>
-
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"> </script>
     <script>
         new Vue({
-            el: "#app",
+            el: "#grid-container",
 
             data: {
                 displayRegline: false,
@@ -273,6 +253,7 @@
                     const x = [];
                     const y = [];
 
+
                     // for (i = 0; i < numpoints; i++) {
                     //     for (j = 0; j < 2; j++) {
                     //         this.randnums[i][j] = Math.floor(Math.random() * (10 * precision - 1 * precision) + 1 * precision) / (1 * precision);
@@ -293,7 +274,7 @@
 
                     // put into this.randnums
                     //initialize game scatterplot
-                    Plotly.newPlot(this.$refs.game, data, this.gameLayout);
+                    Plotly.newPlot(this.$refs.game, data, this.gameLayout, { responsive: true });
                     //update interactive coordinates
                     cols = document.querySelector("#datatextbox > table > thead > tr").children.length, // Get length of the columns in thead
                         tbody = document.querySelector("#datatextbox > table > tbody");
@@ -365,7 +346,7 @@
                     // Plotly.plot(GAME, this.game, this.gameLayout);
                     // Plotly.plot(GAME, this.data, this.gameLayout);
                     this.generatedata();
-                    Plotly.plot(GUESSES, this.guess, this.guessLayout);
+                    Plotly.plot(GUESSES, this.guess, this.guessLayout, { responsive: true });
                     // Plotly.plot(GAME, this.data, { margin: { t: 0 } });
                     // Plotly.plot(GUESSES, this.guess, { margin: { t: 0 } });
                 },
