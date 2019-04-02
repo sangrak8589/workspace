@@ -31,18 +31,21 @@
                         y: [],
                         type: 'bar'
                     }
-                ]
+                ],
+                plot: null
+            },
+            mounted() {
+                Plotly.plot(this.$refs.plot, this.data, {
+                    margin: { t: 0 }
+                })
             },
             methods: {
                 add() {
-                    // TESTER = document.getElementById('tester');
                     this.data[0].x.push(this.x);
-                    this.data[0].y.push(this.y)
+                    this.data[0].y.push(this.y);
 
-                    const TESTER = this.$refs.plot;
-                    const a = Plotly.plot(TESTER, this.data, {
-                        margin: { t: 0 }
-                    });
+                    Plotly.update(this.$refs.plot, this.data);
+                    Plotly.redraw(this.$refs.plot);
                 }
             }
         })
