@@ -6,8 +6,8 @@
 
 <body>
     <div id="alert">
-        rows: <input v-model="row"></input>
-        cols: <input v-model="col"></input>
+        rows: <input v-model.number="row"></input>
+        cols: <input v-model.number="col"></input>
         <div>
             <div>
                 <table>
@@ -34,13 +34,23 @@
             },
             watch: {
                 row(val) {
-                    this.cat = new Array(val).fill(0).map(() => new Array(this.col).fill(0));
-                    console.log(this.cat);
+                    this.row = val;
+                    this.cat = new Array(this.row);
+
+                    for (var i = 0; i < this.cat.length; i++) {
+                        this.cat[i] = new Array(this.col);
+                    }
+                    console.log(this.row);
 
                 },
                 col(val) {
-                    this.cat = new Array(this.row).fill(0).map(() => new Array(val).fill(0));
+                    this.col = val;
+                    this.cat = new Array(this.row);
 
+                    for (var i = 0; i < this.cat.length; i++) {
+                        this.cat[i] = new Array(this.col);
+                    }
+                    console.log(this.col);
                 }
             }
         });
