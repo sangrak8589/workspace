@@ -70,7 +70,7 @@
                 <div class="row">Confidence Level: <input type="number" size="2" v-model="confInt"> %</div>
                 <div class="row">Number of Iterations: <input type="number" size="2" v-model="numIt"></div>
                 <div class="row">
-                    <button id="alert" @click="this.myAlert">Enter</button>
+                    <button id="enter" @click="this.enter">Enter</button>
                 </div>
             </div>
         </div>
@@ -91,7 +91,7 @@
         </div>
 
     </div>
-
+    <script src="//cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
     <script>
@@ -125,8 +125,22 @@
                 meanNumIt: 10
             },
             methods: {
-                myAlert() {
-                    window.alert('view results!');
+                enter() {
+                    let sum = 0;
+                    for (let i = 0; i < this.sampleSize; i++) {
+                        const y = Math.random();
+
+                        if (y < this.popProp) {
+                            sum++;
+                        }
+                    }
+
+                    let sampleProp = sum / this.sampleSize;
+                    let zScore = jStat.normal.inv(1 - ((1 - (this.confInt / 100)) / 2), 0, 1);
+
+
+                    window.alert(sampleProp);
+                    window.alert(zScore);
                 },
                 renderGraph() {
                     console.log("asdfghj");
@@ -148,6 +162,38 @@
                             }
                         }
                     });
+                }
+            },
+            watch: {
+                popProp(val) {
+                    if (val > 1) { this.popProp = 1; }
+                    else { this.popProp = Math.abs(val); }
+                },
+                sampleSize(val) {
+                    if (val < 1) { this.sampleSize = 1; }
+                    else { this.sampleSize = Math.round(val); }
+                },
+                confInt(val) {
+                    if (val > 99) { this.confInt = 99; }
+                    else { this.confInt = Math.abs(val); }
+                },
+                numIt(val) {
+                    this.numIt = Math.abs(val)
+                    if (val > 100) { this.numIt = 100; }
+                    else { this.numIt = Math.round(val); }
+                },
+                meanSampleSize(val) {
+                    if (val < 1) { this.meanSampleSize = 1; }
+                    else { this.meanSampleSize = Math.round(val); }
+                },
+                meanConfInt(val) {
+                    if (val > 99) { this.meanConfInt = 99; }
+                    else { this.meanConfInt = Math.abs(val); }
+                },
+                meanNumIt(val) {
+                    this.numIt = Math.abs(val)
+                    if (val > 100) { this.meanNumIt = 100; }
+                    else { this.meanNumIt = Math.round(val); }
                 }
             },
             mounted() {
