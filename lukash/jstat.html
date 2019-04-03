@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <canvas ref="plot"></canvas>
+    </div>
+
+    <script src="//cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script>
+      new Vue({
+        el: "#app",
+        data: {
+          mean: 0,
+          std: 10,
+          multiplier: 4
+        },
+        mounted() {
+          const data = [];
+          const low = this.mean - this.multiplier * this.std;
+          const hi = this.mean + this.multiplier * this.std;
+          for (let x = low; x <= hi; x++) {
+            data.push({
+              x: x,
+              y: jStat.normal.pdf(x, this.mean, this.std)
+            });
+          }
+
+          let ctx = this.$refs.plot;
+
+          new Chart(ctx, {
+            type: "line",
+            data: {
+              datasets: [
+                {
+                  label: "Normal Distribution",
+                  data: data
+                }
+              ]
+            },
+            options: {
+              scales: {
+                xAxes: [
+                  {
+                    type: "linear",
+                    position: "bottom"
+                  }
+                ]
+              }
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
