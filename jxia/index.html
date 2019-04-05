@@ -6,7 +6,7 @@
   <title>Stat class</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-  <script type="text/javascript" src="canvasjs.min.js"></script>
+  <!-- <script type="text/javascript" src="canvasjs.min.js"></script> -->
   <style>
     h1 {
       background: url(./images/confidenceInterval.jpg) -80px -80px;
@@ -133,8 +133,8 @@
         value
         of a parameter
         lies within it.<br></p>
-      <p style="font-size:22px;" v-if="done"> means is {{mean}} <br>
-        size is {{size}} <br> standard deviation is {{ deviation}} <br> confidence level is {{confidence}}
+      <p style="font-size:22px;" v-if="done"> sample means is {{samepleMean}} <br>
+        size is {{size}} <br> sample standard deviation is {{ sampleDeviation}} <br> confidence level is {{confidence}}
         confidence interval is {{left}} to {{right}} <br></p>
     </div>
 
@@ -158,10 +158,11 @@
     </div>
 
 
-
-    <canvas ref="plot" id="app" class="graph">
+    <div id="app" class="graph">
+    <canvas ref="plot" >
 
     </canvas>
+  </div>
 
 
   </div>
@@ -206,17 +207,9 @@
           }
           this.samepleMean = sum / this.normalValues.length;
 
-          //  console.log(this.samepleMean);
-          var temp = this.normalValues;
-          for (var i = 0; i < temp.length; i++) {
-            temp[i] = Math.pow(temp[i] - this.samepleMean, 2);
-          }
-          sum = 0;
-          for (var i = 0; i < temp.length; i++) {
-            sum += temp[i];
-          }
-          this.sampleDeviation = Math.sqrt(sum / temp.length);
-          //console.log(this.sampleDeviation);
+            console.log(this.samepleMean);
+          this.sampleDeviation = jStat.stdev(this.normalValues,true);
+          console.log(this.sampleDeviation);
         },
 
         generateNormalValues() {
@@ -230,9 +223,11 @@
         },
 
         onSubmit() {
+          this.normalValues = [];
           this.done = true;
           this.generateNormalValues();
           this.setSampleMeanAndDeviation();
+          this.confidenceInterval();
           this.graph();
           //   this.add();
         },
@@ -251,17 +246,14 @@
 
         },
 
-        async confidenceInterval() {
+        confidenceInterval() {
 
-          const temp = await this.findZ();
-          console.log(temp);
-          console.log(this.standardError());
-          this.left = this.mean - (temp * this.standardError());
-          this.right = this.mean + (temp * this.standardError());
+          const t = jStat.studentt.inv((this.confidence + ((1-this.confidence)/2)), this.size - 1);
+          console.log(t);
+          this.left = this.samepleMean - (t*(this.sampleDeviation/Math.sqrt(this.size)));
+          this.right = this.samepleMean + (t*(this.sampleDeviation/Math.sqrt(this.size)));
           console.log(this.left);
           console.log(this.right);
-          console.log(temp * this.standardError());
-
         },
 
 
@@ -285,7 +277,7 @@
             }
 
           ]
-          for (var i = 0; i < this.repeat * 5; i += 3) {
+          for (var i = 0; i < this.repeat * 3; i += 3) {
             lines.push(
               {
                 type: 'box',
@@ -341,7 +333,9 @@
             },
             options: {
               annotation: {
-                annotations: lines
+                annotations: lines,
+               // maintainAspectRatio: false
+                
               }
             }
           }
