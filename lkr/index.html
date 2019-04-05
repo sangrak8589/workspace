@@ -2,11 +2,403 @@
 <html lang="en">
 
 <head>
+    <title>Statismic: Bivariate Data</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js">
+    </script>
+    <style>
+        button {
+            margin: 5px;
+        }
+
+        #grid-container {
+            min-height: 100%;
+            display: grid;
+            /* grid-template: */
+            /* 'input'auto 'game-plot'minmax(200px, 400px) 'guesses-table'minmax(100px, 300px) 'guesses-scatter'minmax(200px, 400px) / minmax(200px, 400px); */
+            grid-template-columns: 1fr 2em 2fr;
+            grid-template-rows: 0.25fr 1fr 1fr auto;
+            grid-template-areas:
+                'rguess . .'
+                'datatextbox . game-plot'
+                'optsAndtable . guesses-scatter';
+        }
+
+        #optsAndtable {
+            grid-area: optsAndtable;
+        }
+
+        #guesses-table {
+            grid-area: guesses-table;
+            /* position: relative; */
+            border: solid;
+            top: 300px;
+            margin: 20px;
+        }
+
+        table td {
+            border-left: 1px solid darkblue;
+        }
+
+        table td:first-child {
+            border-left: none;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgb(224, 230, 241);
+        }
+
+        #rguess {
+            grid-area: rguess;
+            /* position: relative; */
+        }
+
+        #datatextbox {
+            grid-area: datatextbox;
+            /* border: darkblue solid; */
+            /* position: relative; */
+            margin: 25px;
+            width: 100%;
+        }
+
+        #guesses-scatter {
+            grid-area: guesses-scatter;
+            /* height: 300%;
+            top: -100px; */
+            /* position: relative; */
+        }
+
+        #options {
+            grid-area: options;
+            /* position: relative; */
+        }
+
+        #game-plot {
+            grid-area: game-plot;
+            /* position: relative; */
+            /* height: 100%;
+            width: 50%; */
+        }
+
+        @media only screen and (max-width: 620px) {
+            #grid-container {
+                grid-template-columns: 100%;
+                grid-template-rows: 0.75fr 0.25fr 0.5fr 0.3fr 1fr auto;
+                grid-template-areas:
+                    'game-plot'
+                    'rguess'
+                    'datatextbox'
+                    'optsAndtable'
+                    'guesses-scatter';
+            }
+
+            #rguess {
+                grid-area: rguess;
+            }
+
+            #options {
+                top: 0%;
+                left: 0%;
+            }
+
+            #guesses-table {
+                /* width: 90%; */
+                left: 0px;
+                top: 100px;
+                margin: 20px;
+            }
+
+            #datatextbox {
+                bottom: 0px;
+                width: 90%;
+                margin: 25px;
+            }
+
+            #game-plot {
+                /* height: 100%;
+                width: 75%; */
+                left: 0%;
+            }
+
+            #guesses-scatter {
+                /* height: 200%;
+                width: 150%;
+                left: 50%; */
+            }
+
+        }
+    </style>
 </head>
 
 <body>
-    <a href="./page1.html">Guessing Game</a>
-    <a href="./page2.html">Scatterplot</a>
+    <div id="grid-container">
+        <!-- Try reorganizing your grid so that you have 4 pieces: input, guess table, game plot, guess plot? -->
+        <!-- you could make input  a long thin column to give the others more space -->
+        <div id='rguess'>
+            <h3>Bivariate Data</h3>
+            Guess for Correlation r:
+            <input type="number" v-model.number="rguess" step="0.1"><br>
+            <input type="button" value="Enter Guess" @click="enterGuess"><br><br>
+            Number of Random Points:
+            <input type="number" v-model.number="numpoints"><br>
+            <input type="button" value="Update Number of Points" @click="enterpoints">
+        </div>
+        <div id="datatextbox">
+            <table>
+                <thead>
+                    <tr>
+                        <th>X</th>
+                        <th>Y</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="x, i in this.randnums.x">
+                        <td>{{ x }}</td>
+                        <td>{{ randnums.y[i] }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div><br>
+        <!-- <ul>
+                        <li v-for="num in numpoints">
+                            ( <input type=number v-model="inputdata[num]">, <input type=number
+                                v-model="inputdata[num2]">)</li>
+                    </ul> -->
+        <div id="optsAndtable">
+            <div id="options">
+                <br>
+                <button @click="generatedata">New Sample</button>
+                <button @click="resetdata">Reset</button>
+
+                <br>
+                <br>
+
+                <!-- <input type="checkbox" v-model="displayRegline"> Display regression line<br> -->
+                <input type="checkbox" v-model="displayGuessTable"> Display table of actual values and
+                guesses<br>
+                <input type="checkbox" v-model="displayScatter"> Display scatterplot of correlation between
+                guesses and correlation of the data</input><br>
+            </div>
+
+            <table id="guesses-table" ref="guessesTable" v-show="displayGuessTable ">
+                <!-- NOTE! example of dynamic table in repo, (which is what I assume you will need) -->
+                <thead>
+                    <tr>
+                        <td>#</td>
+                        <td>Guesses</td>
+                        <td>Actual</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="x, i in guess[0].x">
+                        <td>{{ i + 1}}</td>
+                        <td>{{ x }}</td>
+                        <td>{{ guess[0].y[i] }}</td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+        <div id="game-plot" ref="game"></div>
+
+        <div id="guesses-scatter" ref="guess" v-show="displayScatter">
+            <div></div>
+        </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"> </script>
+    <script>
+        new Vue({
+            el: "#grid-container",
+
+            data: {
+                window: {
+                    width: 0,
+                    height: 0
+                },
+                displayRegline: false,
+                displayGuessTable: false,
+                displayScatter: false,
+                inputdata: [
+                    [1, 2],
+                    [3, 4]
+                ],
+                randnums: {
+                    x: [],
+                    y: [],
+                    mode: 'markers',
+                    type: 'scatter',
+                },
+                rguess: 0,
+                ractual: 0,
+                gameLayout: {
+                    xaxis: {
+                        range: [0, 10.5]
+                    },
+                    yaxis: {
+                        range: [0, 10.5]
+                    },
+                    height: 400,
+                    width: 400,
+                    title: 'What is r for this scatterplot?'
+                },
+                guessLayout: {
+                    xaxis: {
+                        range: [-1.15, 1.15]
+                    },
+                    yaxis: {
+                        range: [-1.15, 1.15]
+                    },
+                    height: 400,
+                    width: 400,
+                    autosize: true,
+                    title: 'Guesses versus Actual Correlation'
+                },
+                guess: [
+                    {
+                        x: [],
+                        y: [],
+                        text: [],
+                        mode: 'markers',
+                        type: 'scatter',
+                        showlegend: false
+                    }
+                ],
+                game: [
+                    {
+                        x: [],
+                        y: [],
+                        mode: 'markers',
+                        type: 'scatter'
+                    }
+                ],
+                numpoints: 15
+            },
+            created() {
+                window.addEventListener('resize', this.handleResize)
+                this.handleResize();
+            },
+            destroyed() {
+                window.removeEventListener('resize', this.handleResize)
+            },
+            methods: {
+                handleResize() {
+                    this.window.width = window.innerWidth;
+                    this.window.height = window.innerHeight;
+                },
+                generatedata() {
+                    //generate this.numpoints*2 random numbers
+                    var precision = 1000; // 3 decimals
+                    const x = [];
+                    const y = [];
+                    const genRand = () => Math.floor(Math.random() * (10 * precision)) / (precision);
+
+                    for (let i = 0; i < this.numpoints; i++) {
+                        x.push(genRand());
+                        y.push(genRand());
+                    }
+
+                    this.randnums.x = x;
+                    this.randnums.y = y;
+
+                    // put into this.randnums
+
+                    //update ractual
+                    this.findractual();
+                    this.updateGameChart();
+                    //this.ractual = Math.floor(Math.random() * (1 * precision - 3 * precision) + 1 * precision) / (1 * precision);
+                },
+                resetdata() {
+                    this.guess = [{
+                        x: [],
+                        y: [],
+                        text: [],
+                        mode: 'markers',
+                        type: 'scatter',
+                        showlegend: false
+                    }];
+                    this.rguess = 0.00;
+                    this.numpoints = 15;
+                    Plotly.newPlot(this.$refs.guess, this.guess, this.guessLayout, { responsive: true });
+                    // this.updateGameChart();
+                    // this.updateGuessChart();
+                },
+                findractual() {
+                    var sumx = 0;
+                    var sumy = 0;
+                    var sumxsq = 0;
+                    var sumysq = 0;
+                    var sumxy = 0;
+                    for (i = 0; i < this.numpoints; i++) {
+                        sumx += this.randnums.x[i];
+                        sumy += this.randnums.y[i];
+                        sumxsq += (this.randnums.x[i]) * (this.randnums.x[i]);
+                        sumysq += (this.randnums.y[i]) * (this.randnums.y[i]);
+                        sumxy += (this.randnums.x[i]) * (this.randnums.y[i]);
+                    }
+
+                    console.log(this.numpoints * sumxsq - sumx * sumx);
+                    console.log(this.numpoints * sumysq - sumy * sumy);
+                    this.ractual = (this.numpoints * sumxy - sumx * sumy) / Math.sqrt((this.numpoints * sumxsq - sumx * sumx) * (this.numpoints * sumysq - sumy * sumy));
+                    console.log(this.ractual);
+                    this.ractual = this.ractual.toFixed(3);
+                },
+                enterGuess() {
+                    //update table and update guesses-scatter
+                    alert(`Your guess: ${this.rguess} \n  Actual r: ${this.ractual}`);
+                    (this.guess[0].x).push(this.rguess);
+                    (this.guess[0].y).push(this.ractual);
+                    (this.guess[0].text).push("Guess # " + this.guess[0].x.length);
+                    console.log(this.guess[0].x);
+                    console.log(this.rguess);
+                    console.log(this.guess[0].x.length);
+                    this.rguess = 0.00;
+
+                    this.generatedata();
+                    this.updateGuessChart();
+                    this.updateGameChart();
+                },
+                updateGameChart() {
+                    Plotly.update(this.$refs.game, [this.randnums]);
+                    Plotly.redraw(this.$refs.game);
+                },
+                updateGuessChart() {
+                    console.log(this.guess);
+                    Plotly.update(this.$refs.guess, this.guess);
+                    Plotly.redraw(this.$refs.guess);
+                },
+                enterpoints() {
+                    alert(`Num rand points: ${this.numpoints}`);
+                    this.generatedata();
+                },
+                updatedata() {
+                    for (i = 0; i < this.numpoints; i++) {
+                        databox[i][0] = this.randnums.x[i];
+                    }
+                }
+            },
+            mounted() {
+                //initialize game scatterplot
+                Plotly.plot(this.$refs.game, [this.randnums], this.gameLayout, { responsive: true });
+                Plotly.plot(this.$refs.guess, this.guess, this.guessLayout, { responsive: true });
+                this.generatedata();
+            },
+            watch: {
+                rguess(val) {
+                    if (val < -1) {
+                        this.rguess = -1;
+                    }
+                    if (val > 1) {
+                        this.rguess = 1;
+                    }
+                },
+                numpoints(val) {
+                    if (val < 2) {
+                        this.numpoints = 2;
+                    }
+                }
+            }
+        })
+    </script>
 </body>
 
 </html>
