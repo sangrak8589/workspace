@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Stat class</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+  <script type="text/javascript" src="canvasjs.min.js"></script>
   <style>
     h1 {
       background: url(./images/confidenceInterval.jpg) -80px -80px;
@@ -140,10 +142,11 @@
     <div class="form" id="alert">
 
       <form>
-        <d>Sample Mean:</d> <br><input type="text" v-model="mean" name="Sample Mean" value=""><br>
-        <d>Sample Size:</d> <br><input type="text" v-model="size" name="Sample Size" value=""><br>
-        <d>Standard Deviation:</d> <br><input type="text" v-model="deviation" name="Standard Deviation" value=""><br>
-        <!-- <d>Confidence Level: </d><br><input type="text" v-model="confidence" name="Confidence Level" value=""><br> -->
+        Population Mean:</d> <br><input type="text" v-model="mean" name="Sample Mean" value=""><br>
+        Sample Size:</d> <br><input type="text" v-model="size" name="Sample Size" value=""><br>
+        Population Deviation:</d> <br><input type="text" v-model="deviation" name="Standard Deviation" value=""><br>
+        Number of intervals:</d> <br><input type="text" v-model="repeat" name="repeat intervals" value=""><br>
+        <!-- Confidence Level: </d><br><input type="text" v-model="confidence" name="Confidence Level" value=""><br> -->
         <select name="Confidence Level" v-model="confidence">
           <option value=0.80>80%</option>
           <option value=0.90>90%</option>
@@ -156,46 +159,82 @@
 
 
 
-    <div id="app" class="graph">
+    <canvas ref="plot" id="app" class="graph">
 
-    </div>
+    </canvas>
 
 
   </div>
   </div>
+
+  <script src="//cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.5/chartjs-plugin-annotation.js"></script>
   <script>
 
     new Vue({
       el: "#alert",
-      methods: {
-        // calculate(mean, size, deviation, confidence){
-        //   return(mean + ())
-        // }
 
-
-      },
       data: {
+        repeat: 5,
         mean: 1.5,
-        size: 60,
+        size: 2,
         deviation: 5,
         confidence: 0.95,
         seen: false,
         done: false,
+        samepleMean: 0,
+        sampleDeviation: 0,
         x: 0,
         y: 0,
         left: 0,
         right: 0,
+        normalValues: []
       },
       mounted() {
 
 
       },
       methods: {
+
+        setSampleMeanAndDeviation() {
+          var sum = 0;
+          for (var i = 0; i < this.normalValues.length; i++) {
+            sum += this.normalValues[i];
+          }
+          this.samepleMean = sum / this.normalValues.length;
+
+          //  console.log(this.samepleMean);
+          var temp = this.normalValues;
+          for (var i = 0; i < temp.length; i++) {
+            temp[i] = Math.pow(temp[i] - this.samepleMean, 2);
+          }
+          sum = 0;
+          for (var i = 0; i < temp.length; i++) {
+            sum += temp[i];
+          }
+          this.sampleDeviation = Math.sqrt(sum / temp.length);
+          //console.log(this.sampleDeviation);
+        },
+
+        generateNormalValues() {
+
+          for (var i = 0; i < this.size; i++) {
+            this.normalValues.push(jStat.normal.sample(this.mean, this.deviation));
+          }
+          console.log(this.normalValues);
+
+
+        },
+
         onSubmit() {
           this.done = true;
-          this.confidenceInterval();
-          this.add();
+          this.generateNormalValues();
+          this.setSampleMeanAndDeviation();
+          this.graph();
+          //   this.add();
         },
         standardError() {
           return (Math.sqrt((this.deviation * this.deviation) / this.size)).toFixed(2)
@@ -211,6 +250,7 @@
           return (table[this.confidence].z1 + table[this.confidence].z2);
 
         },
+
         async confidenceInterval() {
 
           const temp = await this.findZ();
@@ -225,75 +265,90 @@
         },
 
 
-        add() {
-
-          var trace1 = {
-            x: [],
-            y: [],
-            type: 'scatter'
-          };
-
-//           var layout = {
-//   title: 'Confidence Interval',
-//   xaxis: {
-//     range: [-10, 10]
-//   },
-//   yaxis: {
-//     range: [0, 0.5]
-//   },
-//   width: 500,
-//   height: 500,
-//   shapes: [
-
-//     //line vertical
-
-//     {
-//       type: 'line',
-//       x0: this.left,
-//       y0: 0,
-//       x1: this.left,
-//       y1: 0.1,
-//       line: {
-//         color: 'rgb(55, 128, 191)',
-//         width: 3
-//       }
-//     },
-
-//     {
-//       type: 'line',
-//       x0: this.right,
-//       y0: 0,
-//       x1: this.right,
-//       y1: 0.1,
-//       line: {
-//         color: 'rgb(55, 128, 191)',
-//         width: 3
-//       }
-//     },
-
- 
-//   ]
-// };
 
 
-          var i, j;
-          for(i = -10; i < 10; i++){
-            trace1.x.push(i);
-            trace1.y.push(
-              (1/(this.deviation * Math.sqrt(6.28)))
-              *Math.pow(2.718,
-              -(Math.pow(i - this.mean,2)/(2*Math.pow(this.deviation,2)))))
+        graph() {
+          console.log(this.repeat);
+          const data = [];
+          const lines = [
+            {
+              type: "line",
+              mode: "vertical",
+              scaleID: "x-axis-0",
+              value: "population mean",
+              borderColor: "red",
+              label: {
+                content: "Population Mean",
+                enabled: true,
+                position: "top"
+              }
+            }
+
+          ]
+          for (var i = 0; i < this.repeat * 5; i += 3) {
+            lines.push(
+              {
+                type: 'box',
+
+                // optional drawTime to control layering, overrides global drawTime setting
+                drawTime: 'beforeDatasetsDraw',
+
+                // optional annotation ID (must be unique)
+                //  id: 'a-box-1',
+
+                // ID of the X scale to bind onto
+                xScaleID: 'x-axis-0',
+
+                // ID of the Y scale to bind onto
+                yScaleID: 'y-axis-0',
+
+                // Left edge of the box. in units along the x axis
+                xMin: "min value",
+
+                // Right edge of the box
+                xMax: "max value",
+
+                // Top edge of the box in units along the y axis
+                yMax: i + 1,
+
+                // Bottom edge of the box
+                yMin: i,
+
+                // Stroke color
+                //  borderColor: 'red',
+
+                // Stroke width
+                borderWidth: 2,
+
+                // Fill color
+                backgroundColor: 'green',
+
+
+              }
+            )
           }
-            
-
-          var data = [trace1];
-          console.log(trace1.x);
-          console.log(trace1.y);
-
-          Plotly.newPlot('app', data);
-
+          console.log(lines);
+          let ctx = this.$refs.plot;
+          new Chart(ctx, {
+            type: "line",
+            data: {
+              labels: ["min value", "population mean", "max value"],
+              datasets: [
+                {
+                  //data: data
+                }
+              ]
+            },
+            options: {
+              annotation: {
+                annotations: lines
+              }
+            }
+          }
+          );
         }
       }
+
     });
   </script>
 
