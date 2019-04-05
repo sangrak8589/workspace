@@ -133,7 +133,9 @@
         value
         of a parameter
         lies within it.<br></p>
-      <p style="font-size:22px;" v-if="done"> sample means is {{samepleMean}} <br>
+      <p style="font-size:22px;" v-if="done"> 
+        generated sample is {{normalValues}} <br>
+        sample means is {{samepleMean}} <br>
         size is {{size}} <br> sample standard deviation is {{ sampleDeviation}} <br> confidence level is {{confidence}}
         confidence interval is {{left}} to {{right}} <br></p>
     </div>
@@ -162,12 +164,14 @@
     <canvas ref="plot" >
 
     </canvas>
+    
   </div>
 
 
   </div>
   </div>
 
+  <!-- <script src="./Chart.bundle.js"></script> -->
   <script src="//cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -181,7 +185,7 @@
       data: {
         repeat: 5,
         mean: 1.5,
-        size: 2,
+        size: 10,
         deviation: 5,
         confidence: 0.95,
         seen: false,
@@ -192,7 +196,8 @@
         y: 0,
         left: 0,
         right: 0,
-        normalValues: []
+        normalValues: [],
+        intervals: [{}]
       },
       mounted() {
 
@@ -207,9 +212,9 @@
           }
           this.samepleMean = sum / this.normalValues.length;
 
-            console.log(this.samepleMean);
+           // console.log(this.samepleMean);
           this.sampleDeviation = jStat.stdev(this.normalValues,true);
-          console.log(this.sampleDeviation);
+          //console.log(this.sampleDeviation);
         },
 
         generateNormalValues() {
@@ -217,17 +222,24 @@
           for (var i = 0; i < this.size; i++) {
             this.normalValues.push(jStat.normal.sample(this.mean, this.deviation));
           }
-          console.log(this.normalValues);
+         // console.log(this.normalValues);
 
 
         },
 
         onSubmit() {
+          this.intervals = [{}];
+          for(var i = 0; i < this.size; i++){
+
+          
           this.normalValues = [];
+          
           this.done = true;
           this.generateNormalValues();
           this.setSampleMeanAndDeviation();
           this.confidenceInterval();
+          }
+         // console.log(this.intervals[1].left);
           this.graph();
           //   this.add();
         },
@@ -249,25 +261,26 @@
         confidenceInterval() {
 
           const t = jStat.studentt.inv((this.confidence + ((1-this.confidence)/2)), this.size - 1);
-          console.log(t);
+          //console.log(t);
           this.left = this.samepleMean - (t*(this.sampleDeviation/Math.sqrt(this.size)));
           this.right = this.samepleMean + (t*(this.sampleDeviation/Math.sqrt(this.size)));
-          console.log(this.left);
-          console.log(this.right);
+          //console.log(this.left);
+         // console.log(this.right);
+          this.intervals.push({left: this.left.toFixed(2), right: this.right.toFixed(2)});
         },
 
 
 
 
         graph() {
-          console.log(this.repeat);
+         // console.log(this.repeat);
           const data = [];
           const lines = [
             {
               type: "line",
               mode: "vertical",
-              scaleID: "x-axis-0",
-              value: "population mean",
+              scaleID: "x-axis-1",
+              value: this.mean,
               borderColor: "red",
               label: {
                 content: "Population Mean",
@@ -277,7 +290,14 @@
             }
 
           ]
+          var j = 1;
+          //console.log(this.intervals.length);
+          var backColor;
           for (var i = 0; i < this.repeat * 3; i += 3) {
+            if(this.intervals[j].left > this.mean || this.intervals[j].right < this.mean)
+              backColor = 'red'
+            else
+              backColor = 'green'
             lines.push(
               {
                 type: 'box',
@@ -289,16 +309,16 @@
                 //  id: 'a-box-1',
 
                 // ID of the X scale to bind onto
-                xScaleID: 'x-axis-0',
+                xScaleID: 'x-axis-1',
 
                 // ID of the Y scale to bind onto
-                yScaleID: 'y-axis-0',
+                yScaleID: 'y-axis-1',
 
                 // Left edge of the box. in units along the x axis
-                xMin: "min value",
+                xMin: this.intervals[j].left,
 
                 // Right edge of the box
-                xMax: "max value",
+                xMax: this.intervals[j].right,
 
                 // Top edge of the box in units along the y axis
                 yMax: i + 1,
@@ -313,32 +333,47 @@
                 borderWidth: 2,
 
                 // Fill color
-                backgroundColor: 'green',
-
-
-              }
-            )
-          }
-          console.log(lines);
-          let ctx = this.$refs.plot;
-          new Chart(ctx, {
-            type: "line",
-            data: {
-              labels: ["min value", "population mean", "max value"],
-              datasets: [
-                {
-                  //data: data
-                }
-              ]
-            },
-            options: {
-              annotation: {
-                annotations: lines,
-               // maintainAspectRatio: false
                 
+                backgroundColor: backColor,
+
+
               }
-            }
+            );
+            //console.log(j);
+            j++;
           }
+          //console.log(lines);
+          let ctx = this.$refs.plot;
+          var scatterChartData = {
+          // datasets: [{
+          //   data: [
+          //     { x:0, y:0 },
+          //     { x:20, y:20 }
+          //   ]
+          // }]
+        };
+
+          window.myScatter = Chart.Scatter(ctx, {
+            data: scatterChartData,
+            options: {
+                    scales: {
+                        xAxes: [{
+                        }],
+                        yAxes: [{
+                        }]
+                    },
+                    annotation: {
+               
+               annotations: lines,
+              // maintainAspectRatio: false
+               
+             }
+                }
+                
+          
+              
+            }
+          
           );
         }
       }
