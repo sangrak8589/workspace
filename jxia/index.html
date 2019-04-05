@@ -147,7 +147,7 @@
         Population Mean:</d> <br><input type="text" v-model="mean" name="Sample Mean" value=""><br>
         Sample Size:</d> <br><input type="text" v-model="size" name="Sample Size" value=""><br>
         Population Deviation:</d> <br><input type="text" v-model="deviation" name="Standard Deviation" value=""><br>
-        Number of intervals:</d> <br><input type="text" v-model="repeat" name="repeat intervals" value=""><br>
+        Times to Repeat:</d> <br><input type="text" v-model="repeat" name="repeat intervals" value=""><br>
         <!-- Confidence Level: </d><br><input type="text" v-model="confidence" name="Confidence Level" value=""><br> -->
         <select name="Confidence Level" v-model="confidence">
           <option value=0.80>80%</option>
@@ -206,11 +206,11 @@
       methods: {
 
         setSampleMeanAndDeviation() {
-          var sum = 0;
-          for (var i = 0; i < this.normalValues.length; i++) {
-            sum += this.normalValues[i];
-          }
-          this.samepleMean = sum / this.normalValues.length;
+          // var sum = 0;
+          // for (var i = 0; i < this.normalValues.length; i++) {
+          //   sum += this.normalValues[i];
+          // }
+          this.samepleMean = jStat.mean(this.normalValues);
 
            // console.log(this.samepleMean);
           this.sampleDeviation = jStat.stdev(this.normalValues,true);
@@ -220,7 +220,7 @@
         generateNormalValues() {
 
           for (var i = 0; i < this.size; i++) {
-            this.normalValues.push(jStat.normal.sample(this.mean, this.deviation));
+            this.normalValues.push(parseFloat(jStat.normal.sample(this.mean, this.deviation)));
           }
          // console.log(this.normalValues);
 
@@ -259,9 +259,13 @@
         },
 
         confidenceInterval() {
-
-          const t = jStat.studentt.inv((this.confidence + ((1-this.confidence)/2)), this.size - 1);
-          //console.log(t);
+          var t;
+          console.log(this.size);
+         // console.log(this.confidence);
+          var temp = parseFloat(this.confidence) + parseFloat(((1-this.confidence)/2));
+          console.log(temp);
+          t = jStat.studentt.inv(temp, this.size - 1);
+          console.log(t);
           this.left = this.samepleMean - (t*(this.sampleDeviation/Math.sqrt(this.size)));
           this.right = this.samepleMean + (t*(this.sampleDeviation/Math.sqrt(this.size)));
           //console.log(this.left);
