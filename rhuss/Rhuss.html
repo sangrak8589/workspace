@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Normal Distribution</title>
+	<style>
+		.grid-container {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			grid-template-rows: auto 1fr;
+
+			grid-template-areas:
+				"header header"
+				"user-input graph";
+		}
+
+		#header {
+			grid-area: "header";
+			min-width: 100%;
+		}
+
+		#user-input {
+			grid-area: "user-input";
+		}
+
+		#graph {
+			grid-area: "graph";
+		}
+	</style>
+	<h2 id="header">Normal Distribution Calculator</h2>
+</head>
+
+<body>
+	<div id="app" class="grid-container">
+
+
+
+		<div id="user-input" style="background-color:lightgray">
+			<div class="grid-container">
+				<div class="user input">
+					<h2>Parameters</h2>
+					<h4>Please input the sample mean, standard deviation and x. y is optional.</h4>
+					<div class="row">Mean= <input type="number" name="Mean" size="5"></div>
+					<div class="row">Standard Deviation= <input type="number" name="SD" size="5"></div>
+					<div class="row"></div>
+				</div>
+				<div class="Probability input">
+					<h2>x,y input</h2>
+					<h4>Please select one option from below:</h4>
+					<div class="row">P(X>x)=
+						<button onclick="myFunction1()">Select</button>
+					</div>
+					<div class="row">P(x>X)=
+						<button onclick="myFunction2()">Select</button>
+					</div>
+					<div class="row">P(x>X>y)=
+						<button onclick="myFunction3()">Select</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="graph" style="background-color:gray;">
+			<h2>Results</h2>
+			<p>Graphs will go here</p>
+			<button onclick="myFunction()">Print</button>
+			<p id="x"></p>
+			<p id="x2"></p>
+			<p id="x3"></p>
+			<p id="y1"></p>
+
+
+			<img src="norm.jpeg" alt="Normal" width="300" height="300">
+		</div>
+	</div>
+
+
+	<script>
+		function myFunction() {
+			window.print();
+		}
+
+		function myFunction1() {
+			var x = prompt("x=", "x");
+			var Mean = jStat.normal.pdf("Mean", "SD");
+			if (x != null) {
+				document.getElementById("x").innerHTML =
+					"The probability that X is greater than " + x + " is ??math??" + Mean;
+			}
+		}
+
+		function myFunction2() {
+			var x = prompt("x=", "x");
+			if (x != null) {
+				document.getElementById("x").innerHTML =
+					"The probability that X is less than " + x + " is ??math??";
+			}
+		}
+
+		function myFunction3() {
+			var x = prompt("x=", "x");
+			var y = prompt("y=", "y");
+			if (x != null) {
+				document.getElementById("x", "y").innerHTML =
+					"The probability that X is greater than " + x + " and less than " + y + " is ??math??";
+			}
+		}
+	</script>
+</body>
+<style>
+	.column {
+
+		float: left;
+		width: 50%;
+		min-height: 50%;
+		padding: 10px;
+		box-sizing: content-box;
+	}
+</style>
+
+</html>
