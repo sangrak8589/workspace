@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+</head>
+
+<body>
+    <div id="alert">
+        rows: <input v-model.number="row"></input>
+        cols: <input v-model.number="col"></input>
+        <div>
+            <div>
+                <table>
+                    <tr v-for="r in row">
+                        <td v-for="c in col">
+                            a </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+
+        new Vue({
+            el: "#alert",
+            data: {
+                row: 0,
+                col: 0,
+                cat: [[]]
+            },
+            methods: {
+            },
+            watch: {
+                row(val) {
+                    this.row = val;
+                    this.cat = new Array(this.row);
+
+                    for (var i = 0; i < this.cat.length; i++) {
+                        this.cat[i] = new Array(this.col);
+                    }
+                    console.log(this.row);
+
+                },
+                col(val) {
+                    this.col = val;
+                    this.cat = new Array(this.row);
+
+                    for (var i = 0; i < this.cat.length; i++) {
+                        this.cat[i] = new Array(this.col);
+                    }
+                    console.log(this.col);
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>
