@@ -219,10 +219,13 @@
         },
 
         generateNormalValues() {
-          console.log("mean is               " + this.mean);
+          console.log("mean is               " + typeof this.mean);
+          console.log("std is " + typeof this.deviation);
 
           for (var i = 0; i < this.size; i++) {
-            this.normalValues.push(parseFloat(jStat.normal.sample(this.mean, this.deviation)));
+            const rand = jStat.normal.sample(parseFloat(this.mean), parseFloat(this.deviation));
+            console.log(rand);
+            this.normalValues.push(parseFloat(rand));
           }
           // console.log(this.normalValues);
 
