@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <h1 style="color:black;" align="center" ;>Analyzing Data From Contingency Tables</h1>
+    <h1 style="color:black; text-align: center" ;>Analyzing Data From Contingency Tables</h1>
     <style scoped>
         body {
             background-image: url(background.jpg);
@@ -20,10 +20,10 @@
 
         .gridContainerContingency {
             display: grid;
-            grid-template-columns: 80px 80px 80px 80px 80px 80px;
+            grid-template-columns: 80px 80px 80px 80px 80px;
             background-color: rgb(35, 124, 212);
             padding: 10px;
-            width: 480px;
+            width: 400px;
             position: relative;
         }
 
@@ -33,6 +33,7 @@
                 'input graph'
                 'contingencyGridTable freqRelativeFreqTable'
                 'contingencyDataTable contingencyResultTable'
+                '. expectedValues'
                 'analyzeButton analyzeButton';
             grid-gap: 20px;
         }
@@ -46,6 +47,7 @@
                     'input graph'
                     'contingencyGridTable freqRelativeFreqTable'
                     'contingencyDataTable contingencyResultTable'
+                    '. expectedValues'
                     'analyzeButton analyzeButton'
                     / minmax(15em, 40%) minmax(30em, 60%);
                 grid-gap: 20px;
@@ -65,6 +67,10 @@
 
         .contingencyDataTable {
             grid-area: contingencyDataTable
+        }
+
+        .expectedValues {
+            grid-area: expectedValues
         }
 
         .freqRelativeFreqTable {
@@ -130,15 +136,15 @@
             <p style="color:black;"> <strong>Contingency Table For Selected Size </strong> </p>
             <div class="contingencyGridTableActual">
                 <div class="grid-item"></div>
+                <div class="grid-item">Categorical Data 1</div>
+                <div class="grid-item">Categorical Data 2</div>
+                <div class="grid-item">Group 1</div>
                 <div class="grid-item"></div>
                 <div class="grid-item"></div>
+                <div class="grid-item">Group 2</div>
                 <div class="grid-item"></div>
                 <div class="grid-item"></div>
-                <div class="grid-item"></div>
-                <div class="grid-item"></div>
-                <div class="grid-item"></div>
-                <div class="grid-item"></div>
-                <div class="grid-item"></div>
+                <div class="grid-item">Group 3</div>
                 <div class="grid-item"></div>
                 <div class="grid-item"></div>
             </div>
@@ -148,71 +154,77 @@
             <p style="color:black;"> <strong> Enter Data Below </strong></p>
             <div class="contingencyGridTableActual">
                 <div class="grid-item">
-                    <form>
+                    <!-- <form>
                         <input name="rows" type="number" size="5" v-model="enterData">
+                    </form> -->
+                </div>
+                <div class="grid-item">
+                    <form>
+                        <input name="rows" type="text" size="20" v-model="Category1">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="number" size="5" v-model="enterData">
+                        <input name="rows" type="text" size="20" v-model="Category2">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="number" size="5" v-model="enterData">
+                        <input name="rows" type="text" size="20" v-model="Group1">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="number" size="5" v-model="enterData">
+                        <input name="rows" type="number" size="5" v-model="var1">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="number" size="5" v-model="enterData">
+                        <input name="rows" type="number" size="5" v-model="var2">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="number" size="5" v-model="enterData">
+                        <input name="rows" type="text" size="20" v-model="Group2">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="number" size="5" v-model="enterData">
+                        <input name="rows" type="number" size="5" v-model="var3">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="number" size="5" v-model="enterData">
+                        <input name="rows" type="number" size="5" v-model="var4">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="number" size="5" v-model="enterData">
+                        <input name="rows" type="text" size="20" v-model="Group3">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="number" size="5" v-model="enterData">
+                        <input name="rows" type="number" size="5" v-model="var5">
                     </form>
                 </div>
                 <div class="grid-item">
                     <form>
-                        <input name="rows" type="number" size="5" v-model="enterData">
+                        <input name="rows" type="number" size="5" v-model="var6">
                     </form>
                 </div>
-                <div class="grid-item">
-                    <form>
-                        <input name="rows" type="number" size="5" v-model="enterData">
-                    </form>
-                </div>
+                <button @click="add">ANALYZE!</button>
+
+                <!-- <div ref="plot" style="width:600px;height:250px;"></div> -->
+                <!-- <div>{{ Category1 }}, {{ Category2 }}, {{ Group1 }}, {{ var1 }}, {{ var2 }}, {{ Group2 }}, {{ var3 }},
+                    {{ var4 }}, {{ Group3 }}, {{ var5 }}, {{ var6 }}</div> -->
+
             </div>
 
         </div>
         <div class="analyzeButton grid-items">
             <div></div>
-            <button id="alert" @click="this.myAlert">ANALYZE!</button>
+            <button id="alert" @click="add">ANALYZE!</button>
             <div></div>
             <div></div>
             <div></div>
@@ -250,7 +262,9 @@
         </div>
         <div class="graph grid-items">
             <p style="color:black;"> <strong> Graphical Representation </strong></p>
-            <img src="https://www.mathsisfun.com/data/images/bar-chart-example.svg" alt="Bar Graph">
+            <!-- <img src="https://www.mathsisfun.com/data/images/bar-chart-example.svg" alt="Bar Graph"> -->
+            <div ref="plot" style="width:400px;height:270px;"></div>
+
         </div>
 
 
@@ -258,53 +272,143 @@
             <p style="color:black;"> <strong> The Contingency Table</strong> </p>
             <div class="gridContainerContingency">
                 <div class="grid-item"></div>
-                <div class="grid-item">A</div>
-                <div class="grid-item">B</div>
-                <div class="grid-item">C</div>
-                <div class="grid-item">D</div>
+                <div class="grid-item">Left</div>
+                <div class="grid-item">Right</div>
+                <div class="grid-item">Both</div>
                 <div class="grid-item">Total</div>
                 <div class="grid-item">Male</div>
-                <div class="grid-item">2</div>
-                <div class="grid-item">4</div>
-                <div class="grid-item">3</div>
-                <div class="grid-item">1</div>
-                <div class="grid-item">10</div>
-                <div class="grid-item">Female</div>
-                <div class="grid-item">2</div>
-                <div class="grid-item">8</div>
-                <div class="grid-item">7</div>
-                <div class="grid-item">1</div>
-                <div class="grid-item">18</div>
-                <div class="grid-item">Total</div>
-                <div class="grid-item">4</div>
+                <div class="grid-item">5</div>
                 <div class="grid-item">12</div>
+                <div class="grid-item">6</div>
+                <div class="grid-item">23</div>
+                <div class="grid-item">Female</div>
                 <div class="grid-item">10</div>
-                <div class="grid-item">2</div>
-                <div class="grid-item">28</div>
+                <div class="grid-item">3</div>
+                <div class="grid-item">8</div>
+                <div class="grid-item">21</div>
+                <div class="grid-item">Total</div>
+                <div class="grid-item">15</div>
+                <div class="grid-item">15</div>
+                <div class="grid-item">14</div>
+                <div class="grid-item">44</div>
+
 
             </div>
         </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script>
-        new Vue({
-            el: "#app",
-            methods: {
-                myAlert() {
-                    window.alert('Analyzing the data! This might take a couple of seconds!');
-                }
-            },
-            data: {
-                enterData: 5,
-            },
-            watch: {
-                enterData(val) {
-                    if (val > 10000) { this.enterData = 10000; }
-                    else { this.enterData = Math.abs(val); }
-                }
-            }
-        });
-    </script>
+        <div class="expectedValues grid-items">
+            <p style="color:white;"> <strong> Expected Value Table</strong> </p>
+            <div class="gridContainerContingency">
+                <div class="grid-item"></div>
+                <div class="grid-item">Left</div>
+                <div class="grid-item">Right</div>
+                <div class="grid-item">Both</div>
+                <div class="grid-item"></div>
+                <div class="grid-item">Male</div>
+                <div class="grid-item">7.84</div>
+                <div class="grid-item">7.84</div>
+                <div class="grid-item">7.31</div>
+                <div class="grid-item"></div>
+                <div class="grid-item">Female</div>
+                <div class="grid-item">7.15</div>
+                <div class="grid-item">7.15</div>
+                <div class="grid-item">6.68</div>
+                <div class="grid-item"></div>
+            </div>
+            <br><br>
+
+            <!-- jStat.chisquare.cdf(expectedValue, 2); -->
+
+            Expected value is 2.34
+
+            p-value = 0.82
+            <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+            <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+            <script>
+                new Vue({
+                    el: "#app",
+
+                    data: {
+                        Category1: "Male",
+                        Category2: "Female",
+                        Group1: "Left",
+                        Group2: "Right",
+                        Group3: "Both",
+                        var1: 5,
+                        var2: 10,
+                        var3: 12,
+                        var4: 3,
+                        var5: 6,
+                        var6: 8,
+                        category1: [
+                            {
+                                x: [this.Group1, this.Group2, this.Group3],
+                                y: [this.var1, this.var3, this.var5],
+                                name: this.Category1,
+                                type: 'bar'
+                            },
+                            {
+                                x: [this.Group1, this.Group2, this.Group3],
+                                y: [this.var2, this.var4, this.var6],
+                                name: this.Category2,
+                                type: 'bar'
+                            }
+
+                        ]
+                    },
+                    mounted() {
+
+                        Plotly.plot(this.$refs.plot, this.category1, {
+                            barmode: 'stack'
+                        });
+                    },
+                    methods: {
+                        myAlert() {
+                            window.alert('Analyzing the data! This might take a couple of seconds!');
+                        },
+                        add() {
+                            // this.data[0].Category1.push(this.Category1);
+                            // this.data[0].Category2.push(this.Category2);
+                            // this.data[0].Group1.push(this.Group1);
+                            // this.data[0].var1.push(this.var1);
+                            // this.data[0].var2.push(this.var2);
+                            // this.data[0].Group1.push(this.Group2);
+                            // this.data[0].var2.push(this.var3);
+                            // this.data[0].var2.push(this.var4);
+                            // this.data[0].var2.push(this.Group3);
+                            // this.data[0].var2.push(this.var5);
+                            // this.data[0].var2.push(this.var6);
+                            // Plotly.update(this.$refs.plot, this.data);
+                            // Plotly.redraw(this.$refs.plot);
+                        }
+                    },
+                    watch: {
+                        var1(val) {
+                            if (val > 10000) { this.var1 = 10000; }
+                            else { this.var1 = Math.abs(val); }
+                        },
+                        var2(val) {
+                            if (val > 10000) { this.var2 = 10000; }
+                            else { this.var2 = Math.abs(val); }
+                        },
+                        var3(val) {
+                            if (val > 10000) { this.var3 = 10000; }
+                            else { this.var3 = Math.abs(val); }
+                        },
+                        var4(val) {
+                            if (val > 10000) { this.var4 = 10000; }
+                            else { this.var4 = Math.abs(val); }
+                        },
+                        var5(val) {
+                            if (val > 10000) { this.var5 = 10000; }
+                            else { this.var5 = Math.abs(val); }
+                        },
+                        var6(val) {
+                            if (val > 10000) { this.var6 = 10000; }
+                            else { this.var6 = Math.abs(val); }
+                        }
+                    }
+                });
+            </script>
 
 </body>
 
