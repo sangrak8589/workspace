@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Stat class</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+  <!-- <script type="text/javascript" src="canvasjs.min.js"></script> -->
   <style>
     h1 {
       background: url(./images/confidenceInterval.jpg) -80px -80px;
@@ -131,8 +133,10 @@
         value
         of a parameter
         lies within it.<br></p>
-      <p style="font-size:22px;" v-if="done"> means is {{mean}} <br>
-        size is {{size}} <br> standard deviation is {{ deviation}} <br> confidence level is {{confidence}}
+      <p style="font-size:22px;" v-if="done">
+        generated sample is {{normalValues}} <br>
+        sample means is {{samepleMean}} <br>
+        size is {{size}} <br> sample standard deviation is {{ sampleDeviation}} <br> confidence level is {{confidence}}
         confidence interval is {{left}} to {{right}} <br></p>
     </div>
 
@@ -140,10 +144,12 @@
     <div class="form" id="alert">
 
       <form>
-        <d>Sample Mean:</d> <br><input type="text" v-model="mean" name="Sample Mean" value=""><br>
-        <d>Sample Size:</d> <br><input type="text" v-model="size" name="Sample Size" value=""><br>
-        <d>Standard Deviation:</d> <br><input type="text" v-model="deviation" name="Standard Deviation" value=""><br>
-        <!-- <d>Confidence Level: </d><br><input type="text" v-model="confidence" name="Confidence Level" value=""><br> -->
+        Population Mean:</d> <br><input type="text" v-model="mean" name="Sample Mean" value=""><br>
+        Sample Size:</d> <br><input type="text" v-model="size" name="Sample Size" value=""><br>
+        Population Standard Deviation:</d> <br><input type="text" v-model="deviation" name="Standard Deviation"
+          value=""><br>
+        Times to Repeat:</d> <br><input type="text" v-model="repeat" name="repeat intervals" value=""><br>
+        <!-- Confidence Level: </d><br><input type="text" v-model="confidence" name="Confidence Level" value=""><br> -->
         <select name="Confidence Level" v-model="confidence">
           <option value=0.80>80%</option>
           <option value=0.90>90%</option>
@@ -155,47 +161,89 @@
     </div>
 
 
-
     <div id="app" class="graph">
+      <canvas ref="plot">
+
+      </canvas>
 
     </div>
 
 
   </div>
   </div>
+
+  <!-- <script src="./Chart.bundle.js"></script> -->
+  <script src="//cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.5/chartjs-plugin-annotation.js"></script>
   <script>
 
     new Vue({
       el: "#alert",
-      methods: {
-        // calculate(mean, size, deviation, confidence){
-        //   return(mean + ())
-        // }
 
-
-      },
       data: {
+        repeat: 5,
         mean: 1.5,
-        size: 60,
+        size: 10,
         deviation: 5,
         confidence: 0.95,
         seen: false,
         done: false,
+        samepleMean: 0,
+        sampleDeviation: 0,
         x: 0,
         y: 0,
         left: 0,
         right: 0,
+        normalValues: [],
+        intervals: [{}]
       },
       mounted() {
 
 
       },
       methods: {
+
+        setSampleMeanAndDeviation() {
+          // var sum = 0;
+          // for (var i = 0; i < this.normalValues.length; i++) {
+          //   sum += this.normalValues[i];
+          // }
+          this.samepleMean = jStat.mean(this.normalValues);
+
+          // console.log(this.samepleMean);
+          this.sampleDeviation = jStat.stdev(this.normalValues, true);
+          //console.log(this.sampleDeviation);
+        },
+
+        generateNormalValues() {
+          console.log("mean is               " + this.mean);
+
+          for (var i = 0; i < this.size; i++) {
+            this.normalValues.push(parseFloat(jStat.normal.sample(this.mean, this.deviation)));
+          }
+          // console.log(this.normalValues);
+
+
+        },
+
         onSubmit() {
-          this.done = true;
-          this.confidenceInterval();
-          this.add();
+          this.intervals = [{}];
+          for (var i = 0; i < this.repeat; i++) {
+
+
+            this.normalValues = [];
+
+            this.done = true;
+            this.generateNormalValues();
+            this.setSampleMeanAndDeviation();
+            this.confidenceInterval();
+          }
+          // console.log(this.intervals[1].left);
+          this.graph();
+          //   this.add();
         },
         standardError() {
           return (Math.sqrt((this.deviation * this.deviation) / this.size)).toFixed(2)
@@ -211,89 +259,131 @@
           return (table[this.confidence].z1 + table[this.confidence].z2);
 
         },
-        async confidenceInterval() {
 
-          const temp = await this.findZ();
+        confidenceInterval() {
+          var t;
+          console.log(this.size);
+          // console.log(this.confidence);
+          var temp = parseFloat(this.confidence) + parseFloat(((1 - this.confidence) / 2));
           console.log(temp);
-          console.log(this.standardError());
-          this.left = this.mean - (temp * this.standardError());
-          this.right = this.mean + (temp * this.standardError());
-          console.log(this.left);
-          console.log(this.right);
-          console.log(temp * this.standardError());
-
+          t = jStat.studentt.inv(temp, this.size - 1);
+          console.log(t);
+          this.left = this.samepleMean - (t * (this.sampleDeviation / Math.sqrt(this.size)));
+          this.right = this.samepleMean + (t * (this.sampleDeviation / Math.sqrt(this.size)));
+          //console.log(this.left);
+          // console.log(this.right);
+          this.intervals.push({ left: this.left.toFixed(2), right: this.right.toFixed(2) });
         },
 
 
-        add() {
 
-          var trace1 = {
-            x: [],
-            y: [],
-            type: 'scatter'
+
+        graph() {
+          // console.log(this.repeat);
+          const data = [];
+          const lines = [
+            {
+              type: "line",
+              mode: "vertical",
+              scaleID: "x-axis-1",
+              value: this.mean,
+              borderColor: "red",
+              label: {
+                content: "Population Mean",
+                enabled: true,
+                position: "top"
+              }
+            }
+
+          ]
+          var j = 1;
+          //console.log(this.intervals.length);
+          var backColor;
+          for (var i = 0; i < this.repeat * 3; i += 3) {
+            if (this.intervals[j].left > this.mean || this.intervals[j].right < this.mean)
+              backColor = 'red'
+            else
+              backColor = 'green'
+            lines.push(
+              {
+                type: 'box',
+
+                // optional drawTime to control layering, overrides global drawTime setting
+                drawTime: 'beforeDatasetsDraw',
+
+                // optional annotation ID (must be unique)
+                //  id: 'a-box-1',
+
+                // ID of the X scale to bind onto
+                xScaleID: 'x-axis-1',
+
+                // ID of the Y scale to bind onto
+                yScaleID: 'y-axis-1',
+
+                // Left edge of the box. in units along the x axis
+                xMin: this.intervals[j].left,
+
+                // Right edge of the box
+                xMax: this.intervals[j].right,
+
+                // Top edge of the box in units along the y axis
+                yMax: i + 1,
+
+                // Bottom edge of the box
+                yMin: i,
+
+                // Stroke color
+                //  borderColor: 'red',
+
+                // Stroke width
+                borderWidth: 2,
+
+                // Fill color
+
+                backgroundColor: backColor,
+
+
+              }
+            );
+            //console.log(j);
+            j++;
+          }
+          //console.log(lines);
+          let ctx = this.$refs.plot;
+          var scatterChartData = {
+            // datasets: [{
+            //   data: [
+            //     { x:0, y:0 },
+            //     { x:20, y:20 }
+            //   ]
+            // }]
           };
 
-//           var layout = {
-//   title: 'Confidence Interval',
-//   xaxis: {
-//     range: [-10, 10]
-//   },
-//   yaxis: {
-//     range: [0, 0.5]
-//   },
-//   width: 500,
-//   height: 500,
-//   shapes: [
+          window.myScatter = Chart.Scatter(ctx, {
+            data: scatterChartData,
+            options: {
+              scales: {
+                xAxes: [{
+                }],
+                yAxes: [{
+                }]
+              },
+              annotation: {
 
-//     //line vertical
+                annotations: lines,
+                // maintainAspectRatio: false
 
-//     {
-//       type: 'line',
-//       x0: this.left,
-//       y0: 0,
-//       x1: this.left,
-//       y1: 0.1,
-//       line: {
-//         color: 'rgb(55, 128, 191)',
-//         width: 3
-//       }
-//     },
-
-//     {
-//       type: 'line',
-//       x0: this.right,
-//       y0: 0,
-//       x1: this.right,
-//       y1: 0.1,
-//       line: {
-//         color: 'rgb(55, 128, 191)',
-//         width: 3
-//       }
-//     },
-
- 
-//   ]
-// };
+              }
+            }
 
 
-          var i, j;
-          for(i = -10; i < 10; i++){
-            trace1.x.push(i);
-            trace1.y.push(
-              (1/(this.deviation * Math.sqrt(6.28)))
-              *Math.pow(2.718,
-              -(Math.pow(i - this.mean,2)/(2*Math.pow(this.deviation,2)))))
+
           }
-            
 
-          var data = [trace1];
-          console.log(trace1.x);
-          console.log(trace1.y);
-
-          Plotly.newPlot('app', data);
-
+          );
         }
       }
+
     });
   </script>
 
