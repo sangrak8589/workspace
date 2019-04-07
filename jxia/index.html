@@ -48,16 +48,18 @@
 
     .grid-container {
       display: grid;
+      width: 100vw;
+      height: 100vh;
       grid-template-rows: 1fr 8fr;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 4fr;
       grid-template-areas:
         'header header'
         'form graph';
 
       grid-gap: 10px;
-      max-width: 100%;
-      max-height: 90vh;
-      /* overflow: hidden; */
+      /* max-width: 100%;
+      max-height: 90vh; */
+      overflow: hidden;
 
     }
 
@@ -82,11 +84,10 @@
       /* background-image: url('./images/background1.jpeg'); */
       height: 100%;
       width: 100%;
-      background-position: center;
-      background-size: cover;
-      background-repeat: no-repeat;
+ 
       margin: auto;
       padding: 0;
+      /* overflow: hidden; */
     }
 
 
@@ -98,18 +99,31 @@
     }
 
     .form {
+      
       display: flex;
       grid-area: form;
-      justify-content: center;
-      align-items: center;
+      padding: 20px;
+      justify-content: left;
+      /* align-items: left; */
     }
 
     .graph {
       display: flex;
       grid-area: graph;
+      grid-template-rows: 9fr 1fr;
+      grid-template-areas:
+          'pic'
+          'counter';
       justify-content: center;
       justify-items: center;
 
+    }
+    .pic{
+     
+      grid-area:pic;
+    }
+    .counter{
+      grid-area: counter;
     }
   </style>
 </head>
@@ -137,11 +151,12 @@
         generated sample is {{normalValues}} <br>
         sample means is {{samepleMean}} <br>
         size is {{size}} <br> sample standard deviation is {{ sampleDeviation}} <br> confidence level is {{confidence}}
-        confidence interval is {{left}} to {{right}} <br></p>
+        confidence interval is {{left}} to {{right}} <br>
+      </p>
     </div>
 
 
-    <div class="form" id="alert">
+    <div class="form" >
 
       <form>
         Population Mean:</d> <br><input type="text" v-model="mean" name="Sample Mean" value=""><br>
@@ -161,10 +176,14 @@
     </div>
 
 
-    <div id="app" class="graph">
-      <canvas ref="plot">
+    <div class="graph">
+      <canvas ref="plot" class="pic">
 
       </canvas>
+      <div class = "counter"><p>
+        Number of Missed Intervals: {{countRed}}
+      </p></div>
+      
 
     </div>
 
@@ -185,7 +204,7 @@
 
       data: {
         repeat: 5,
-        mean: 1.5,
+        mean: 0,
         size: 10,
         deviation: 5,
         confidence: 0.95,
@@ -198,7 +217,8 @@
         left: 0,
         right: 0,
         normalValues: [],
-        intervals: [{}]
+        intervals: [{}],
+        countRed: 0
       },
       mounted() {
 
@@ -219,13 +239,10 @@
         },
 
         generateNormalValues() {
-          console.log("mean is               " + typeof this.mean);
-          console.log("std is " + typeof this.deviation);
+         // console.log("mean is               " + this.mean);
 
           for (var i = 0; i < this.size; i++) {
-            const rand = jStat.normal.sample(parseFloat(this.mean), parseFloat(this.deviation));
-            console.log(rand);
-            this.normalValues.push(parseFloat(rand));
+            this.normalValues.push(parseFloat(jStat.normal.sample(parseFloat(this.mean), parseFloat(this.deviation))));
           }
           // console.log(this.normalValues);
 
@@ -234,6 +251,7 @@
 
         onSubmit() {
           this.intervals = [{}];
+          this.countRed=0;
           for (var i = 0; i < this.repeat; i++) {
 
 
@@ -246,31 +264,19 @@
           }
           // console.log(this.intervals[1].left);
           this.graph();
+          
           //   this.add();
         },
-        standardError() {
-          return (Math.sqrt((this.deviation * this.deviation) / this.size)).toFixed(2)
-        },
-        async findZ() {
-          const resp = await fetch("./z-table.json");
-
-          const table = await resp.json();
-
-
-
-
-          return (table[this.confidence].z1 + table[this.confidence].z2);
-
-        },
-
+       
+       
         confidenceInterval() {
           var t;
-          console.log(this.size);
+         // console.log(this.size);
           // console.log(this.confidence);
           var temp = parseFloat(this.confidence) + parseFloat(((1 - this.confidence) / 2));
-          console.log(temp);
+        //  console.log(temp);
           t = jStat.studentt.inv(temp, this.size - 1);
-          console.log(t);
+         // console.log(t);
           this.left = this.samepleMean - (t * (this.sampleDeviation / Math.sqrt(this.size)));
           this.right = this.samepleMean + (t * (this.sampleDeviation / Math.sqrt(this.size)));
           //console.log(this.left);
@@ -302,9 +308,18 @@
           var j = 1;
           //console.log(this.intervals.length);
           var backColor;
+          var maxRight = 0;
+          var maxLeft = this.mean;
           for (var i = 0; i < this.repeat * 3; i += 3) {
+            if(this.intervals[j].right > maxRight)
+              maxRight = this.intervals[j].right;
+            if(this.intervals[j].left < maxLeft)
+              maxLeft = this.intervals[j].left;
+
+          //  console.log(typeof this.mean);
+            this.mean = parseFloat(this.mean);
             if (this.intervals[j].left > this.mean || this.intervals[j].right < this.mean)
-              backColor = 'red'
+             { backColor = 'red'; this.countRed++;}
             else
               backColor = 'green'
             lines.push(
@@ -354,27 +369,37 @@
           //console.log(lines);
           let ctx = this.$refs.plot;
           var scatterChartData = {
-            // datasets: [{
-            //   data: [
-            //     { x:0, y:0 },
-            //     { x:20, y:20 }
-            //   ]
-            // }]
+            datasets: [{
+              data: [
+                { x:this.mean, y:0 },
+                { x:maxLeft - this.deviation, y:0 },
+                { x:maxRight + this.deviation, y:0 }
+              ]
+            }]
           };
-
+         
           window.myScatter = Chart.Scatter(ctx, {
+            
             data: scatterChartData,
             options: {
               scales: {
                 xAxes: [{
+                  gridLines: {
+        display: false
+                  }
                 }],
                 yAxes: [{
+                  display: false,
+                  gridLines: {
+        display: false
+                  }
                 }]
               },
               annotation: {
 
                 annotations: lines,
-                // maintainAspectRatio: false
+                maintainAspectRatio: false,
+                responsive: true
 
               }
             }
