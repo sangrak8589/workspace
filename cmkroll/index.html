@@ -70,7 +70,7 @@
                 <div class="row">Confidence Level: <input type="number" size="2" v-model="confInt"> %</div>
                 <div class="row">Number of Iterations: <input type="number" size="2" v-model="numIt"></div>
                 <div class="row">
-                    <button id="alert" @click="this.myAlert">Enter</button>
+                    <button id="enter" @click="this.enter">Enter</button>
                 </div>
             </div>
         </div>
@@ -79,21 +79,23 @@
             <div class="grid-items">
                 <h4>Sample Statistics</h4>
                 <p>Bar chart, use your imagination</p>
-                <canvas ref="plot" width="200" height="200"></canvas>
+                <canvas ref="bar" width="200" height="200"></canvas>
             </div>
         </div>
 
         <div id="confidence-intervals">
             <div class="grid-items">
                 <h4>Confidence Intervals</h4>
-                <img src="https://stats.idre.ucla.edu/wp-content/uploads/2016/02/cidemocrw1.png" width="200">
+                <canvas ref="lines" width="200" height="200"></canvas>
             </div>
         </div>
 
     </div>
-
+    <script src="//cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.5/chartjs-plugin-annotation.js"></script>
     <script>
         new Vue({
             el: "#app",
@@ -103,32 +105,141 @@
                     "Mean"
                 ],
                 pageIdx: 0,
-                data: [{
-                    x: -10,
-                    y: 0
+                bardata: [{
+                    x: -10
                 }, {
-                    x: 0,
-                    y: 10
+                    x: 0
                 }, {
-                    x: 10,
-                    y: 5
-                }]
+                    x: 10
+                }],
+                lineData: {
+                    data: [
+                        {
+                            x: 5,
+                            y: 5
+                        }, {
+                            x: 5,
+                            y: 6
+                        }
+
+                    ]
+                }
+                ,
+                lineChart: {},
+                barChart: {},
+                isProportions: true,
+                popProp: 0.5,
+                sampleSize: 30,
+                confInt: 95,
+                numIt: 10,
+                popMean: 5,
+                popStDev: 0.5,
+                meanSampleSize: 30,
+                meanConfInt: 95,
+                meanNumIt: 10
             },
+
             methods: {
-                myAlert() {
-                    window.alert('view results!');
+                test() {
+                    var ctx = this.$refs.lines;
+                    new Chart(ctx, {
+                        type: "line",
+                        data: {
+                            labels: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
+                            datasets: [
+                                {
+                                    data: [12, 3, 2, 1, 8, 8, 2, 2, 3, 5, 7, 1]
+                                }
+                            ]
+                        },
+                        options: {
+                            annotation: {
+                                annotations: [
+                                    {
+                                        type: "line",
+                                        mode: "vertical",
+                                        scaleID: "x-axis-0",
+                                        value: "MAR",
+                                        borderColor: "red",
+                                        label: {
+                                            content: "TODAY",
+                                            enabled: true,
+                                            position: "top"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                    );
+                },
+                enter() {
+
+                    let sum = 0;
+                    for (let i = 0; i < this.sampleSize; i++) {
+                        const y = Math.random();
+
+                        if (y < this.popProp) {
+                            sum++;
+                        }
+                    }
+
+                    let sampleProp = sum / this.sampleSize;
+                    let zScore = jStat.normal.inv(1 - ((1 - (this.confInt / 100)) / 2), 0, 1);
+                    let lowerBound = sampleProp - zScore * Math.sqrt((sampleProp * (1 - sampleProp) / this.sampleSize))
+                    let upperBound = sampleProp + zScore * Math.sqrt((sampleProp * (1 - sampleProp) / this.sampleSize))
+
+                    window.alert(sampleProp);
+                    window.alert(zScore);
+                    window.alert(lowerBound);
+                    window.alert(upperBound);
                 },
                 renderGraph() {
-                    console.log("asdfghj");
-                    let ctx = this.$refs.plot;
-                    const chart = new Chart(ctx, {
-                        type: 'scatter',
+
+                    let ctx = this.$refs.lines;
+                    this.lineChart = new Chart(ctx, {
+                        type: "line",
                         data: {
-                            datasets: [{
-                                label: 'Scatter Dataset',
-                                data: this.data
-                            }]
+                            "datasets":
+                                [
+                                    this.lineData
+                                ]
                         },
+                        options: {
+                            responsive: true,
+                            elements: {
+                                line: {
+                                    tension: 0
+                                }
+                            },
+
+                            xAxes: [{
+                                display: true,
+                                ticks: {
+                                    min: 0,
+                                    stepSize: 5,
+                                    max: 100
+                                }
+                            }],
+                            yAxes: [{
+                                display: true,
+                                ticks: {
+                                    min: 0,
+                                    stepSize: 5,
+                                    max: 100
+                                }
+                            }]
+
+
+                        }
+                    });
+
+
+                    console.log("asdfghj");
+                    ctx = this.$refs.bar;
+                    this.barChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: this.bardata,
                         options: {
                             scales: {
                                 xAxes: [{
@@ -140,8 +251,41 @@
                     });
                 }
             },
+            watch: {
+                popProp(val) {
+                    if (val > 1) { this.popProp = 1; }
+                    else { this.popProp = Math.abs(val); }
+                },
+                sampleSize(val) {
+                    if (val < 1) { this.sampleSize = 1; }
+                    else { this.sampleSize = Math.round(val); }
+                },
+                confInt(val) {
+                    if (val > 99) { this.confInt = 99; }
+                    else { this.confInt = Math.abs(val); }
+                },
+                numIt(val) {
+                    this.numIt = Math.abs(val)
+                    if (val > 100) { this.numIt = 100; }
+                    else { this.numIt = Math.round(val); }
+                },
+                meanSampleSize(val) {
+                    if (val < 1) { this.meanSampleSize = 1; }
+                    else { this.meanSampleSize = Math.round(val); }
+                },
+                meanConfInt(val) {
+                    if (val > 99) { this.meanConfInt = 99; }
+                    else { this.meanConfInt = Math.abs(val); }
+                },
+                meanNumIt(val) {
+                    this.numIt = Math.abs(val)
+                    if (val > 10000) { this.meanNumIt = 10000; }
+                    else { this.meanNumIt = Math.round(val); }
+                }
+            },
             mounted() {
                 this.renderGraph();
+                this.test();
             }
         });
     </script>
