@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div ref="plot"></div>
+      <input
+        type="checkbox"
+        id="display-regression"
+        @click="displayRegression($event.target.checked)"
+      />
+      <label for="display-regression">Display Regression Line</label>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script>
+      new Vue({
+        el: "#app",
+        data: {
+          points: {
+            x: [1, 2, 3, 4],
+            y: [10, 15, 13, 17],
+            mode: "markers",
+            type: "scatter"
+          }
+        },
+        mounted() {
+          Plotly.newPlot(this.$refs.plot, [this.points]);
+        },
+        methods: {
+          calcRegression() {
+            return {
+              x: [1, 3],
+              y: [1, 15],
+              mode: "lines",
+              type: "scatter"
+            };
+          },
+          displayRegression(checked) {
+            const data = [this.points];
+            if (checked) data.push(this.calcRegression());
+            Plotly.newPlot(this.$refs.plot, data);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
