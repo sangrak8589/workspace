@@ -3,6 +3,7 @@
 
 <head>
     <h1 style="color:black; text-align: center" ;>Analyzing Data From Contingency Tables</h1>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style scoped>
         body {
             background-image: url(background.jpg);
@@ -29,6 +30,7 @@
 
         .grid-container {
             display: grid;
+            grid-template-columns: 1fr 1fr;
             grid-template-areas:
                 'input graph'
                 'contingencyGridTable freqRelativeFreqTable'
@@ -38,18 +40,22 @@
             grid-gap: 20px;
         }
 
-        @media screen and (min-width: 792px) {
-            .gridcontainer {
+        @media screen and (max-width: 400px) {
+            .grid-container {
                 padding: 10px;
-                min-height: 100%;
+                min-height: min-content;
                 display: grid;
-                grid-template:
-                    'input graph'
-                    'contingencyGridTable freqRelativeFreqTable'
-                    'contingencyDataTable contingencyResultTable'
-                    '. expectedValues'
-                    'analyzeButton analyzeButton'
-                    / minmax(15em, 40%) minmax(30em, 60%);
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    'input'
+                    'contingencyGridTable'
+                    'contingencyDataTable'
+                    '.'
+                    'analyzeButton'
+                    'graph'
+                    'freqRelativeFreqTable'
+                    'contingencyResultTable'
+                    'expectedValues';
                 grid-gap: 20px;
             }
         }
@@ -62,23 +68,23 @@
         }
 
         .contingencyGridTable {
-            grid-area: contingencyGridTable
+            grid-area: contingencyGridTable;
         }
 
         .contingencyDataTable {
-            grid-area: contingencyDataTable
+            grid-area: contingencyDataTable;
         }
 
         .expectedValues {
-            grid-area: expectedValues
+            grid-area: expectedValues;
         }
 
         .freqRelativeFreqTable {
-            grid-area: freqRelativeFreqTable
+            grid-area: freqRelativeFreqTable;
         }
 
         .contingencyResultTable {
-            grid-area: contingencyResultTable
+            grid-area: contingencyResultTable;
         }
 
         .contingencyGridTableActual {
@@ -224,7 +230,7 @@
         </div>
         <div class="analyzeButton grid-items">
             <div></div>
-            <button id="alert" @click="add">ANALYZE!</button>
+            <button id="alert" @click="this.myAlert">ANALYZE!</button>
             <div></div>
             <div></div>
             <div></div>
@@ -316,13 +322,16 @@
             </div>
             <br><br>
 
-            <!-- jStat.chisquare.cdf(expectedValue, 2); -->
+
 
             Expected value is 2.34
 
             p-value = 0.82
             <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
             <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+            <script src="//cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/vue"></script>
             <script>
                 new Vue({
                     el: "#app",
@@ -341,44 +350,53 @@
                         var6: 8,
                         category1: [
                             {
-                                x: [this.Group1, this.Group2, this.Group3],
-                                y: [this.var1, this.var3, this.var5],
-                                name: this.Category1,
+                                x: [],
+                                y: [],
+                                name: "Category1",
                                 type: 'bar'
                             },
                             {
-                                x: [this.Group1, this.Group2, this.Group3],
-                                y: [this.var2, this.var4, this.var6],
-                                name: this.Category2,
+                                x: [],
+                                y: [],
+                                name: "Category2",
                                 type: 'bar'
                             }
 
                         ]
                     },
                     mounted() {
-
-                        Plotly.plot(this.$refs.plot, this.category1, {
-                            barmode: 'stack'
-                        });
+                        console.log(this.category1);
+                        Plotly.plot(this.$refs.plot, [
+                            {
+                                x: ["Right Handed", "Left Handed", "Both"],
+                                y: [15, 15, 14],
+                                type: "bar"
+                            }
+                        ], {
+                                barmode: 'stack'
+                            });
                     },
                     methods: {
                         myAlert() {
                             window.alert('Analyzing the data! This might take a couple of seconds!');
                         },
                         add() {
-                            // this.data[0].Category1.push(this.Category1);
-                            // this.data[0].Category2.push(this.Category2);
-                            // this.data[0].Group1.push(this.Group1);
-                            // this.data[0].var1.push(this.var1);
-                            // this.data[0].var2.push(this.var2);
-                            // this.data[0].Group1.push(this.Group2);
-                            // this.data[0].var2.push(this.var3);
-                            // this.data[0].var2.push(this.var4);
-                            // this.data[0].var2.push(this.Group3);
-                            // this.data[0].var2.push(this.var5);
-                            // this.data[0].var2.push(this.var6);
-                            // Plotly.update(this.$refs.plot, this.data);
-                            // Plotly.redraw(this.$refs.plot);
+                            this.category1[0].x.push(this.Category1);
+                            this.data[0].Category2.push(this.Category2);
+                            this.data[0].Group1.push(this.Group1);
+                            this.data[0].var1.push(this.var1);
+                            this.data[0].var2.push(this.var2);
+                            this.data[0].Group1.push(this.Group2);
+                            this.data[0].var2.push(this.var3);
+                            this.data[0].var2.push(this.var4);
+                            this.data[0].var2.push(this.Group3);
+                            this.data[0].var2.push(this.var5);
+                            this.data[0].var2.push(this.var6);
+                            Plotly.update(this.$refs.plot, this.data);
+                            Plotly.redraw(this.$refs.plot);
+                        },
+                        chiSquare() {
+                            jStat.chisquare.cdf(this.expectedValue, ((this.rows - 1)(this.cols - 1)))
                         }
                     },
                     watch: {
