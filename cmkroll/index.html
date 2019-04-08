@@ -174,25 +174,25 @@
                     );
                 },
                 enter() {
-                    for (let j = 0; j < this.numIt; j++) {
-                        let sum = 0;
-                        for (let i = 0; i < this.sampleSize; i++) {
-                            const y = Math.random();
 
-                            if (y < this.popProp) {
-                                sum++;
-                            }
+                    let sum = 0;
+                    for (let i = 0; i < this.sampleSize; i++) {
+                        const y = Math.random();
+
+                        if (y < this.popProp) {
+                            sum++;
                         }
-
-                        let sampleProp = sum / this.sampleSize;
-                        let zScore = jStat.normal.inv(1 - ((1 - (this.confInt / 100)) / 2), 0, 1);
-                        let lowerBound = sampleProp - zScore * Math.sqrt((sampleProp * (1 - sampleProp) / this.sampleSize))
-                        let upperBound = sampleProp + zScore * Math.sqrt((sampleProp * (1 - sampleProp) / this.sampleSize))
-
-                        print(sampleProp)
-                        // window.alert(sampleProp);
-                        // window.alert(zScore);
                     }
+
+                    let sampleProp = sum / this.sampleSize;
+                    let zScore = jStat.normal.inv(1 - ((1 - (this.confInt / 100)) / 2), 0, 1);
+                    let lowerBound = sampleProp - zScore * Math.sqrt((sampleProp * (1 - sampleProp) / this.sampleSize))
+                    let upperBound = sampleProp + zScore * Math.sqrt((sampleProp * (1 - sampleProp) / this.sampleSize))
+
+                    window.alert(sampleProp);
+                    window.alert(zScore);
+                    window.alert(lowerBound);
+                    window.alert(upperBound);
                 },
                 renderGraph() {
 
@@ -279,7 +279,7 @@
                 },
                 meanNumIt(val) {
                     this.numIt = Math.abs(val)
-                    if (val > 100) { this.meanNumIt = 100; }
+                    if (val > 10000) { this.meanNumIt = 10000; }
                     else { this.meanNumIt = Math.round(val); }
                 }
             },
