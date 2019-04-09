@@ -87,7 +87,7 @@
             <div class="grid-items">
                 <h4>Confidence Intervals</h4>
                 <div>({{lowerBound}} , {{upperBound}})</div>
-                <canvas ref="lines" width="200" height="200"></canvas>
+                <canvas ref="cigraph" width="200" height="200"></canvas>
             </div>
         </div>
 
@@ -199,10 +199,11 @@
                     this.allConfInt = [{}];
                     for (var i = 0; i < this.numIt; i++) {
                         this.enter();
-                        this.allConfInt.push({ left: this.lowerBound, right: this.upperBound });
+                        this.allConfInt.push({ left: this.lowerBound, mid: this.sampleProp, right: this.upperBound });
                     }
+                    this.ciGraph();
                 },
-                confGraph() {
+                ciGraph() {
                     const data = [];
                     const lines = [
                         {
@@ -210,15 +211,70 @@
                             mode: "vertical",
                             scaleID: "x-axis-1",
                             value: this.popProp,
-                            borderColor: "black",
+                            borderColor: "red",
                             label: {
-                                content: "Population Mean",
+                                content: "Population Proportion",
                                 enabled: true,
                                 position: "top"
                             }
                         }
                     ]
+                    var j = 1;
+                    //console.log(this.intervals.length);
+                    var backColor;
+                    for (var i = 0; i < this.numIt * 3; i += 3) {
+                        if (this.allConfInt[j].left > this.popProp || this.allConfInt[j].right < this.popProp)
+                            backColor = 'red'
+                        else
+                            backColor = 'green'
+                        lines.push(
+                            {
+                                type: 'box',
+                                // optional drawTime to control layering, overrides global drawTime setting
+                                drawTime: 'beforeDatasetsDraw',
+                                // optional annotation ID (must be unique)
+                                //  id: 'a-box-1',
+                                // ID of the X scale to bind onto
+                                xScaleID: 'x-axis-1',
+                                // ID of the Y scale to bind onto
+                                yScaleID: 'y-axis-1',
+                                // Left edge of the box. in units along the x axis
+                                xMin: this.allConfInt[j].left,
+                                // Right edge of the box
+                                xMax: this.allConfInt[j].right,
+                                // Top edge of the box in units along the y axis
+                                yMax: i + 1,
+                                // Bottom edge of the box
+                                yMin: i,
+                                // Stroke color
+                                //  borderColor: 'red',
+                                // Stroke width
+                                borderWidth: 2,
+                                // Fill color
+                                backgroundColor: backColor,
+                            }
+                        );
+                        //console.log(j);
+                        j++;
+                    }
+                    let ctx = this.$refs.cigraph;
+                    window.myScatter = Chart.Scatter(ctx, {
+                        data: {},
+                        options: {
+                            scales: {
+                                xAxes: [{
+                                }],
+                                yAxes: [{
+                                }]
+                            },
+                            annotation: {
+                                annotations: lines,
+                            }
+                        }
+                    }
+                    );
                 },
+
                 renderGraph() {
 
                     let ctx = this.$refs.lines;
@@ -309,9 +365,8 @@
                 }
             },
             mounted() {
-                this.renderGraph();
+                // this.ciGraph();
                 this.test();
-                this.confGraph();
             }
         });
     </script>
