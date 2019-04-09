@@ -70,7 +70,7 @@
                 <div class="row">Confidence Level: <input type="number" size="2" v-model="confInt"> %</div>
                 <div class="row">Number of Iterations: <input type="number" size="2" v-model="numIt"></div>
                 <div class="row">
-                    <button id="enter" @click="this.enter">Enter</button>
+                    <button id="enter" @click="this.iterations">Enter</button>
                 </div>
             </div>
         </div>
@@ -86,6 +86,7 @@
         <div id="confidence-intervals">
             <div class="grid-items">
                 <h4>Confidence Intervals</h4>
+                <div>({{lowerBound}} , {{upperBound}})</div>
                 <canvas ref="lines" width="200" height="200"></canvas>
             </div>
         </div>
@@ -125,6 +126,7 @@
                     ]
                 }
                 ,
+                allConfInt: [{}],
                 lineChart: {},
                 barChart: {},
                 isProportions: true,
@@ -136,7 +138,11 @@
                 popStDev: 0.5,
                 meanSampleSize: 30,
                 meanConfInt: 95,
-                meanNumIt: 10
+                meanNumIt: 10,
+                sampleProp: 0.5,
+                zScore: 1.96,
+                lowerBound: 0.25,
+                upperBound: 0.75
             },
 
             methods: {
@@ -184,15 +190,34 @@
                         }
                     }
 
-                    let sampleProp = sum / this.sampleSize;
-                    let zScore = jStat.normal.inv(1 - ((1 - (this.confInt / 100)) / 2), 0, 1);
-                    let lowerBound = sampleProp - zScore * Math.sqrt((sampleProp * (1 - sampleProp) / this.sampleSize))
-                    let upperBound = sampleProp + zScore * Math.sqrt((sampleProp * (1 - sampleProp) / this.sampleSize))
-
-                    window.alert(sampleProp);
-                    window.alert(zScore);
-                    window.alert(lowerBound);
-                    window.alert(upperBound);
+                    this.sampleProp = sum / this.sampleSize;
+                    this.zScore = jStat.normal.inv(1 - ((1 - (this.confInt / 100)) / 2), 0, 1);
+                    this.lowerBound = this.sampleProp - this.zScore * Math.sqrt((this.sampleProp * (1 - this.sampleProp) / this.sampleSize))
+                    this.upperBound = this.sampleProp + this.zScore * Math.sqrt((this.sampleProp * (1 - this.sampleProp) / this.sampleSize))
+                },
+                iterations() {
+                    this.allConfInt = [{}];
+                    for (var i = 0; i < this.numIt; i++) {
+                        this.enter();
+                        this.allConfInt.push({ left: this.lowerBound, right: this.upperBound });
+                    }
+                },
+                confGraph() {
+                    const data = [];
+                    const lines = [
+                        {
+                            type: "line",
+                            mode: "vertical",
+                            scaleID: "x-axis-1",
+                            value: this.popProp,
+                            borderColor: "black",
+                            label: {
+                                content: "Population Mean",
+                                enabled: true,
+                                position: "top"
+                            }
+                        }
+                    ]
                 },
                 renderGraph() {
 
@@ -286,6 +311,7 @@
             mounted() {
                 this.renderGraph();
                 this.test();
+                this.confGraph();
             }
         });
     </script>
