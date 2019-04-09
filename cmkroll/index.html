@@ -146,39 +146,6 @@
             },
 
             methods: {
-                test() {
-                    var ctx = this.$refs.lines;
-                    new Chart(ctx, {
-                        type: "line",
-                        data: {
-                            labels: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
-                            datasets: [
-                                {
-                                    data: [12, 3, 2, 1, 8, 8, 2, 2, 3, 5, 7, 1]
-                                }
-                            ]
-                        },
-                        options: {
-                            annotation: {
-                                annotations: [
-                                    {
-                                        type: "line",
-                                        mode: "vertical",
-                                        scaleID: "x-axis-0",
-                                        value: "MAR",
-                                        borderColor: "red",
-                                        label: {
-                                            content: "TODAY",
-                                            enabled: true,
-                                            position: "top"
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                    );
-                },
                 enter() {
 
                     let sum = 0;
@@ -220,7 +187,6 @@
                         }
                     ]
                     var j = 1;
-                    //console.log(this.intervals.length);
                     var backColor;
                     for (var i = 0; i < this.numIt * 3; i += 3) {
                         if (this.allConfInt[j].left > this.popProp || this.allConfInt[j].right < this.popProp)
@@ -263,8 +229,17 @@
                         options: {
                             scales: {
                                 xAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                        max: 1
+                                    }
                                 }],
                                 yAxes: [{
+                                    display: false,
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+
                                 }]
                             },
                             annotation: {
@@ -275,62 +250,62 @@
                     );
                 },
 
-                renderGraph() {
+                // renderGraph() {
 
-                    let ctx = this.$refs.lines;
-                    this.lineChart = new Chart(ctx, {
-                        type: "line",
-                        data: {
-                            "datasets":
-                                [
-                                    this.lineData
-                                ]
-                        },
-                        options: {
-                            responsive: true,
-                            elements: {
-                                line: {
-                                    tension: 0
-                                }
-                            },
+                //     let ctx = this.$refs.lines;
+                //     this.lineChart = new Chart(ctx, {
+                //         type: "line",
+                //         data: {
+                //             "datasets":
+                //                 [
+                //                     this.lineData
+                //                 ]
+                //         },
+                //         options: {
+                //             responsive: true,
+                //             elements: {
+                //                 line: {
+                //                     tension: 0
+                //                 }
+                //             },
 
-                            xAxes: [{
-                                display: true,
-                                ticks: {
-                                    min: 0,
-                                    stepSize: 5,
-                                    max: 100
-                                }
-                            }],
-                            yAxes: [{
-                                display: true,
-                                ticks: {
-                                    min: 0,
-                                    stepSize: 5,
-                                    max: 100
-                                }
-                            }]
-
-
-                        }
-                    });
+                //             xAxes: [{
+                //                 display: true,
+                //                 ticks: {
+                //                     min: 0,
+                //                     stepSize: 5,
+                //                     max: 100
+                //                 }
+                //             }],
+                //             yAxes: [{
+                //                 display: true,
+                //                 ticks: {
+                //                     min: 0,
+                //                     stepSize: 5,
+                //                     max: 100
+                //                 }
+                //             }]
 
 
-                    console.log("asdfghj");
-                    ctx = this.$refs.bar;
-                    this.barChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: this.bardata,
-                        options: {
-                            scales: {
-                                xAxes: [{
-                                    type: 'linear',
-                                    position: 'bottom'
-                                }]
-                            }
-                        }
-                    });
-                }
+                //         }
+                //     });
+
+
+                //     console.log("asdfghj");
+                //     ctx = this.$refs.bar;
+                //     this.barChart = new Chart(ctx, {
+                //         type: 'bar',
+                //         data: this.bardata,
+                //         options: {
+                //             scales: {
+                //                 xAxes: [{
+                //                     type: 'linear',
+                //                     position: 'bottom'
+                //                 }]
+                //             }
+                //         }
+                //     });
+                // }
             },
             watch: {
                 popProp(val) {
@@ -366,7 +341,7 @@
             },
             mounted() {
                 // this.ciGraph();
-                this.test();
+
             }
         });
     </script>
