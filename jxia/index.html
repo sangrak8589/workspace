@@ -59,7 +59,7 @@
       grid-gap: 10px;
       /* max-width: 100%;
       max-height: 90vh; */
-      overflow: hidden;
+      /* overflow: hidden; */
 
     }
 
@@ -84,7 +84,7 @@
       /* background-image: url('./images/background1.jpeg'); */
       height: 100%;
       width: 100%;
- 
+
       margin: auto;
       padding: 0;
       /* overflow: hidden; */
@@ -99,31 +99,37 @@
     }
 
     .form {
-      
+
       display: flex;
       grid-area: form;
-      padding: 20px;
+      padding: 10vh;
       justify-content: left;
       /* align-items: left; */
     }
 
     .graph {
       display: flex;
+      flex-direction: column;
       grid-area: graph;
       grid-template-rows: 9fr 1fr;
       grid-template-areas:
-          'pic'
-          'counter';
+        'pic'
+        'counter';
       justify-content: center;
       justify-items: center;
 
     }
-    .pic{
-     
-      grid-area:pic;
+
+    .pic {
+      margin: auto;
+      grid-area: pic;
+      max-width: 70vh;
+      max-height: 70vh;
     }
-    .counter{
+
+    .counter {
       grid-area: counter;
+      text-align: center;
     }
   </style>
 </head>
@@ -156,7 +162,7 @@
     </div>
 
 
-    <div class="form" >
+    <div class="form">
 
       <form>
         Population Mean:</d> <br><input type="text" v-model="mean" name="Sample Mean" value=""><br>
@@ -177,13 +183,17 @@
 
 
     <div class="graph">
-      <canvas ref="plot" class="pic">
+      <div>
+        <canvas ref="plot" class="pic">
 
-      </canvas>
-      <div class = "counter"><p>
-        Number of Missed Intervals: {{countRed}}
-      </p></div>
-      
+        </canvas>
+      </div>
+      <div class="counter">
+        <p>
+          Number of Missed Intervals: {{countRed}}
+        </p>
+      </div>
+
 
     </div>
 
@@ -204,21 +214,22 @@
 
       data: {
         repeat: 5,
-        mean: 0,
+        mean: 0.0,
         size: 10,
-        deviation: 5,
+        deviation: 5.0,
         confidence: 0.95,
         seen: false,
         done: false,
-        samepleMean: 0,
-        sampleDeviation: 0,
+        samepleMean: 0.0,
+        sampleDeviation: 0.0,
         x: 0,
         y: 0,
         left: 0,
         right: 0,
         normalValues: [],
         intervals: [{}],
-        countRed: 0
+        countRed: 0,
+        chart: {}
       },
       mounted() {
 
@@ -239,7 +250,7 @@
         },
 
         generateNormalValues() {
-         // console.log("mean is               " + this.mean);
+          // console.log("mean is               " + this.mean);
 
           for (var i = 0; i < this.size; i++) {
             this.normalValues.push(parseFloat(jStat.normal.sample(parseFloat(this.mean), parseFloat(this.deviation))));
@@ -250,8 +261,11 @@
         },
 
         onSubmit() {
+
+
+
           this.intervals = [{}];
-          this.countRed=0;
+          this.countRed = 0;
           for (var i = 0; i < this.repeat; i++) {
 
 
@@ -264,24 +278,24 @@
           }
           // console.log(this.intervals[1].left);
           this.graph();
-          
+
           //   this.add();
         },
-       
-       
+
+
         confidenceInterval() {
           var t;
-         // console.log(this.size);
+          // console.log(this.size);
           // console.log(this.confidence);
           var temp = parseFloat(this.confidence) + parseFloat(((1 - this.confidence) / 2));
-        //  console.log(temp);
+          //  console.log(temp);
           t = jStat.studentt.inv(temp, this.size - 1);
-         // console.log(t);
+          // console.log(t);
           this.left = this.samepleMean - (t * (this.sampleDeviation / Math.sqrt(this.size)));
           this.right = this.samepleMean + (t * (this.sampleDeviation / Math.sqrt(this.size)));
           //console.log(this.left);
           // console.log(this.right);
-          this.intervals.push({ left: this.left.toFixed(2), right: this.right.toFixed(2) });
+          this.intervals.push({ left: parseFloat(this.left.toFixed(2)), right: parseFloat(this.right.toFixed(2)) });
         },
 
 
@@ -308,18 +322,20 @@
           var j = 1;
           //console.log(this.intervals.length);
           var backColor;
-          var maxRight = 0;
-          var maxLeft = this.mean;
+          // console.log(this.intervals);
+          this.deviation = parseFloat(this.deviation);
+          var maxRight = parseFloat(0.0);
+          var maxLeft = parseFloat(this.mean);
+          //  console.log(typeof this.intervals[j].left);
           for (var i = 0; i < this.repeat * 3; i += 3) {
-            if(this.intervals[j].right > maxRight)
+            if (this.intervals[j].right > maxRight)
               maxRight = this.intervals[j].right;
-            if(this.intervals[j].left < maxLeft)
+            if (this.intervals[j].left < maxLeft)
               maxLeft = this.intervals[j].left;
 
-          //  console.log(typeof this.mean);
+            // console.log(typeof this.mean + "     " + typeof maxLeft + "   " + typeof maxRight + "     " + typeof this.deviation);
             this.mean = parseFloat(this.mean);
-            if (this.intervals[j].left > this.mean || this.intervals[j].right < this.mean)
-             { backColor = 'red'; this.countRed++;}
+            if (this.intervals[j].left > this.mean || this.intervals[j].right < this.mean) { backColor = 'red'; this.countRed++; }
             else
               backColor = 'green'
             lines.push(
@@ -367,31 +383,33 @@
             j++;
           }
           //console.log(lines);
+          //  console.log(maxLeft);
+          //console.log(maxRight);
           let ctx = this.$refs.plot;
           var scatterChartData = {
             datasets: [{
               data: [
-                { x:this.mean, y:0 },
-                { x:maxLeft - this.deviation, y:0 },
-                { x:maxRight + this.deviation, y:0 }
+                { x: this.mean, y: 0 },
+                { x: parseFloat(maxLeft) - this.deviation, y: 0 },
+                { x: parseFloat(maxRight) + this.deviation, y: 0 }
               ]
             }]
           };
-         
-          window.myScatter = Chart.Scatter(ctx, {
-            
+
+          this.chart = Chart.Scatter(ctx, {
+
             data: scatterChartData,
             options: {
               scales: {
                 xAxes: [{
                   gridLines: {
-        display: false
+                    display: false
                   }
                 }],
                 yAxes: [{
                   display: false,
                   gridLines: {
-        display: false
+                    display: false
                   }
                 }]
               },
@@ -408,7 +426,10 @@
 
           }
 
+
           );
+
+
         }
       }
 
