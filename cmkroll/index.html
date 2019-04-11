@@ -18,8 +18,13 @@
                 min-height: 100%;
                 display: grid;
                 grid-template:
-                    'input confidence-intervals'minmax(200px, 400px) 'sample-statistics confidence-intervals'minmax(200px, 400px) /400px auto
+                    'input confidence-intervals''sample-statistics confidence-intervals'
             }
+        }
+
+        .size {
+            max-height: 70vh;
+            max-width: 70vh;
         }
 
         #input {
@@ -70,7 +75,7 @@
                 <div class="row">Confidence Level: <input type="number" size="2" v-model="confInt"> %</div>
                 <div class="row">Number of Iterations: <input type="number" size="2" v-model="numIt"></div>
                 <div class="row">
-                    <button id="enter" @click="this.enter">Enter</button>
+                    <button id="enter" @click="this.iterations">Enter</button>
                 </div>
             </div>
         </div>
@@ -86,7 +91,8 @@
         <div id="confidence-intervals">
             <div class="grid-items">
                 <h4>Confidence Intervals</h4>
-                <canvas ref="lines" width="200" height="200"></canvas>
+                <!-- <div>({{lowerBound}} , {{upperBound}})</div> -->
+                <canvas ref="cigraph" class="size"></canvas>
             </div>
         </div>
 
@@ -125,6 +131,7 @@
                     ]
                 }
                 ,
+                allConfInt: [{}],
                 lineChart: {},
                 barChart: {},
                 isProportions: true,
@@ -136,43 +143,14 @@
                 popStDev: 0.5,
                 meanSampleSize: 30,
                 meanConfInt: 95,
-                meanNumIt: 10
+                meanNumIt: 10,
+                sampleProp: 0.5,
+                zScore: 1.96,
+                lowerBound: 0.25,
+                upperBound: 0.75
             },
 
             methods: {
-                test() {
-                    var ctx = this.$refs.lines;
-                    new Chart(ctx, {
-                        type: "line",
-                        data: {
-                            labels: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
-                            datasets: [
-                                {
-                                    data: [12, 3, 2, 1, 8, 8, 2, 2, 3, 5, 7, 1]
-                                }
-                            ]
-                        },
-                        options: {
-                            annotation: {
-                                annotations: [
-                                    {
-                                        type: "line",
-                                        mode: "vertical",
-                                        scaleID: "x-axis-0",
-                                        value: "MAR",
-                                        borderColor: "red",
-                                        label: {
-                                            content: "TODAY",
-                                            enabled: true,
-                                            position: "top"
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                    );
-                },
                 enter() {
 
                     let sum = 0;
@@ -184,72 +162,157 @@
                         }
                     }
 
-                    let sampleProp = sum / this.sampleSize;
-                    let zScore = jStat.normal.inv(1 - ((1 - (this.confInt / 100)) / 2), 0, 1);
-                    let lowerBound = sampleProp - zScore * Math.sqrt((sampleProp * (1 - sampleProp) / this.sampleSize))
-                    let upperBound = sampleProp + zScore * Math.sqrt((sampleProp * (1 - sampleProp) / this.sampleSize))
-
-                    window.alert(sampleProp);
-                    window.alert(zScore);
-                    window.alert(lowerBound);
-                    window.alert(upperBound);
+                    this.sampleProp = sum / this.sampleSize;
+                    this.zScore = jStat.normal.inv(1 - ((1 - (this.confInt / 100)) / 2), 0, 1);
+                    this.lowerBound = this.sampleProp - this.zScore * Math.sqrt((this.sampleProp * (1 - this.sampleProp) / this.sampleSize))
+                    this.upperBound = this.sampleProp + this.zScore * Math.sqrt((this.sampleProp * (1 - this.sampleProp) / this.sampleSize))
                 },
-                renderGraph() {
-
-                    let ctx = this.$refs.lines;
-                    this.lineChart = new Chart(ctx, {
-                        type: "line",
-                        data: {
-                            "datasets":
-                                [
-                                    this.lineData
-                                ]
-                        },
-                        options: {
-                            responsive: true,
-                            elements: {
-                                line: {
-                                    tension: 0
-                                }
-                            },
-
-                            xAxes: [{
-                                display: true,
-                                ticks: {
-                                    min: 0,
-                                    stepSize: 5,
-                                    max: 100
-                                }
-                            }],
-                            yAxes: [{
-                                display: true,
-                                ticks: {
-                                    min: 0,
-                                    stepSize: 5,
-                                    max: 100
-                                }
-                            }]
-
-
-                        }
-                    });
-
-
-                    console.log("asdfghj");
-                    ctx = this.$refs.bar;
-                    this.barChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: this.bardata,
-                        options: {
-                            scales: {
-                                xAxes: [{
-                                    type: 'linear',
-                                    position: 'bottom'
-                                }]
+                iterations() {
+                    this.allConfInt = [{}];
+                    for (var i = 0; i < this.numIt; i++) {
+                        this.enter();
+                        this.allConfInt.push({ left: this.lowerBound, mid: this.sampleProp, right: this.upperBound });
+                    }
+                    this.ciGraph();
+                },
+                ciGraph() {
+                    const data = [];
+                    const lines = [
+                        {
+                            type: "line",
+                            mode: "vertical",
+                            scaleID: "x-axis-1",
+                            value: this.popProp,
+                            borderColor: "red",
+                            label: {
+                                content: "Population Proportion",
+                                enabled: true,
+                                position: "top"
                             }
                         }
-                    });
-                }
+                    ]
+                    var j = 1;
+                    var backColor;
+                    for (var i = 0; i < this.numIt * 3; i += 3) {
+                        if (this.allConfInt[j].left > this.popProp || this.allConfInt[j].right < this.popProp)
+                            backColor = 'red'
+                        else
+                            backColor = 'green'
+                        lines.push(
+                            {
+                                type: 'box',
+                                // optional drawTime to control layering, overrides global drawTime setting
+                                drawTime: 'beforeDatasetsDraw',
+                                // optional annotation ID (must be unique)
+                                //  id: 'a-box-1',
+                                // ID of the X scale to bind onto
+                                xScaleID: 'x-axis-1',
+                                // ID of the Y scale to bind onto
+                                yScaleID: 'y-axis-1',
+                                // Left edge of the box. in units along the x axis
+                                xMin: this.allConfInt[j].left,
+                                // Right edge of the box
+                                xMax: this.allConfInt[j].right,
+                                // Top edge of the box in units along the y axis
+                                yMax: i + 1,
+                                // Bottom edge of the box
+                                yMin: i,
+                                // Stroke color
+                                //  borderColor: 'red',
+                                // Stroke width
+                                borderWidth: 2,
+                                // Fill color
+                                backgroundColor: backColor,
+                            }
+                        );
+                        //console.log(j);
+                        j++;
+                    }
+                    let ctx = this.$refs.cigraph;
+                    window.myScatter = Chart.Scatter(ctx, {
+                        data: {},
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                xAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                        max: 1
+                                    }
+                                }],
+                                yAxes: [{
+                                    display: false,
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+
+                                }]
+                            },
+                            annotation: {
+                                annotations: lines,
+                            }
+                        }
+                    }
+                    );
+                },
+
+                // renderGraph() {
+
+                //     let ctx = this.$refs.lines;
+                //     this.lineChart = new Chart(ctx, {
+                //         type: "line",
+                //         data: {
+                //             "datasets":
+                //                 [
+                //                     this.lineData
+                //                 ]
+                //         },
+                //         options: {
+                //             responsive: true,
+                //             elements: {
+                //                 line: {
+                //                     tension: 0
+                //                 }
+                //             },
+
+                //             xAxes: [{
+                //                 display: true,
+                //                 ticks: {
+                //                     min: 0,
+                //                     stepSize: 5,
+                //                     max: 100
+                //                 }
+                //             }],
+                //             yAxes: [{
+                //                 display: true,
+                //                 ticks: {
+                //                     min: 0,
+                //                     stepSize: 5,
+                //                     max: 100
+                //                 }
+                //             }]
+
+
+                //         }
+                //     });
+
+
+                //     console.log("asdfghj");
+                //     ctx = this.$refs.bar;
+                //     this.barChart = new Chart(ctx, {
+                //         type: 'bar',
+                //         data: this.bardata,
+                //         options: {
+                //             scales: {
+                //                 xAxes: [{
+                //                     type: 'linear',
+                //                     position: 'bottom'
+                //                 }]
+                //             }
+                //         }
+                //     });
+                // }
             },
             watch: {
                 popProp(val) {
@@ -266,7 +329,7 @@
                 },
                 numIt(val) {
                     this.numIt = Math.abs(val)
-                    if (val > 100) { this.numIt = 100; }
+                    if (val > 10000) { this.numIt = 10000; }
                     else { this.numIt = Math.round(val); }
                 },
                 meanSampleSize(val) {
@@ -284,8 +347,8 @@
                 }
             },
             mounted() {
-                this.renderGraph();
-                this.test();
+                // this.ciGraph();
+
             }
         });
     </script>
