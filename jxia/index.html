@@ -147,12 +147,12 @@
     <div class="header">
       <h1>Confidence Interval</h1>
 
-      <button type="button" class="button" v-on:click="seen = !seen">What is confidence interval?</button>
-      <p style="font-size:22px; padding: 10px" v-if="seen">a range of values so defined that there is a specified
-        probability that the
-        value
-        of a parameter
-        lies within it.<br></p>
+      <button type="button" class="button" v-on:click="onWhat()">{{buttonText}}</button>
+      <p style="font-size:22px; padding: 10px" v-if="seen">An interval is a set of (real) numbers between two values. So, for example, (0, 1) is all of the real numbers x such that 0 < x < 1 .
+
+        If we have an unknown parameter, we may find an estimator for this parameter and use for the parameter. However, how reliable this estimate is we do not know. This is where confidence intervals come in. Instead of estimating the parameter, we say that there is a 95% (or some other percentage) chance that a given interval contains the parameter.
+        
+        For example, suppose we have an unknown parameter q. If the probability that the interval (a,b) contains q is 0.95, i.e. if P(a < q < b) = 0.95, then (a,b) is known as the 95% confidence interval for q.<br></p>
       <p style="font-size:22px;" v-if="done">
         generated sample is {{normalValues}} <br>
         sample means is {{samepleMean}} <br>
@@ -213,6 +213,7 @@
       el: "#alert",
 
       data: {
+        buttonText: "What is confidence interval?",
         repeat: 5,
         mean: 0.0,
         size: 10,
@@ -229,7 +230,8 @@
         normalValues: [],
         intervals: [{}],
         countRed: 0,
-        chart: {}
+        chart: {},
+        hidden: true
       },
       mounted() {
 
@@ -260,6 +262,15 @@
 
         },
 
+        onWhat(){
+          this.seen = !this.seen;
+          if(!this.seen)
+            this.buttonText = "What is confidence interval?";
+            else
+            this.buttonText = "I understand (Hide Definition)"
+
+        },
+
         onSubmit() {
 
 
@@ -271,7 +282,7 @@
 
             this.normalValues = [];
 
-            this.done = true;
+            
             this.generateNormalValues();
             this.setSampleMeanAndDeviation();
             this.confidenceInterval();
