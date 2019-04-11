@@ -30,6 +30,8 @@
             />
           </td>
         </tr>
+
+        <button @click="show">Show</button>
       </table>
     </div>
 
@@ -43,7 +45,12 @@
         },
         computed: {
           table() {
-            return new Array(this.rows).fill(new Array(this.cols).fill(""));
+            const _table = new Array(this.rows);
+            for (let row = 0; row < this.rows; row++) {
+              _table[row] = new Array(this.cols).fill("");
+            }
+
+            return _table;
           }
         },
         methods: {
@@ -51,6 +58,14 @@
             if (!(row === 0 || col === 0)) value = parseFloat(value);
             this.table[row][col] = value;
             alert(`${row}, ${col} = ${value}`);
+          },
+          show() {
+            for (const cols of this.table) {
+              for (const col of cols) {
+                console.log(col);
+              }
+            }
+            alert(this.table[2][3]);
           }
         }
       });
