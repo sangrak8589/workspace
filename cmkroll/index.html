@@ -18,8 +18,13 @@
                 min-height: 100%;
                 display: grid;
                 grid-template:
-                    'input confidence-intervals'minmax(200px, 400px) 'sample-statistics confidence-intervals'minmax(200px, 400px) /400px auto
+                    'input confidence-intervals''sample-statistics confidence-intervals'
             }
+        }
+
+        .size {
+            max-height: 70vh;
+            max-width: 70vh;
         }
 
         #input {
@@ -86,8 +91,8 @@
         <div id="confidence-intervals">
             <div class="grid-items">
                 <h4>Confidence Intervals</h4>
-                <div>({{lowerBound}} , {{upperBound}})</div>
-                <canvas ref="cigraph" width="200" height="200"></canvas>
+                <!-- <div>({{lowerBound}} , {{upperBound}})</div> -->
+                <canvas ref="cigraph" class="size"></canvas>
             </div>
         </div>
 
@@ -227,6 +232,8 @@
                     window.myScatter = Chart.Scatter(ctx, {
                         data: {},
                         options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
                             scales: {
                                 xAxes: [{
                                     ticks: {
@@ -235,7 +242,7 @@
                                     }
                                 }],
                                 yAxes: [{
-                                    //display: false,
+                                    display: false,
                                     ticks: {
                                         beginAtZero: true
                                     }
@@ -322,7 +329,7 @@
                 },
                 numIt(val) {
                     this.numIt = Math.abs(val)
-                    if (val > 100) { this.numIt = 100; }
+                    if (val > 10000) { this.numIt = 10000; }
                     else { this.numIt = Math.round(val); }
                 },
                 meanSampleSize(val) {
