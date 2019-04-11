@@ -26,6 +26,15 @@
 		#graph {
 			grid-area: "graph";
 		}
+
+		.column {
+
+			float: left;
+			width: 50%;
+			min-height: 50%;
+			padding: 10px;
+			box-sizing: content-box;
+		}
 	</style>
 	<h2 id="header">Normal Distribution Calculator</h2>
 </head>
@@ -35,88 +44,129 @@
 
 
 
-		<div id="user-input" style="background-color:lightgray">
+		<div id="user-input" style="background-color:lightgray">"
 			<div class="grid-container">
 				<div class="user input">
 					<h2>Parameters</h2>
 					<h4>Please input the sample mean, standard deviation and x. y is optional.</h4>
-					<div class="row">Mean= <input type="number" name="Mean" size="5"></div>
-					<div class="row">Standard Deviation= <input type="number" name="SD" size="5"></div>
+					<div class="row">Mean= <input type="number" name="Mean" size="5" v-model.number="Mean"></div>
+
+					<div class="row">Standard Deviation= <input type="number" name="SD" size="5" v-model.number="SD">
+					</div>
 					<div class="row"></div>
 				</div>
 				<div class="Probability input">
 					<h2>x,y input</h2>
 					<h4>Please select one option from below:</h4>
 					<div class="row">P(X>x)=
-						<button onclick="myFunction1()">Select</button>
+						<input v-model.number="x"></input>
 					</div>
-					<div class="row">P(x>X)=
-						<button onclick="myFunction2()">Select</button>
+					<div class="row">P(X&lt;x)=
+						<input v-model.number="x"></input>
 					</div>
-					<div class="row">P(x>X>y)=
-						<button onclick="myFunction3()">Select</button>
+					<div class="row">P(a&lt;X&lt;b)=
+						<input v-model.number="a"></input>
+						<input v-model.number="b"></input>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<div id="graph" style="background-color:gray;">
+		<div id="graph" style="background-color:rgba(167, 163, 163, 0.904);">
 			<h2>Results</h2>
-			<p>Graphs will go here</p>
+			<canvas ref="plot"></canvas>
+
+
 			<button onclick="myFunction()">Print</button>
-			<p id="x"></p>
-			<p id="x2"></p>
-			<p id="x3"></p>
-			<p id="y1"></p>
 
 
-			<img src="norm.jpeg" alt="Normal" width="300" height="300">
+
 		</div>
 	</div>
-
-
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script src="//cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
 	<script>
-		function myFunction() {
-			window.print();
-		}
+		new Vue({
+			el: "#app",
+			data: {
+				x: 0,
+				a: 0,
+				b: 0,
+				Mean: 0,
+				SD: 1,
+				mult: 4,
+			},
+			watch: {
+				SD(val) {
+					this.SD = Math.abs(val);
+					this.graph();
+				},
+				b(val) {
+					if (val <= this.a)
+						this.b = this.a + .01;
+					else this.b = val;
+				},
+				Mean() { this.graph(); }
 
-		function myFunction1() {
-			var x = prompt("x=", "x");
-			var Mean = jStat.normal.pdf("Mean", "SD");
-			if (x != null) {
-				document.getElementById("x").innerHTML =
-					"The probability that X is greater than " + x + " is ??math??" + Mean;
+			},
+			methods: {
+				graph() {
+					const data = [];
+					const lines = [
+						{
+							type: "line",
+							mode: "vertical",
+							scaleID: "x-axis-1",
+							value: this.mean,
+							borderColor: "red",
+							label: {
+								content: "Population Mean",
+								enabled: true,
+								position: "top"
+							}
+						}
+					]
+					const low = this.Mean - this.mult * this.SD;
+					const hi = this.Mean + this.mult * this.SD;
+					for (let x = low; x <= hi; x += .5) {
+						data.push({
+							x: x,
+							y: jStat.normal.pdf(x, this.Mean, this.SD)
+						});
+					}
+					let ctx = this.$refs.plot;
+					new Chart(ctx, {
+						type: "line",
+						data: {
+							datasets: [
+								{
+									label: "Normal Distribution",
+									data: data
+								}
+							]
+						},
+						options: {
+							scales: {
+								xAxes: [
+									{
+										type: "linear",
+										position: "bottom"
+									}
+								]
+							}
+						}
+					});
+				}
+			},
+			mounted() {
+				this.graph();
 			}
-		}
-
-		function myFunction2() {
-			var x = prompt("x=", "x");
-			if (x != null) {
-				document.getElementById("x").innerHTML =
-					"The probability that X is less than " + x + " is ??math??";
-			}
-		}
-
-		function myFunction3() {
-			var x = prompt("x=", "x");
-			var y = prompt("y=", "y");
-			if (x != null) {
-				document.getElementById("x", "y").innerHTML =
-					"The probability that X is greater than " + x + " and less than " + y + " is ??math??";
-			}
-		}
+		});
 	</script>
-</body>
-<style>
-	.column {
 
-		float: left;
-		width: 50%;
-		min-height: 50%;
-		padding: 10px;
-		box-sizing: content-box;
-	}
-</style>
+</body>
+
 
 </html>
 =======
