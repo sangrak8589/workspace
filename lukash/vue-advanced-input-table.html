@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <input type="number" v-model.number="rows" />
+      <input type="number" v-model.number="cols" />
+
+      <table>
+        <tr v-for="row, r in table" :key="r">
+          <td v-for="col, c in row" :key="c">
+            <input
+              v-if="r === 0 || c === 0"
+              type="text"
+              :value="col"
+              @input="onCellChange(r, c, $event.target.value)"
+              :placeholder="r === 0 && c === 0 ? '' : 'category'"
+              :readonly="r === 0 && c === 0"
+            />
+            <input
+              v-else
+              type="number"
+              :value="col"
+              @input="onCellChange(r, c, $event.target.value)"
+            />
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+      new Vue({
+        el: "#app",
+        data: {
+          rows: 0,
+          cols: 0
+        },
+        computed: {
+          table() {
+            return new Array(this.rows).fill(new Array(this.cols).fill(""));
+          }
+        },
+        methods: {
+          onCellChange(row, col, value) {
+            if (!(row === 0 || col === 0)) value = parseFloat(value);
+            this.table[row][col] = value;
+            alert(`${row}, ${col} = ${value}`);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
