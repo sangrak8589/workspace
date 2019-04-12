@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <h1 style="color:black; text-align: center" ;>Analyzing Data From Contingency Tables</h1>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <style scoped>
+        body {
+            background-image: url(background.jpg);
+            background-size: 100%;
+        }
+
+        .frequencyGridContainer {
+            display: grid;
+            grid-template-columns: 80px 80px 80px 80px;
+            background-color: rgb(35, 124, 212);
+            padding: 10px;
+            width: 320px;
+            position: relative;
+        }
+
+        .gridContainerContingency {
+            display: grid;
+            grid-template-columns: 80px 80px 80px 80px 80px;
+            background-color: rgb(35, 124, 212);
+            padding: 10px;
+            width: 400px;
+            position: relative;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-areas:
+                'input graph'
+                'contingencyGridTable freqRelativeFreqTable'
+                'contingencyDataTable contingencyResultTable'
+                '. expectedValues';
+            /* 'analyzeButton .'; */
+            grid-gap: 20px;
+        }
+
+        @media screen and (max-width: 400px) {
+            .grid-container {
+                padding: 10px;
+                min-height: min-content;
+                display: grid;
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    'input'
+                    'contingencyGridTable'
+                    'contingencyDataTable'
+                    '.'
+                    /* 'analyzeButton' */
+                    'graph'
+                    'freqRelativeFreqTable'
+                    'contingencyResultTable'
+                    'expectedValues';
+                grid-gap: 20px;
+            }
+        }
+
+        .analyzeButton {
+            grid-area: analyzeButton;
+            display: flex;
+            background-color: #f44336;
+            justify-content: space-around;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        .button {
+            background-color: #f44336;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        .button2 {
+            background-color: rgb(30, 27, 211);
+            width: 30%;
+            font-size: 10px;
+        }
+
+        .button span {
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+            transition: 0.5s;
+        }
+
+        .button span:after {
+            content: '\00bb';
+            position: absolute;
+            opacity: 0;
+            top: 0;
+            right: -20px;
+            transition: 0.5s;
+        }
+
+        .button:hover span {
+            padding-right: 25px;
+        }
+
+        .button:hover span:after {
+            opacity: 1;
+            right: 0;
+        }
+
+        .contingencyGridTable {
+            grid-area: contingencyGridTable;
+        }
+
+        .contingencyDataTable {
+            grid-area: contingencyDataTable;
+        }
+
+        .expectedValues {
+            grid-area: expectedValues;
+        }
+
+        .freqRelativeFreqTable {
+            grid-area: freqRelativeFreqTable;
+        }
+
+        .contingencyResultTable {
+            grid-area: contingencyResultTable;
+        }
+
+        .contingencyGridTableActual {
+            display: grid;
+            grid-template-columns: 150px 150px 150px;
+            background-color: rgb(35, 124, 212);
+            padding: 10px;
+            width: 450px;
+            position: relative;
+        }
+
+        .grid-item {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            font-size: 10px;
+            text-align: center;
+            position: relative;
+        }
+
+        .input {
+            color: black;
+            grid-area: input;
+        }
+
+        .graph {
+            width: 300px;
+            height: 300px;
+
+            grid-area: graph;
+        }
+
+        table,
+        tr,
+        td {
+            border: 3px solid black;
+            border-collapse: collapse;
+            padding: 5px;
+            background-color: rgb(35, 124, 212);
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" class="grid-container">
+        <form class="input grid-items">
+            <p style="color:black;"> <strong>Choose # of rows and cols (Max: 4 x 4 and Min: 2 x 2) </strong>
+            </p>
+
+            Rows: <br><br>
+            <input type="number" v-model.number="rows" />
+            <br><br>
+            Columns: <br><br>
+            <input type="number" v-model.number="cols" />
+            <br><br>
+        </form>
+
+        <div class="contingencyGridTable grid-items">
+            <p style="color:black;"> <strong>Contingency Table For Selected Size </strong> </p>
+            <button type="button" class="button button2" v-on:click="seen = !seen"><span>Why is the table one row and
+                    column
+                    size
+                    bigger?</span></button>
+            <p style="font-size:13px;" v-if="seen">Contingency Table is {{rows + 1}} x {{cols + 1}}
+                because cell (0,0) is
+                intentionally
+                supposed to be blank</p>
+
+            <br><br>
+            <table>
+                <tr v-for="row, r in table" :key="r">
+                    <td v-for="col, c in row" :key="c">
+                        <input v-if="r === 0 || c === 0" type="text" :value="col" style="width: 7em" readonly
+                            @input="onCellChange(r, c, $event.target.value)"
+                            :placeholder="r === 0 && c === 0 ? '' : 'category'" />
+                        <input v-else type="number" style="width: 7em" :value="col" readonly />
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="contingencyDataTable grid-items">
+            <p style="color:black;"> <strong> Enter Data Below </strong></p>
+            <table>
+                <tr v-for="row, r in table" :key="r">
+                    <td v-for="col, c in row" :key="c">
+                        <input v-if="r === 0 " type="text" :value="col" style="width: 7em"
+                            :placeholder="r === 0 && c === 0 ? '' : 'category'" :readonly="r === 0 && c === 0" />
+                        <input v-else-if="c === 0 " type="text" :value="col" style="width: 7em"
+                            :placeholder="(!(c===0)) ? '' : 'group'" />
+
+                        <input v-else type="number" style="width: 7em" :value="col" />
+                    </td>
+                </tr>
+            </table>
+            <br><br>
+            <button type="button" class="button" id="alert" @click="this.myAlert">ANALYZE!</button>
+        </div>
+
+        <div class="graph grid-items">
+            <p style="color:black;"> <strong> Graphical Representation </strong></p>
+
+            <div ref="plot" style="width:400px;height:270px;"></div>
+
+        </div>
+
+
+
+        <div class="freqRelativeFreqTable grid-items">
+            <p style="color:black;"> <strong> Frequency and Relative Frequency Table </strong></p>
+            <div class="frequencyGridContainer">
+                <div class="grid-item">Variable</div>
+                <div class="grid-item">Frequency</div>
+                <div class="grid-item">Relative Freq</div>
+                <div class="grid-item">%</div>
+                <div class="grid-item">A</div>
+                <div class="grid-item">4</div>
+                <div class="grid-item">0.14</div>
+                <div class="grid-item">14</div>
+                <div class="grid-item">B</div>
+                <div class="grid-item">12</div>
+                <div class="grid-item">0.43</div>
+                <div class="grid-item">43</div>
+                <div class="grid-item">C</div>
+                <div class="grid-item">10</div>
+                <div class="grid-item">0.36</div>
+                <div class="grid-item">36</div>
+                <div class="grid-item">D</div>
+                <div class="grid-item">2</div>
+                <div class="grid-item">0.07</div>
+                <div class="grid-item">7</div>
+            </div>
+
+            <br><br>
+        </div>
+        <!-- <div class="graph grid-items">
+            <p style="color:black;"> <strong> Graphical Representation </strong></p>
+            
+            <div ref="plot" style="width:400px;height:270px;"></div>
+
+        </div> -->
+
+
+        <div class="contingencyResultTable grid-items">
+            <p style="color:black;"> <strong> The Contingency Table</strong> </p>
+            <div class="gridContainerContingency">
+                <div class="grid-item"></div>
+                <div class="grid-item">Left</div>
+                <div class="grid-item">Right</div>
+                <div class="grid-item">Both</div>
+                <div class="grid-item">Total</div>
+                <div class="grid-item">Male</div>
+                <div class="grid-item">5</div>
+                <div class="grid-item">12</div>
+                <div class="grid-item">6</div>
+                <div class="grid-item">23</div>
+                <div class="grid-item">Female</div>
+                <div class="grid-item">10</div>
+                <div class="grid-item">3</div>
+                <div class="grid-item">8</div>
+                <div class="grid-item">21</div>
+                <div class="grid-item">Total</div>
+                <div class="grid-item">15</div>
+                <div class="grid-item">15</div>
+                <div class="grid-item">14</div>
+                <div class="grid-item">44</div>
+
+
+            </div>
+        </div>
+        <div class="expectedValues grid-items">
+            <p style="color:white;"> <strong> Expected Value Table</strong> </p>
+            <div class="gridContainerContingency">
+                <div class="grid-item"></div>
+                <div class="grid-item">Left</div>
+                <div class="grid-item">Right</div>
+                <div class="grid-item">Both</div>
+                <div class="grid-item"></div>
+                <div class="grid-item">Male</div>
+                <div class="grid-item">7.84</div>
+                <div class="grid-item">7.84</div>
+                <div class="grid-item">7.31</div>
+                <div class="grid-item"></div>
+                <div class="grid-item">Female</div>
+                <div class="grid-item">7.15</div>
+                <div class="grid-item">7.15</div>
+                <div class="grid-item">6.68</div>
+                <div class="grid-item"></div>
+            </div>
+
+            <button type="button" class="button" v-on:click="chiSquared()">Get chi-square</button>
+
+        </div>
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script src="//cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
+        <script>
+            new Vue({
+                el: "#app",
+                data: {
+                    rows: 2,
+                    cols: 2,
+                    seen: false,
+                    Category1: "Male",
+                    Category2: "Female",
+                    Group1: "Left",
+                    Group2: "Right",
+                    Group3: "Both",
+                    testStatistic: 7.2764,
+                    dof: 3
+                },
+                chiSquared() {
+                    document.write(jStat.chisquare.pdf(this.testStatistic, this.dof));
+                },
+                computed: {
+                    table() {
+                        const _table = new Array(this.rows);
+                        for (let row = 0; row < this.rows + 1; row++) {
+                            _table[row] = new Array(this.cols + 1).fill("");
+                        }
+                        return _table;
+                    }
+                },
+                mounted() {
+                    console.log(this.category1);
+                    Plotly.plot(this.$refs.plot, [
+                        {
+                            x: ["Right Handed", "Left Handed", "Both"],
+                            y: [15, 15, 14],
+                            type: "bar"
+                        }
+                    ], {
+                            barmode: 'stack'
+                        });
+                },
+                methods: {
+                    onCellChange(row, col, value) {
+                        if (!(row === 0 || col === 0)) value = parseFloat(value);
+                        this.table[row][col] = value;
+                        alert(`${row}, ${col} = ${value}`);
+                    },
+                    show() {
+                        for (const cols of this.table) {
+                            for (const col of cols) {
+                                console.log(col);
+                            }
+                        }
+                        alert(this.table[2][3]);
+                    },
+                    myAlert() {
+                        window.alert('Analyzing the data! This might take a couple of seconds!');
+                    }
+                },
+                watch: {
+                    rows(val) {
+                        if (val > 4) {
+                            this.rows = 4;
+                        }
+                        else if (val < 2) {
+                            this.rows = 2;
+                        }
+                        else { this.rows = Math.abs(val); }
+                    },
+                    cols(val) {
+                        if (val > 4) {
+                            this.cols = 4;
+                        }
+                        else if (val < 2) {
+                            this.cols = 2;
+                        }
+                        else { this.cols = Math.abs(val); }
+                    }
+                    // dataNumbers(val) {
+                    //     this.dataNumbers = Math.abs(val);
+                    // }
+                }
+            });
+        </script>
+
+</body>
+
+
+</html>
