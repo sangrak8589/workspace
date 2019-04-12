@@ -64,7 +64,7 @@
         .analyzeButton {
             grid-area: analyzeButton;
             display: flex;
-            background-color: #f44336;
+            background-color: #d1f436;
             justify-content: space-around;
             border: none;
             color: white;
@@ -76,7 +76,7 @@
         }
 
         .button {
-            background-color: #f44336;
+            background-color: #2fc710;
             border: none;
             color: white;
             padding: 15px 32px;
@@ -325,8 +325,8 @@
                 <div class="grid-item">6.68</div>
                 <div class="grid-item"></div>
             </div>
-
-            <button type="button" class="button" v-on:click="chiSquared()">Get chi-square</button>
+            <br>
+            <button type="button" class="button" v-on:click="chiSquared()"><span>Get chi-square</span></button>
 
         </div>
 
@@ -353,9 +353,7 @@
                     testStatistic: 7.2764,
                     dof: 3
                 },
-                chiSquared() {
-                    document.write(jStat.chisquare.pdf(this.testStatistic, this.dof));
-                },
+
                 computed: {
                     table() {
                         const _table = new Array(this.rows);
@@ -390,6 +388,9 @@
                             }
                         }
                         alert(this.table[2][3]);
+                    },
+                    chiSquared() {
+                        window.alert('The chi-squared p-value is: ' + (1 - jStat.chisquare.pdf(this.testStatistic, this.dof)));
                     },
                     myAlert() {
                         window.alert('Analyzing the data! This might take a couple of seconds!');
