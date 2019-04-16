@@ -32,6 +32,7 @@
         .grid-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto;
             grid-template-areas:
                 'input graph'
                 'contingencyGridTable freqRelativeFreqTable'
@@ -47,6 +48,7 @@
                 min-height: min-content;
                 display: grid;
                 grid-template-columns: 1fr;
+                grid-template-rows: auto;
                 grid-template-areas:
                     'input'
                     'contingencyGridTable'
@@ -161,13 +163,11 @@
         }
 
         .graph {
-            width: 300px;
-            height: 300px;
-
             grid-area: graph;
         }
 
         table,
+        th,
         tr,
         td {
             border: 3px solid black;
@@ -205,16 +205,7 @@
                 supposed to be blank</p>
 
             <br><br>
-            <table>
-                <tr v-for="row, r in table" :key="r">
-                    <td v-for="col, c in row" :key="c">
-                        <input v-if="r === 0 || c === 0" type="text" :value="col" style="width: 7em" readonly
-                            @input="onCellChange(r, c, $event.target.value)"
-                            :placeholder="r === 0 && c === 0 ? '' : 'category'" />
-                        <input v-else type="number" style="width: 7em" :value="col" readonly />
-                    </td>
-                </tr>
-            </table>
+
         </div>
 
         <div class="contingencyDataTable grid-items">
@@ -222,23 +213,28 @@
             <table>
                 <tr v-for="row, r in table" :key="r">
                     <td v-for="col, c in row" :key="c">
-                        <input v-if="r === 0 " type="text" :value="col" style="width: 7em"
-                            :placeholder="r === 0 && c === 0 ? '' : 'category'" :readonly="r === 0 && c === 0" />
-                        <input v-else-if="c === 0 " type="text" :value="col" style="width: 7em"
-                            :placeholder="(!(c===0)) ? '' : 'group'" />
+                        <input v-if="r === 0 && c === 0 " type="text" :value="col" style="width: 7em" readonly />
 
-                        <input v-else type="number" style="width: 7em" :value="col" />
+                        <input v-else-if="r === 0 " type="text" :value="col" style="width: 7em" placeholder="category"
+                            @input="onCellChange(r, c, $event.target.value)" />
+
+                        <input v-else-if="c === 0 " type="text" :value="col" style="width: 7em"
+                            @input="onCellChange(r, c, $event.target.value)" :placeholder="(!(c===0)) ? '' : 'group'" />
+
+                        <input v-else type="number" style="width: 7em" :value="col"
+                            @input="onCellChange(r, c, $event.target.value)" />
+
                     </td>
                 </tr>
             </table>
             <br><br>
-            <button type="button" class="button" id="alert" @click="this.myAlert">ANALYZE!</button>
+            <button type="button" class="button" id="alert" @click="addGraph">ANALYZE!</button>
         </div>
 
         <div class="graph grid-items">
             <p style="color:black;"> <strong> Graphical Representation </strong></p>
 
-            <div ref="plot" style="width:400px;height:270px;"></div>
+            <div ref="plot"></div>
 
         </div>
 
@@ -246,65 +242,65 @@
 
         <div class="freqRelativeFreqTable grid-items">
             <p style="color:black;"> <strong> Frequency and Relative Frequency Table </strong></p>
-            <div class="frequencyGridContainer">
-                <div class="grid-item">Variable</div>
-                <div class="grid-item">Frequency</div>
-                <div class="grid-item">Relative Freq</div>
-                <div class="grid-item">%</div>
-                <div class="grid-item">A</div>
-                <div class="grid-item">4</div>
-                <div class="grid-item">0.14</div>
-                <div class="grid-item">14</div>
-                <div class="grid-item">B</div>
-                <div class="grid-item">12</div>
-                <div class="grid-item">0.43</div>
-                <div class="grid-item">43</div>
-                <div class="grid-item">C</div>
-                <div class="grid-item">10</div>
-                <div class="grid-item">0.36</div>
-                <div class="grid-item">36</div>
-                <div class="grid-item">D</div>
-                <div class="grid-item">2</div>
-                <div class="grid-item">0.07</div>
-                <div class="grid-item">7</div>
-            </div>
+
+            <table>
+                <tr>
+                    <th>
+                        Variable
+                    </th>
+                    <th>
+                        Frequency
+                    </th>
+                    <th>
+                        Relative Freq
+                    </th>
+                    <th>
+                        Percentage (%)
+                    </th>
+                </tr>
+                <tr v-for="row, fr in freqTable" :key="fr">
+                    <td v-for="col, fc in row" :key="fc">
+                        {{col}}
+                    </td>
+                </tr>
+            </table>
 
             <br><br>
+            <table>
+                <tr>
+                    <th>
+                        Variable
+                    </th>
+                    <th>
+                        Frequency
+                    </th>
+                    <th>
+                        Relative Freq
+                    </th>
+                    <th>
+                        Percentage (%)
+                    </th>
+                </tr>
+                <tr v-for="row, fr in freqTable2" :key="fr">
+                    <td v-for="col, fc in row" :key="fc">
+                        {{col}}
+                    </td>
+                </tr>
+            </table>
+            <br><br>
         </div>
-        <!-- <div class="graph grid-items">
-            <p style="color:black;"> <strong> Graphical Representation </strong></p>
-            
-            <div ref="plot" style="width:400px;height:270px;"></div>
-
-        </div> -->
 
 
         <div class="contingencyResultTable grid-items">
             <p style="color:black;"> <strong> The Contingency Table</strong> </p>
-            <div class="gridContainerContingency">
-                <div class="grid-item"></div>
-                <div class="grid-item">Left</div>
-                <div class="grid-item">Right</div>
-                <div class="grid-item">Both</div>
-                <div class="grid-item">Total</div>
-                <div class="grid-item">Male</div>
-                <div class="grid-item">5</div>
-                <div class="grid-item">12</div>
-                <div class="grid-item">6</div>
-                <div class="grid-item">23</div>
-                <div class="grid-item">Female</div>
-                <div class="grid-item">10</div>
-                <div class="grid-item">3</div>
-                <div class="grid-item">8</div>
-                <div class="grid-item">21</div>
-                <div class="grid-item">Total</div>
-                <div class="grid-item">15</div>
-                <div class="grid-item">15</div>
-                <div class="grid-item">14</div>
-                <div class="grid-item">44</div>
+            <table>
+                <tr v-for="row, cr in contingencyTable" :key="cr">
+                    <td v-for="col, cc in row" :key="cc">
+                        {{col}}
+                    </td>
+                </tr>
+            </table>
 
-
-            </div>
         </div>
         <div class="expectedValues grid-items">
             <p style="color:white;"> <strong> Expected Value Table</strong> </p>
@@ -351,7 +347,15 @@
                     Group2: "Right",
                     Group3: "Both",
                     testStatistic: 7.2764,
-                    dof: 3
+                    dof: 3,
+                    freqTableRows: 2,
+                    freqTableColumns: 4,
+                    freqTable: [],
+                    freqTable2: [],
+                    contingencyTable: [],
+                    groupTotals: [],
+                    categoryTotals: [],
+                    tableTotal: 0
                 },
 
                 computed: {
@@ -363,28 +367,118 @@
                         return _table;
                     }
                 },
-                mounted() {
-                    console.log(this.category1);
-                    Plotly.plot(this.$refs.plot, [
-                        {
-                            x: ["Right Handed", "Left Handed", "Both"],
-                            y: [15, 15, 14],
-                            type: "bar"
-                        }
-                    ], {
-                            barmode: 'stack'
-                        });
-                },
+                // mounted() {
+                //     console.log(this.category1);
+                //     Plotly.plot(this.$refs.plot, [
+                //         {
+                //             x: ["Right Handed", "Left Handed", "Both"],
+                //             y: [15, 15, 14],
+                //             type: "bar"
+                //         }
+                //     ], {
+                //             barmode: 'stack'
+                //         });
+                // },
                 methods: {
+                    update() {
+                        // calculate category
+                        const categoryFreq = (col) => this.table.slice(1).reduce((s, row) => {
+                            if (typeof row[col] === 'string') return s;
+                            return s + row[col];
+                        }, 0);
+
+                        const categoryTotals = [];
+                        for (let col = 0; col < this.cols; col++) {
+                            categoryTotals.push(categoryFreq(col + 1));
+                        }
+
+                        // calculate groups
+                        const groupTotals = [];
+                        for (let row = 0; row < this.rows; row++) {
+                            groupTotals.push(this.table[row + 1].slice(1).reduce((a, b) => a + b));
+                        }
+
+
+                        // update data
+                        this.categoryTotals = categoryTotals
+                        this.groupTotals = groupTotals
+                        this.tableTotal = categoryTotals.reduce((a, b) => a + b);
+                    },
+                    addGraph() {
+                        const x = [];
+                        const y = [];
+
+
+                        //filling up x and y
+                        for (let i = 1; i < this.rows + 1; i++) {
+                            x.push(this.table[i][0])
+                            y.push(this.table[i].slice(1).reduce((a, b) => a + b));
+                        }
+
+
+                        Plotly.newPlot(this.$refs.plot, [{
+                            x,
+                            y,
+                            type: "bar"
+                        }], {
+                                barmode: 'stack',
+                                autosize: true
+                            })
+                    },
                     onCellChange(row, col, value) {
-                        if (!(row === 0 || col === 0)) value = parseFloat(value);
+                        if (!(row === 0 || col === 0)) {
+                            value = Math.abs(parseFloat(value));
+                        }
                         this.table[row][col] = value;
-                        alert(`${row}, ${col} = ${value}`);
+                        this.update();
+                        this.updateFreqTable();
+                        this.updateFreqTable2();
+                        this.updateContingencyTable();
+                        this.$forceUpdate();
+                        // alert(`${row}, ${col} = ${value}`);
+                    },
+                    updateFreqTable() {
+                        const relFreqs = this.groupTotals.map(freq => freq / this.tableTotal);
+                        const data = []; // variable | freq | relFreq | percentFreq
+                        for (let row = 0; row < this.rows; row++) {
+                            data.push([
+                                this.table[row + 1][0],
+                                this.groupTotals[row],
+                                relFreqs[row].toFixed(2),
+                                Math.round(relFreqs[row] * 100) + "%"
+                            ]);
+                        }
+                        this.freqTable = data;
+                    },
+                    updateFreqTable2() {
+                        const relFreqs = this.categoryTotals.map(freq => freq / this.tableTotal);
+
+                        const data = []; // variable | freq | relFreq | percentFreq
+                        for (let col = 0; col < this.cols; col++) {
+                            data.push([
+                                this.table[0][col + 1],
+                                this.categoryTotals[col],
+                                relFreqs[col].toFixed(2),
+                                Math.round(relFreqs[col] * 100) + "%"
+                            ]);
+                        }
+                        this.freqTable2 = data;
+                    },
+                    updateContingencyTable() {
+                        //copy of table
+                        const _table = this.table.map(row => row.slice());
+                        _table.push(["Total", ...this.categoryTotals]);
+                        const lastCol = ["Total", ...this.groupTotals, this.tableTotal];
+
+                        for (let i = 0; i < this.rows + 2; i++) {
+                            _table[i].push(lastCol[i]);
+                        }
+                        this.contingencyTable = _table;
                     },
                     show() {
                         for (const cols of this.table) {
                             for (const col of cols) {
-                                console.log(col);
+                                // console.log(col);
                             }
                         }
                         alert(this.table[2][3]);
