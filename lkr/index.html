@@ -14,12 +14,10 @@
         #grid-container {
             min-height: 100%;
             display: grid;
-            /* grid-template: */
-            /* 'input'auto 'game-plot'minmax(200px, 400px) 'guesses-table'minmax(100px, 300px) 'guesses-scatter'minmax(200px, 400px) / minmax(200px, 400px); */
-            grid-template-columns: 1fr 2em 2fr;
-            grid-template-rows: 0.25fr 1fr 1fr auto;
+            /* grid-template-columns: 1fr 2em 2fr;
+            grid-template-rows: 0.25fr 1fr 1fr auto; */
             grid-template-areas:
-                'rguess . .'
+                'rguess . game-plot'
                 'datatextbox . game-plot'
                 'optsAndtable . guesses-scatter';
         }
@@ -30,7 +28,6 @@
 
         #guesses-table {
             grid-area: guesses-table;
-            /* position: relative; */
             border: solid;
             top: 300px;
             margin: 20px;
@@ -50,26 +47,21 @@
 
         #rguess {
             grid-area: rguess;
-            /* position: relative; */
         }
 
         #datatextbox {
             grid-area: datatextbox;
-            /* border: darkblue solid; */
-            /* position: relative; */
             margin: 25px;
             width: 100%;
         }
 
         #guesses-scatter {
             grid-area: guesses-scatter;
-            /* height: 400px; */
             width: 45vw;
         }
 
         #options {
             grid-area: options;
-            /* position: relative; */
         }
 
         #game-plot {
@@ -81,10 +73,10 @@
         @media only screen and (max-width: 620px) {
             #grid-container {
                 grid-template-columns: 100%;
-                grid-template-rows: 0.75fr 0.25fr 0.5fr 0.3fr 1fr auto;
+                grid-template-rows: 0.30fr 0.50fr 0.5fr 0.3fr 1fr auto;
                 grid-template-areas:
-                    'game-plot'
                     'rguess'
+                    'game-plot'
                     'datatextbox'
                     'optsAndtable'
                     'guesses-scatter';
@@ -100,7 +92,6 @@
             }
 
             #guesses-table {
-                /* width: 90%; */
                 left: 0px;
                 top: 100px;
                 margin: 20px;
@@ -135,15 +126,17 @@
         <!-- Try reorganizing your grid so that you have 4 pieces: input, guess table, game plot, guess plot? -->
         <!-- you could make input  a long thin column to give the others more space -->
         <div id='rguess'>
-            <h3>Bivariate Data</h3>
-            Guess for Correlation r:
+            <h3>Scatterplot Guessing Game</h3>
+            Guess for Correlation Coefficient r:
             <input type="number" v-model.number="rguess" step="0.1"><br>
             <input type="button" value="Enter Guess" @click="enterGuess"><br><br>
             Number of Random Points:
             <input type="number" v-model.number="numpoints"><br>
             <input type="button" value="Update Number of Points" @click="enterpoints">
+            <br><br>
         </div>
-        <div id="datatextbox">
+        <div id="datatextbox" title="This is a table of the random points in the scatterplot.">
+            Random Values in the Scatterplot:<br>
             <table>
                 <thead>
                     <tr>
@@ -233,18 +226,22 @@
                 ractual: 0,
                 gameLayout: {
                     xaxis: {
-                        range: [0, 10.5]
+                        title: 'x',
+                        range: [-0.5, 10.5]
                     },
                     yaxis: {
-                        range: [0, 10.5]
+                        title: 'y',
+                        range: [-0.5, 10.5]
                     },
                     title: 'What is r for this scatterplot?'
                 },
                 guessLayout: {
                     xaxis: {
+                        title: 'Guesses for R',
                         range: [-1.15, 1.15]
                     },
                     yaxis: {
+                        title: 'Actual R values',
                         range: [-1.15, 1.15]
                     },
                     autosize: true,
@@ -395,7 +392,7 @@
                     this.displayReglineChecked = checked;
                     const data = [this.randnums];
                     if (checked) data.push(this.calcRegression());
-                    Plotly.newPlot(this.$refs.game, data, { responsive: true });
+                    Plotly.newPlot(this.$refs.game, data, this.gameLayout, { responsive: true });
                 }
             },
             mounted() {
