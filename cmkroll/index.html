@@ -27,6 +27,10 @@
             max-width: 70vh;
         }
 
+        .row {
+            padding: 20px;
+        }
+
         #input {
             grid-area: input;
         }
@@ -61,13 +65,11 @@
     <div id="app" class="gridcontainer">
         <div id="input">
             <div id="title grid-items">
-                <h2 style="text-align: center; margin: 20px;">Simulating Confidence Intervals</h2>
-                <div style="margin: 10px;text-align: center; display: flex;">
-                    <div id="pageSelection" :class="{selected: pageIdx == index}" v-for="(page, index) in pages"
-                        :key:="index" @click="pageIdx = index">
-                        {{ page }}
-                    </div>
-                </div>
+                <!-- Page Title -->
+                <h2 style="text-align: center; margin: 20px; padding: 25px; background-color: #00838f;">Simulating
+                    Confidence Intervals
+                    for Proportions</h2>
+
             </div>
             <div id="input grid-items" style="margin: 20px;">
                 <div class="row">Population Proportion: <input type="number" size="2" v-model="popProp"></div>
@@ -82,8 +84,8 @@
 
         <div id="sample-statistics">
             <div class="grid-items">
-                <h4>Sample Statistics</h4>
-                <p>Bar chart, use your imagination</p>
+                <!-- <h4>Sample Statistics</h4> -->
+                <!-- <p>Bar chart, use your imagination</p> -->
                 <canvas ref="bar" width="200" height="200"></canvas>
             </div>
         </div>
@@ -106,10 +108,10 @@
         new Vue({
             el: "#app",
             data: {
-                pages: [
-                    "Proportion",
-                    "Mean"
-                ],
+                // pages: [
+                //     "Proportion",
+                //     "Mean"
+                // ],
                 pageIdx: 0,
                 bardata: [{
                     x: -10
