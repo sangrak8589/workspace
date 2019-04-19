@@ -4,37 +4,43 @@
 <head>
 	<title>Normal Distribution</title>
 	<style>
-		.grid-container {
+		.gridcontainer {
+			min-height: 100%;
 			display: grid;
-			grid-template-columns: 1fr 1fr;
-			grid-template-rows: auto 1fr;
+			grid-template:
+				'user-input''graph'
 
-			grid-template-areas:
-				"header header"
-				"user-input graph";
 		}
 
-		#header {
-			grid-area: "header";
-			min-width: 100%;
-		}
+		@media screen and (min-width: 792px) {
+			.gridcontainer {
+				min-height: 100%;
+				display: grid;
+				grid-template:
+					'input confidence-intervals''sample-statistics confidence-intervals'
+			}
 
-		#user-input {
-			grid-area: "user-input";
-		}
+			#header {
+				grid-area: "header";
+				min-width: 100%;
+			}
 
-		#graph {
-			grid-area: "graph";
-		}
+			#user-input {
+				grid-area: "user-input";
+			}
 
-		.column {
+			#graph {
+				grid-area: "graph";
+			}
 
-			float: left;
-			width: 50%;
-			min-height: 50%;
-			padding: 10px;
-			box-sizing: content-box;
-		}
+			.column {
+
+				float: left;
+				width: 50%;
+				min-height: 50%;
+				padding: 10px;
+				box-sizing: content-box;
+			}
 	</style>
 	<h2 id="header">Normal Distribution Calculator</h2>
 </head>
@@ -44,7 +50,7 @@
 
 
 
-		<div id="user-input" style="background-color:lightgray">"
+		<div id="user-input" style="background-color:lightgray">
 			<div class="grid-container">
 				<div class="user input">
 					<h2>Parameters</h2>
@@ -52,28 +58,30 @@
 					<div class="row">Mean= <input type="number" name="Mean" size="5" v-model.number="Mean"></div>
 
 					<div class="row">Standard Deviation= <input type="number" name="SD" size="5" v-model.number="SD">
+
+						<div class="row">x= <input type="number" name="x" size="5" v-model.number="x"></div>
+						<div class="row">b= <input type="number" name="b" size="5" v-model.number="b"></div>
 					</div>
 					<div class="row"></div>
 				</div>
 				<div class="Probability input">
 					<h2>x,y input</h2>
 					<h4>Please select one option from below:</h4>
-					<div class="row">P(X>x)=
-						<input v-model.number="x"></input>
-					</div>
-					<div class="row">P(X&lt;x)=
-						<input v-model.number="x"></input>
-					</div>
-					<div class="row">P(a&lt;X&lt;b)=
-						<input v-model.number="a"></input>
-						<input v-model.number="b"></input>
-					</div>
+					<select name="choice">
+						<option value="gt">P(X>x) </option>
+						<option value="lt">P(X&lt;x)</option>
+						<option value="both">P(x&lt;X&lt;b)</option>
+					</select>
+
+
 				</div>
 			</div>
 		</div>
 
 		<div id="graph" style="background-color:rgba(167, 163, 163, 0.904);">
 			<h2>Results</h2>
+
+
 			<canvas ref="plot"></canvas>
 
 
@@ -168,94 +176,4 @@
 </body>
 
 
-</html>
-=======
-<head>
-<title>Normal Distribution</title>
-
-</head>
-<body>
-
-<div class="column" style="background-color:orangered" >
-    <div class="grid-container">
-	<div class="user input">
-		<h3>Normal Distribution</h3>
-        <h4>Please input the sample mean, standard deviation and x. Y is optional.</h4>    
-		<div class="row">Mean= <input type="number" name="Mean"size="5"></div>
-      <div class="row">Standard Deviation= <input type="number" name="SD" size="5"></div>
-            <div class="row"></div>
-	</div>
-    <div class="Probability input">
-    <h4>Please select one option from below:</h4>
-            <div class="row">P(X>x)= 
-							<button onclick="myFunction1()">Select</button>
-							
-			</div>
-			<div class="row">P(x>X)= 
-				<button onclick="myFunction2()">Select</button>
-							
-				</div>
-            <div class="row">P(x>X>y)= 
-				<button onclick="myFunction3()">Select</button>
-							
-				</div>
-			
-        </div>
-        </div>
-  </div>
-<div class="column" style="background-color:purple;">
-    <h2>Graphs</h2>
-    <p>Graphs will go here when I get to that</p>
-	  <button onclick="myFunction()">Print</button>
-<script>
-function myFunction() {
-  window.print();
-}
-</script>
-	<p id="x"></p>
-		<script>
-		function myFunction1() {
-  		var x = prompt("x=", "x");
-  		if (x != null) {
-    	document.getElementById("x").innerHTML =
-    	"The probability that X is greater than " + x + "is ";}}
-		</script>	
-	  
-	<p id="x2"></p>
-		<script>
-		function myFunction2() {
-  		var x2 = prompt("x=", "x");
-  		if (x2 != null) {
-    	document.getElementById("x2").innerHTML =
-    	"The probability that X is less than " + x2 + "is ";}}
-		</script>
-	  
-	<p id="x3"></p>
-	<p id="y1"></p>
-		<script>
-		function myFunction3() {
-  		var x3 = prompt("x=", "x");
-		var y1 = prompt("y=", "y");
-  		if (x3 != null) {
-    	document.getElementById("x3","y1").innerHTML =
-    	"The probability that X is greater than " + x + " and less than " + y1 + " is";}}
-								</script>	  
- <img src="norm.jpeg" alt="Normal" width="200" height="200">
-	
-  </div>
-
-	
-</body>
-<style>
-	* 
-
-.column {
-  float: left;
-  width: 50%;
-  padding: 10px;
-	box-sizing: border-box;
-	}
-        
-        
-    </style>	
 </html>
