@@ -12,16 +12,6 @@
             background-size: 100%;
         }
 
-
-        .gridContainerContingency {
-            display: grid;
-            grid-template-columns: 80px 80px 80px 80px 80px;
-            background-color: rgb(35, 124, 212);
-            padding: 10px;
-            width: 400px;
-            position: relative;
-        }
-
         .grid-container {
             display: grid;
             padding: 0;
@@ -166,7 +156,7 @@
 <body>
     <div id="app" class="grid-container">
         <form class="input grid-items">
-            <p style="color:black;"> <strong>Choose # of rows and cols (Max: 4 x 4 and Min: 2 x 2) </strong>
+            <p style="color:black;"> <strong>Choose # of rows and cols (Max: 6 x 6 and Min: 2 x 2) </strong>
             </p>
 
             Rows: <br><br>
@@ -316,11 +306,6 @@
                     rows: 2,
                     cols: 2,
                     seen: false,
-                    Category1: "Male",
-                    Category2: "Female",
-                    Group1: "Left",
-                    Group2: "Right",
-                    Group3: "Both",
                     testStatistic: 7.2764,
                     dof: 3,
                     freqTableRows: 2,
@@ -338,27 +323,24 @@
 
                 computed: {
                     table() {
-                        const _table = new Array(this.rows);
-                        for (let row = 0; row < this.rows + 1; row++) {
-                            _table[row] = new Array(this.cols + 1).fill("");
+
+                        let numRow = this.rows;
+                        let numCols = this.cols;
+                        const _table = new Array(numRow);
+                        for (let row = 0; row < numRow + 1; row++) {
+                            _table[row] = new Array(numCols + 1).fill("");
                         }
+                        // console.log("printing in table() rows " + numRow + " and cols " + this.cols);
                         return _table;
                     }
                 },
-                // mounted() {
-                //     console.log(this.category1);
-                //     Plotly.plot(this.$refs.plot, [
-                //         {
-                //             x: ["Right Handed", "Left Handed", "Both"],
-                //             y: [15, 15, 14],
-                //             type: "bar"
-                //         }
-                //     ], {
-                //             barmode: 'stack'
-                //         });
-                // },
+
                 methods: {
                     update() {
+
+                        let numRow = this.rows;
+                        let numCols = this.cols;
+
                         // calculate category variables frequency
                         const categoryFreq = (col) => this.table.slice(1).reduce((s, row) => {
                             if (typeof row[col] === 'string') return s;
@@ -372,7 +354,7 @@
 
                         // calculate group variables frequency
                         const groupTotals = [];
-                        for (let row = 0; row < this.rows; row++) {
+                        for (let row = 0; row < numRow; row++) {
                             groupTotals.push(
                                 this.table[row + 1].slice(1).reduce((a, b) => a + b)
                             );
@@ -380,12 +362,12 @@
 
                         //get original data
                         const originalData = [];
-                        for (let row = 0; row < this.rows; row++) {
+                        for (let row = 0; row < numRow; row++) {
                             originalData.push(
                                 this.table[row + 1].slice(1)
                             );
                         }
-                        console.log("Printing original dataaaa " + originalData)
+                        // console.log("Printing original dataaaa " + originalData)
 
 
                         // update data
@@ -406,7 +388,7 @@
                             _expectedValues[i] = row;
                             // console.log("printing expected values" + _expectedValues[i])
                         }
-                        console.log("printing expected values" + _expectedValues)
+                        // console.log("printing expected values" + _expectedValues)
 
 
                         //transpose the expected values because they are in the wrong order for calculations currently
@@ -422,7 +404,7 @@
                             }
                         }
 
-                        console.log("printing transposedExpectedValues " + transposedExpectedValues);
+                        // console.log("printing transposedExpectedValues " + transposedExpectedValues);
 
                         //caclulate test statistic (observed - expected)^2
                         let observedValues = [];
@@ -436,8 +418,8 @@
                         // const observedValues = [...originalData[0], ...originalData[1]];
                         // const expectedValuesArray = [..._expectedValues[0], ..._expectedValues[1]];
 
-                        console.log("printing [observedValues.length] " + observedValues.length + " printing observed values data " + observedValues)
-                        console.log("printing [expectedValuesArray.length] " + expectedValuesArray.length + " printing expectedValuesArray data " + expectedValuesArray)
+                        // console.log("printing [observedValues.length] " + observedValues.length + " printing observed values data " + observedValues)
+                        // console.log("printing [expectedValuesArray.length] " + expectedValuesArray.length + " printing expectedValuesArray data " + expectedValuesArray)
                         let _testStatisticCalculation = [];
                         for (let i = 0; i < observedValues.length; i++) {
                             let newRow = []
@@ -448,7 +430,7 @@
                             _testStatisticCalculation[i] = newRow;
 
                         }
-                        console.log("printing testStatistic content" + _testStatisticCalculation + " and length " + _testStatisticCalculation.length)
+                        // console.log("printing testStatistic content" + _testStatisticCalculation + " and length " + _testStatisticCalculation.length)
 
 
                         //calculate sum of test statistics
@@ -467,20 +449,20 @@
 
                         let sumOfTestValues = mapGetSum.reduce((a, b) => a + b).toFixed(2);
 
-                        console.log("printing sumOfTestValues " + sumOfTestValues)
+                        // console.log("printing sumOfTestValues " + sumOfTestValues)
 
                         this.testStatistic = sumOfTestValues;
 
-                        console.log("printing this.testStatistic " + this.testStatistic)
+                        // console.log("printing this.testStatistic " + this.testStatistic)
 
                         //calculate degrees of freedom
-                        let degreesOfFreedom = (this.rows - 1) * (this.cols - 1);
+                        let degreesOfFreedom = (numRow - 1) * (numCols - 1);
 
 
 
                         this.dof = degreesOfFreedom;
 
-                        console.log("Printing this.dof " + this.dof);
+                        // console.log("Printing this.dof " + this.dof);
 
 
 
@@ -491,9 +473,10 @@
                         const x = [];
                         const y = [];
 
+                        let numRow = this.rows;
 
                         //filling up x and y
-                        for (let i = 1; i < this.rows + 1; i++) {
+                        for (let i = 1; i < numRow + 1; i++) {
                             x.push(this.table[i][0])
                             y.push(this.table[i].slice(1).reduce((a, b) => a + b));
                         }
@@ -521,11 +504,14 @@
                         // this.originalDataValues();
                         this.$forceUpdate();
                         // alert(`${row}, ${col} = ${value}`);
+
+                        // console.log("printing in onCellChange rows " + this.row + " and cols " + this.cols);
                     },
                     updateFreqTable() {
+                        let numRow = this.rows;
                         const relFreqs = this.groupTotals.map(freq => freq / this.tableTotal);
                         const data = []; // variable | freq | relFreq | percentFreq
-                        for (let row = 0; row < this.rows; row++) {
+                        for (let row = 0; row < numRow; row++) {
                             data.push([
                                 this.table[row + 1][0],
                                 this.groupTotals[row],
@@ -536,12 +522,14 @@
                         this.freqTable = data;
                         // console.log("printing data" + data)
                         // console.log("printing this.freqTable" + this.freqTable)
+                        // console.log("printing in updateFreqTable rows " + this.row + " and cols " + this.cols);
                     },
                     updateFreqTable2() {
                         const relFreqs = this.categoryTotals.map(freq => freq / this.tableTotal);
 
+                        let numCols = this.cols;
                         const data = []; // variable | freq | relFreq | percentFreq
-                        for (let col = 0; col < this.cols; col++) {
+                        for (let col = 0; col < numCols; col++) {
                             data.push([
                                 this.table[0][col + 1],
                                 this.categoryTotals[col],
@@ -555,12 +543,14 @@
                         //copy of table
                         const _table = this.table.map(row => row.slice());
 
+                        let numRow = this.rows;
+
                         // console.log("Printing _table: " + _table)
                         _table.push(["Total", ...this.categoryTotals]);
-                        console.log("printing _table.length " + _table.length + " printing _table data " + _table)
+                        // console.log("printing _table.length " + _table.length + " printing _table data " + _table)
                         const lastCol = ["Total", ...this.groupTotals, this.tableTotal];
 
-                        for (let i = 0; i < this.rows + 2; i++) {
+                        for (let i = 0; i < numRow + 2; i++) {
                             _table[i].push(lastCol[i]);
                         }
                         this.contingencyTable = _table;
@@ -569,52 +559,37 @@
 
                         // const _table = this.expectedTable.map(row => row.slice());
                         // const lastCol = [" ", " ", " "];
-                        const firstRow = [...this.table.map(row => row[0])]
-                        console.log("Prining firstRow " + firstRow + " printing firstRow.length " + firstRow.length)
+                        const firstRow = [...this.table.map(row => row[0])];
+                        // console.log("Prining firstRow " + firstRow + " printing firstRow.length " + firstRow.length)
 
-                        const firstCol = [...this.table[0].slice(1)]
+                        const firstCol = [...this.table[0].slice(1)];
 
 
                         // for (let i = 0; i < this.rows + 1; i++) {
                         //     _table[i].push(lastCol[i]);
                         // }
-                        const _table = [firstRow]
+                        const _table = [firstRow];
+                        let numCols = this.cols;
 
-                        for (let i = 0; i < this.cols; i++) {
+                        for (let i = 0; i < numCols; i++) {
                             // console.log("printing expected table with iterations " + this.expectedTable)
                             _table.push([firstCol[i], ...this.expectedTable[i]]);
                         }
                         this.expectedTable = _table;
+
+                        // console.log("printing in updateExpectedTable rows " + this.row + " and cols " + this.cols);
                     },
-                    // originalDataValues() {
-                    //     const _table = this.table.map(row => row.slice());
 
-
-                    //     this.originalDataVals = _table;
-
-                    //     console.log("printing original data values " + this.originalDataVals)
-                    // },
-                    show() {
-                        for (const cols of this.table) {
-                            for (const col of cols) {
-                                // console.log(col);
-                            }
-                        }
-                        alert(this.table[2][3]);
-                    },
                     chiSquaredComputed() {
-                        console.log("Printing this.testStatistic in chiSquared " + this.testStatistic)
-                        console.log("Printing this.dof in chiSquared " + this.dof)
-                        window.alert('The chi-squared p-value is: ' + (jStat.chisquare.pdf(this.testStatistic, this.dof) * 2).toFixed(4));
-                    },
-                    myAlert() {
-                        window.alert('Analyzing the data! This might take a couple of seconds!');
+                        // console.log("Printing this.testStatistic in chiSquared " + this.testStatistic)
+                        // console.log("Printing this.dof in chiSquared " + this.dof)
+                        window.alert('The chi-squared p-value is: ' + (jStat.chisquare.pdf(this.testStatistic, this.dof)).toFixed(4));
                     }
                 },
                 watch: {
                     rows(val) {
-                        if (val > 4) {
-                            this.rows = 4;
+                        if (val > 6) {
+                            this.rows = 6;
                         }
                         else if (val < 2) {
                             this.rows = 2;
@@ -622,8 +597,8 @@
                         else { this.rows = Math.abs(val); }
                     },
                     cols(val) {
-                        if (val > 4) {
-                            this.cols = 4;
+                        if (val > 6) {
+                            this.cols = 6;
                         }
                         else if (val < 2) {
                             this.cols = 2;
