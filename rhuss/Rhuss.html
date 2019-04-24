@@ -58,30 +58,28 @@
 					<div class="row">Mean= <input type="number" name="Mean" size="5" v-model.number="Mean"></div>
 
 					<div class="row">Standard Deviation= <input type="number" name="SD" size="5" v-model.number="SD">
-
-						<div class="row">x= <input type="number" name="x" size="5" v-model.number="x"></div>
-						<div class="row">b= <input type="number" name="b" size="5" v-model.number="b"></div>
 					</div>
 					<div class="row"></div>
 				</div>
 				<div class="Probability input">
 					<h2>x,y input</h2>
 					<h4>Please select one option from below:</h4>
-					<select name="choice">
-						<option value="gt">P(X>x) </option>
-						<option value="lt">P(X&lt;x)</option>
-						<option value="both">P(x&lt;X&lt;b)</option>
-					</select>
-
-
+					<div class="row">P(X>x)=
+						<input v-model.number="x"></input>
+					</div>
+					<div class="row">P(X&lt;x)=
+						<input v-model.number="x"></input>
+					</div>
+					<div class="row">P(a&lt;X&lt;b)=
+						<input v-model.number="a"></input>
+						<input v-model.number="b"></input>
+					</div>
 				</div>
 			</div>
 		</div>
 
 		<div id="graph" style="background-color:rgba(167, 163, 163, 0.904);">
 			<h2>Results</h2>
-
-
 			<canvas ref="plot"></canvas>
 
 
@@ -98,7 +96,7 @@
 		new Vue({
 			el: "#app",
 			data: {
-				x: 0,
+				x: 1,
 				a: 0,
 				b: 0,
 				Mean: 0,
