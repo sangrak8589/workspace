@@ -18,5 +18,5 @@ as the reduce() function to find the sum of the user data values for each catego
 get the frequency, relative frequency, expected values, and chi-square test statistics. 
 The sum of the group totals and category totals are used by Plotly to create a bar graph that displays the respective toals. 
 The information from the expected data is used in tandem from the original user input to get the x^2 test statistic and the degrees of freedom. 
-These two values are then used by Jstat (Jstat.chisquare.pdf()) to calculate the p-value. 
+These two values are then used by Jstat 1- (Jstat.chisquare.cdf()) to calculate the p-value. 
 
