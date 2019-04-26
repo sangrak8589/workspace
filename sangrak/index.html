@@ -512,37 +512,60 @@
                             categoryTotals.push(categoryFreq(col + 1));
                         }
 
-                        //filling up x and y
+                        //filling up x and y to get Group Variables Info
                         for (let i = 1; i < numRow + 1; i++) {
                             x.push(this.table[i][0])
                             y.push(this.table[i].slice(1).reduce((a, b) => a + b));
                         }
-                        //filling up a and b
+                        let trace1 = {
+                            x,
+                            y,
+                            name: 'Group Variables',
+                            type: 'bar',
+                            text: y,
+                            textposition: 'auto',
+                            marker: {
+                                color: 'rgba(222,45,38,0.8)'
+                            }
+                        };
+
+                        //filling up a and b to get Categorical Variables info
                         for (let i = 1; i < numCols + 1; i++) {
                             a.push(this.table[0][i])
                         }
                         b.push(categoryTotals);
 
-                        //get all the category and group variable names and store them in x array
-                        x = [...x, ...a];
-                        //get all the category and group variable data associated with the above x values and store them
-                        //in y array
-                        y = [...y, ...categoryTotals];
+                        x = [...a];
+                        y = [...categoryTotals];
 
-                        //create the bar graph using plotly
-                        Plotly.newPlot(this.$refs.plot, [{
+                        let trace2 = {
                             x,
                             y,
-                            type: "bar",
+                            name: "Category Variables",
+                            type: 'bar',
+                            text: y,
+                            textposition: 'auto',
                             marker: {
-                                color: 'rgba(222,45,38,0.8)'
+                                color: 'rgba(4,24,148,1)'
                             }
-                        }], {
-                                title: "Frequency of Categorical Variables",
-                                xaxis: { title: 'Categorical Variables' },
-                                yaxis: { title: 'Frequency' },
-                                autosize: true
-                            })
+                        };
+
+                        let data = [trace1, trace2];
+                        let layout = {
+                            title: 'Frequency of Categorical Variables',
+                            barmode: 'group',
+                            xaxis: { title: 'Categorical Variables' },
+                            yaxis: { title: 'Frequency' }
+
+                        };
+                        //get all the category and group variable names and store them in x array
+                        // x = [...x, ...a];
+                        //get all the category and group variable data associated with the above x values and store them
+                        //in y array
+                        // y = [...y, ...categoryTotals];
+
+                        //create the bar graph using plotly
+                        Plotly.newPlot(this.$refs.plot, data, layout);
                     },
                     //function that activates every time an input cell is changed so that 
                     //the tables are updated in real time
