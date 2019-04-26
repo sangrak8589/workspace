@@ -5,6 +5,7 @@
     <title>Confidence Intervals</title>
     <style>
         .gridcontainer {
+            /* Creating the display for screen screens such as a phone */
             min-height: 100%;
             display: grid;
             grid-template:
@@ -14,6 +15,8 @@
         }
 
         @media screen and (min-width: 792px) {
+
+            /* Creating the layout using a grid */
             .gridcontainer {
                 min-height: 100%;
                 display: grid;
@@ -72,6 +75,7 @@
 
             </div>
             <div id="input grid-items" style="margin: 20px;">
+                <!-- User input boxes -->
                 <div class="row">Population Proportion: <input type="number" size="2" v-model="popProp"></div>
                 <div class="row">Sample Size: <input type="number" size="2" v-model="sampleSize"></div>
                 <div class="row">Confidence Level: <input type="number" size="2" v-model="confInt"> %</div>
@@ -79,18 +83,22 @@
                 <div class="row">
                     <button id="enter" @click="this.iterations">Enter</button>
                 </div>
+                <!-- displays the formula for confidence intervals -->
+                <p>Formula for confidence interval: p&#770; &plusmn; z* &radic;<span
+                        style="text-decoration: overline">p&#770;(1-p&#770;)/n </span> </p>
+                <div v-if="hasRendered">The total of iterations that contain the population proportion is
+                    {{totalSuccess}}.</div>
             </div>
         </div>
 
         <div id="sample-statistics">
             <div class="grid-items">
-                <!-- <h4>Sample Statistics</h4> -->
-                <!-- <p>Bar chart, use your imagination</p> -->
                 <canvas ref="bar" width="200" height="200"></canvas>
             </div>
         </div>
 
         <div id="confidence-intervals">
+            <!-- Displays Confidence Intervals -->
             <div class="grid-items">
                 <h4>Confidence Intervals</h4>
                 <!-- <div>({{lowerBound}} , {{upperBound}})</div> -->
@@ -99,6 +107,7 @@
         </div>
 
     </div>
+    <!-- links for vue, jstat, and chartjs -->
     <script src="//cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
@@ -108,31 +117,7 @@
         new Vue({
             el: "#app",
             data: {
-                // pages: [
-                //     "Proportion",
-                //     "Mean"
-                // ],
-                pageIdx: 0,
-                bardata: [{
-                    x: -10
-                }, {
-                    x: 0
-                }, {
-                    x: 10
-                }],
-                lineData: {
-                    data: [
-                        {
-                            x: 5,
-                            y: 5
-                        }, {
-                            x: 5,
-                            y: 6
-                        }
-
-                    ]
-                }
-                ,
+                // Defining variables and setting default values
                 allConfInt: [{}],
                 lineChart: {},
                 barChart: {},
@@ -141,15 +126,12 @@
                 sampleSize: 30,
                 confInt: 95,
                 numIt: 10,
-                popMean: 5,
-                popStDev: 0.5,
-                meanSampleSize: 30,
-                meanConfInt: 95,
-                meanNumIt: 10,
                 sampleProp: 0.5,
                 zScore: 1.96,
                 lowerBound: 0.25,
-                upperBound: 0.75
+                upperBound: 0.75,
+                totalSuccess: 0,
+                hasRendered: false
             },
 
             methods: {
@@ -157,19 +139,24 @@
 
                     let sum = 0;
                     for (let i = 0; i < this.sampleSize; i++) {
+                        // generating random number to create sample proportion
                         const y = Math.random();
 
                         if (y < this.popProp) {
                             sum++;
                         }
                     }
-
+                    // calculate sample statistics: sample mean, z-score, and the interval
                     this.sampleProp = sum / this.sampleSize;
                     this.zScore = jStat.normal.inv(1 - ((1 - (this.confInt / 100)) / 2), 0, 1);
                     this.lowerBound = this.sampleProp - this.zScore * Math.sqrt((this.sampleProp * (1 - this.sampleProp) / this.sampleSize))
                     this.upperBound = this.sampleProp + this.zScore * Math.sqrt((this.sampleProp * (1 - this.sampleProp) / this.sampleSize))
+
                 },
+
                 iterations() {
+                    this.hasRendered = true;
+                    // Creates sample proportion for each iteration
                     this.allConfInt = [{}];
                     for (var i = 0; i < this.numIt; i++) {
                         this.enter();
@@ -178,6 +165,7 @@
                     this.ciGraph();
                 },
                 ciGraph() {
+                    // Graphs confidence interval
                     const data = [];
                     const lines = [
                         {
@@ -195,11 +183,16 @@
                     ]
                     var j = 1;
                     var backColor;
+                    this.totalSuccess = 0;
                     for (var i = 0; i < this.numIt * 3; i += 3) {
                         if (this.allConfInt[j].left > this.popProp || this.allConfInt[j].right < this.popProp)
                             backColor = 'red'
-                        else
+                        else {
                             backColor = 'green'
+                            // determining the total number of iterations that contain population proportion
+                            this.totalSuccess++
+                        }
+
                         lines.push(
                             {
                                 type: 'box',
@@ -232,6 +225,7 @@
                     }
                     let ctx = this.$refs.cigraph;
                     window.myScatter = Chart.Scatter(ctx, {
+                        // Creating confidence interval graph
                         data: {},
                         options: {
                             responsive: true,
@@ -244,6 +238,7 @@
                                     }
                                 }],
                                 yAxes: [{
+                                    // do not need y-axis displayed for confidence interval graph
                                     display: false,
                                     ticks: {
                                         beginAtZero: true
@@ -258,99 +253,30 @@
                     }
                     );
                 },
-
-                // renderGraph() {
-
-                //     let ctx = this.$refs.lines;
-                //     this.lineChart = new Chart(ctx, {
-                //         type: "line",
-                //         data: {
-                //             "datasets":
-                //                 [
-                //                     this.lineData
-                //                 ]
-                //         },
-                //         options: {
-                //             responsive: true,
-                //             elements: {
-                //                 line: {
-                //                     tension: 0
-                //                 }
-                //             },
-
-                //             xAxes: [{
-                //                 display: true,
-                //                 ticks: {
-                //                     min: 0,
-                //                     stepSize: 5,
-                //                     max: 100
-                //                 }
-                //             }],
-                //             yAxes: [{
-                //                 display: true,
-                //                 ticks: {
-                //                     min: 0,
-                //                     stepSize: 5,
-                //                     max: 100
-                //                 }
-                //             }]
-
-
-                //         }
-                //     });
-
-
-                //     console.log("asdfghj");
-                //     ctx = this.$refs.bar;
-                //     this.barChart = new Chart(ctx, {
-                //         type: 'bar',
-                //         data: this.bardata,
-                //         options: {
-                //             scales: {
-                //                 xAxes: [{
-                //                     type: 'linear',
-                //                     position: 'bottom'
-                //                 }]
-                //             }
-                //         }
-                //     });
-                // }
             },
             watch: {
+                // Here I am limiting the user input for the values they enter
                 popProp(val) {
+                    // proportion must be between 0 and 1
                     if (val > 1) { this.popProp = 1; }
                     else { this.popProp = Math.abs(val); }
                 },
                 sampleSize(val) {
+                    // sample size must be at least 1
                     if (val < 1) { this.sampleSize = 1; }
                     else { this.sampleSize = Math.round(val); }
                 },
                 confInt(val) {
+                    // confidence interval must be postive and less than 100
                     if (val > 99) { this.confInt = 99; }
                     else { this.confInt = Math.abs(val); }
                 },
                 numIt(val) {
+                    // number of iterations must be a postive integer
                     this.numIt = Math.abs(val)
                     if (val > 10000) { this.numIt = 10000; }
                     else { this.numIt = Math.round(val); }
-                },
-                meanSampleSize(val) {
-                    if (val < 1) { this.meanSampleSize = 1; }
-                    else { this.meanSampleSize = Math.round(val); }
-                },
-                meanConfInt(val) {
-                    if (val > 99) { this.meanConfInt = 99; }
-                    else { this.meanConfInt = Math.abs(val); }
-                },
-                meanNumIt(val) {
-                    this.numIt = Math.abs(val)
-                    if (val > 10000) { this.meanNumIt = 10000; }
-                    else { this.meanNumIt = Math.round(val); }
                 }
-            },
-            mounted() {
-                // this.ciGraph();
-
             }
         });
     </script>
