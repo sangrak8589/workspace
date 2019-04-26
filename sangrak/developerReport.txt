@@ -1,0 +1,22 @@
+My page is limited by the fact that the user can only enter up to 6 rows and columns, meaning that at most, 
+only the distribution and association between 6 variables. 
+
+There is also a min constraint of 2 rows and variables, as by definition to study the relationship 
+between variables requires at least two variables. 
+
+
+Problems with my code/implementation is that the user has to use the keyboard "up/down" buttons to enter the number 
+of rows and columns at the very beginning to create the input matrix. Besides that there are no other implementation problems.  
+
+If I had more time, I would like to add a features where the user can conduct different types of chi-square tests and conduct 
+them on different confidence intervals and significance levels. I would also like to make the graph more colorful and allow 
+to toggle for different statistics. 
+
+The website works by doing several mathematical operations on user inputted data. Behind the scenes, the user data for each category 
+and group are held in multiple array data structures. These data structures are analyzed by conducting several operations such
+as the reduce() function to find the sum of the user data values for each category and group, division of array indexes to 
+get the frequency, relative frequency, expected values, and chi-square test statistics. 
+The sum of the group totals and category totals are used by Plotly to create a bar graph that displays the respective toals. 
+The information from the expected data is used in tandem from the original user input to get the x^2 test statistic and the degrees of freedom. 
+These two values are then used by Jstat (Jstat.chisquare.pdf()) to calculate the p-value. 
+
