@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <style scoped>
         body {
-            margin: 5px;
+            margin: 0;
             background-image: url(background.jpg);
             background-size: 100%;
         }
@@ -215,7 +215,7 @@
         <div class="graph grid-items">
             <p style="color:black;"> <strong> Graphical Representation </strong></p>
             <!-- reference to where the graph will be placed  -->
-            <div ref="plot" style="width:415px;"></div>
+            <div ref="plot"></div>
 
         </div>
 
@@ -295,7 +295,6 @@
         <div class="expectedValues grid-items">
             <p style="color:black;"> <strong> Expected Value Table</strong> </p>
 
-            <br>
             <table class="table2">
                 <!-- Sets it up so that it looks similar to the input table where user inputted data, 
                 but instead of observed user input data, this table displays the expected values
@@ -552,6 +551,7 @@
 
                         let data = [trace1, trace2];
                         let layout = {
+                            autosize: true,
                             title: 'Frequency of Categorical Variables',
                             barmode: 'group',
                             xaxis: { title: 'Categorical Variables' },
