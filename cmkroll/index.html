@@ -153,14 +153,6 @@
                     this.upperBound = this.sampleProp + this.zScore * Math.sqrt((this.sampleProp * (1 - this.sampleProp) / this.sampleSize))
 
                 },
-                // total() {
-                //     this.enter();
-                //     for (var i = 0; i < this.numIt; i++) {
-                //         if (this.lowerBound < this.popProp && this.popProp < this.upperBound) {
-                //             totalSuccess++;
-                //         }
-                //     }
-                // }
 
                 iterations() {
                     this.hasRendered = true;
@@ -197,6 +189,7 @@
                             backColor = 'red'
                         else {
                             backColor = 'green'
+                            // determining the total number of iterations that contain population proportion
                             this.totalSuccess++
                         }
 
