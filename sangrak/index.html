@@ -26,7 +26,8 @@
             grid-gap: 20px;
         }
 
-        @media screen and (max-width: 400px) {
+        /* CSS Media Query Settings To Allow For Portability on Mobile Devices and Provide a Responsive Webpage */
+        @media screen and (max-width: 450px) {
             .grid-container {
                 /* padding: 10px; */
                 padding: 0;
@@ -48,7 +49,7 @@
         }
 
         .button {
-            background-color: #2fc710;
+            background-color: #208008;
             border: none;
             color: white;
             padding: 15px 32px;
@@ -58,12 +59,14 @@
             font-size: 16px;
         }
 
+        /* Advanced CSS Settings For Buttons */
         .button2 {
             background-color: rgb(30, 27, 211);
             width: 30%;
             font-size: 10px;
         }
 
+        /* Advanced CSS Settings For Buttons */
         .button span {
             cursor: pointer;
             display: inline-block;
@@ -71,6 +74,7 @@
             transition: 0.5s;
         }
 
+        /* Advanced CSS Settings For Buttons */
         .button span:after {
             content: '\00bb';
             position: absolute;
@@ -80,15 +84,16 @@
             transition: 0.5s;
         }
 
+        /* Advanced CSS Settings For Buttons */
         .button:hover span {
             padding-right: 25px;
         }
 
+        /* Advanced CSS Settings For Buttons */
         .button:hover span:after {
             opacity: 1;
             right: 0;
         }
-
 
         .contingencyDataTable {
             grid-area: contingencyDataTable;
@@ -105,8 +110,6 @@
         .contingencyResultTable {
             grid-area: contingencyResultTable;
         }
-
-
 
         .grid-item {
             background-color: rgba(255, 255, 255, 0.8);
@@ -154,6 +157,7 @@
 </head>
 
 <body>
+    <!-- Ask user for size of table they want to work with for N x N rows and columns -->
     <div id="app" class="grid-container">
         <form class="input grid-items">
             <p style="color:black;"> <strong>Choose # of rows and cols (Max: 6 x 6 and Min: 2 x 2) </strong>
@@ -165,7 +169,7 @@
             Columns: <br><br>
             <input type="number" v-model.number="cols" />
             <br><br>
-
+            <!-- Info button to explain why the table is 1 size bigger than what they selected... For formatting purposes  -->
             <button type="button" class="button button2" v-on:click="seen = !seen"><span>Why is the table one row and
                     column
                     size
@@ -176,48 +180,51 @@
                 supposed to be blank</p>
         </form>
 
-
-
+        <!-- Get user input of the data for their variables they want to compare -->
         <div class="contingencyDataTable grid-items">
             <p style="color:black;"> <strong> Enter Data Below </strong></p>
+            <!-- Store in a table format -->
             <table>
+                <!-- Loop through rows in table -->
                 <tr v-for="row, r in table" :key="r">
+                    <!-- loop through columns in each row -->
                     <td v-for="col, c in row" :key="c">
+                        <!-- make the first cell (0,0) of the table readonly because that's how a table is formatted when comparing two things
+                             This is also the reason why the table is one size bigger than the amount of rows and columns specified by the user -->
                         <input v-if="r === 0 && c === 0 " type="text" :value="col" style="width: 7em" readonly />
-
+                        <!-- Place a placeholder value so user knows what goes in the appropriate cells -->
+                        <!-- get the variable names for the categories -->
                         <input v-else-if="r === 0 " type="text" :value="col" style="width: 7em" placeholder="category"
                             @input="onCellChange(r, c, $event.target.value)" />
-
+                        <!-- get the variable names for the groups -->
                         <input v-else-if="c === 0 " type="text" :value="col" style="width: 7em"
                             @input="onCellChange(r, c, $event.target.value)" :placeholder="(!(c===0)) ? '' : 'group'" />
-
-                        <input v-else type="number" style="width: 7em" :value="col"
+                        <!-- capture the actual data values for the above types of variables -->
+                        <input v-else type="number" style="width: 7em" :value="col" placeholder=3
                             @input="onCellChange(r, c, $event.target.value)" />
-
                     </td>
                 </tr>
             </table>
             <br><br>
 
-
-            <button type="button" class="button" id="alert" @click="addGraph">ANALYZE!</button>
+            <!-- Analyze button that displays the totals of each category and group variable on a graph, invoked by "addGraph" function below -->
+            <button type="button" class="button" id="alert" @click="addGraph">CREATE GRAPH!</button>
             <br><br>
         </div>
 
         <div class="graph grid-items">
             <p style="color:black;"> <strong> Graphical Representation </strong></p>
-
+            <!-- reference to where the graph will be placed  -->
             <div ref="plot" style="width:415px;"></div>
 
         </div>
 
-
-
+        <!-- Frequency and Relative Frequency Tables Set Up -->
         <div class="freqRelativeFreqTable grid-items">
             <p style="color:black;"> <strong> Frequency and Relative Frequency Table </strong></p>
-
             <table>
                 <tr>
+                    <!-- Create Table Headings Here For Group Variables -->
                     <th>
                         Variable
                     </th>
@@ -231,8 +238,10 @@
                         Percentage (%)
                     </th>
                 </tr>
+                <!-- Loop through the rows and columns and display the appropriate stats for the above headings -->
                 <tr v-for="row, fr in freqTable" :key="fr">
                     <td v-for="col, fc in row" :key="fc">
+                        <!-- Display the values -->
                         {{col}}
                     </td>
                 </tr>
@@ -241,6 +250,7 @@
             <br><br>
             <table>
                 <tr>
+                    <!-- Create Table Headings Here For Category Variables -->
                     <th>
                         Variable
                     </th>
@@ -254,8 +264,10 @@
                         Percentage (%)
                     </th>
                 </tr>
+                <!-- Loop through the rows and columns and display the appropriate stats for the above headings -->
                 <tr v-for="row, fr in freqTable2" :key="fr">
                     <td v-for="col, fc in row" :key="fc">
+                        <!-- Display the values -->
                         {{col}}
                     </td>
                 </tr>
@@ -263,36 +275,47 @@
             <br><br>
         </div>
 
-
+        <!-- Set up the Contingency Table in table format  -->
         <div class="contingencyResultTable grid-items">
             <p style="color:black;"> <strong> The Contingency Table</strong> </p>
             <table class="table2">
+                <!-- Sets it up so that it looks similar to the input table where user inputted the data, 
+                    but different in that it now displays the group and category totals -->
                 <tr class="tr2" v-for="row, cr in contingencyTable" :key="cr">
                     <td v-for="col, cc in row" :key="cc">
+                        <!-- Display the values -->
                         {{col}}
                     </td>
                 </tr>
             </table>
 
         </div>
+
+        <!-- Sets up the Expected Table in table format -->
         <div class="expectedValues grid-items">
             <p style="color:black;"> <strong> Expected Value Table</strong> </p>
 
             <br>
             <table class="table2">
+                <!-- Sets it up so that it looks similar to the input table where user inputted data, 
+                but instead of observed user input data, this table displays the expected values
+                for that data -->
                 <tr class="tr2" v-for="row, er in expectedTable" :key="er">
                     <td v-for="col, ec in row" :key="ec">
+                        <!-- Display the values -->
                         {{col}}
                     </td>
                 </tr>
             </table>
             <br>
-            <button type="button" class="button" v-on:click="chiSquaredComputed()"><span>Get chi-square</span></button>
+            <!-- Button to get the p-value based on the chi-squared test analysis 
+            this is displayed as a window alert to the user -->
+            <button type="button" class="button" v-on:click="chiSquaredComputed()"><span>Get Chi-Square
+                    Stats</span></button>
 
         </div>
 
-
-
+        <!-- all the includes for the scripts that are used to create the graph, use the jstat function library, and integrate Vue-->
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
         <script src="//cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
@@ -317,25 +340,28 @@
                     expectedTable: [],
                     groupTotals: [],
                     categoryTotals: [],
-
                     tableTotal: 0
                 },
 
                 computed: {
+                    // method to create the user input table based on user dictated rows and columns
                     table() {
 
                         let numRow = this.rows;
                         let numCols = this.cols;
                         const _table = new Array(numRow);
+                        // creates 2d array to make the table and hold the values
                         for (let row = 0; row < numRow + 1; row++) {
+                            //initialize the table so that it is blank when rendered
                             _table[row] = new Array(numCols + 1).fill("");
                         }
-                        // console.log("printing in table() rows " + numRow + " and cols " + this.cols);
+
                         return _table;
                     }
                 },
-
                 methods: {
+                    //updates all the different tables values every time the user enters 
+                    // something in the input fields so that almost everything is done in real time
                     update() {
 
                         let numRow = this.rows;
@@ -347,8 +373,12 @@
                             return s + row[col];
                         }, 0);
 
+                        //push the category variables frequency in an array that holds the frequency totals 
+                        //this makes it easier to iterate through all the values later on
                         const categoryTotals = [];
                         for (let col = 0; col < this.cols; col++) {
+                            //push essentially adds each element in categoryFreq to categoryTotals array
+                            //similar to an assignment operator
                             categoryTotals.push(categoryFreq(col + 1));
                         }
 
@@ -356,11 +386,13 @@
                         const groupTotals = [];
                         for (let row = 0; row < numRow; row++) {
                             groupTotals.push(
+                                //reduce function basically computes a sum of the elements of the array
                                 this.table[row + 1].slice(1).reduce((a, b) => a + b)
                             );
                         }
 
-                        //get original data
+                        //get original data and store in array form
+                        //this is needed later to compute the expected values, etc...
                         const originalData = [];
                         for (let row = 0; row < numRow; row++) {
                             originalData.push(
@@ -383,14 +415,14 @@
                         for (let i = 0; i < this.categoryTotals.length; i++) {
                             let row = []
                             for (let j = 0; j < this.groupTotals.length; j++) {
+                                //formula for getting expected values
                                 row.push(((this.categoryTotals[i] * this.groupTotals[j]) / this.tableTotal).toFixed(2))
                             }
                             _expectedValues[i] = row;
-                            // console.log("printing expected values" + _expectedValues[i])
                         }
-                        // console.log("printing expected values" + _expectedValues)
 
-
+                        //update the expected values
+                        this.expectedTable = _expectedValues
                         //transpose the expected values because they are in the wrong order for calculations currently
                         let transposedExpectedValues = [];
                         for (let i = 0; i < _expectedValues.length; ++i) {
@@ -404,126 +436,150 @@
                             }
                         }
 
-                        // console.log("printing transposedExpectedValues " + transposedExpectedValues);
+                        // the transposedExpectedValues array now holds all the expected Values in the correct order
+                        // that the user inputted them
 
-                        //caclulate test statistic (observed - expected)^2
+
+
                         let observedValues = [];
                         for (let i = 0; i < originalData.length; i++) {
+                            //puts all the original user input data into one array in sequential order so that it can be 
+                            //likewise compared with the expected values, for later chi-square test statistic computations
                             observedValues = [...observedValues, ...originalData[i]];
                         }
+
                         let expectedValuesArray = [];
                         for (let i = 0; i < transposedExpectedValues.length; i++) {
+                            //puts all the expected values one array in sequential order in the same way as the observed values
+                            // were done above
+
                             expectedValuesArray = [...expectedValuesArray, ...transposedExpectedValues[i]];
                         }
-                        // const observedValues = [...originalData[0], ...originalData[1]];
-                        // const expectedValuesArray = [..._expectedValues[0], ..._expectedValues[1]];
 
-                        // console.log("printing [observedValues.length] " + observedValues.length + " printing observed values data " + observedValues)
-                        // console.log("printing [expectedValuesArray.length] " + expectedValuesArray.length + " printing expectedValuesArray data " + expectedValuesArray)
+                        //create an array to hold the test statistics for each group and category variable
                         let _testStatisticCalculation = [];
+                        //caclulate test statistic (observed - expected)^2
                         for (let i = 0; i < observedValues.length; i++) {
                             let newRow = []
-
+                            //formula for calulcating the test statistics: [(observed - expected)^2 / expected]
                             newRow.push(
                                 (Math.pow((observedValues[i] - expectedValuesArray[i]), 2) / expectedValuesArray[i]).toFixed(2))
 
                             _testStatisticCalculation[i] = newRow;
 
                         }
-                        // console.log("printing testStatistic content" + _testStatisticCalculation + " and length " + _testStatisticCalculation.length)
 
 
-                        //calculate sum of test statistics
-
-
-                        //calculate sum of test statistics 
                         let getSum = [];
-
                         for (let i = 0; i < _testStatisticCalculation.length; i++) {
-
+                            //gets all the indivdual test statistics from above and puts them in one array so they can later be summed
                             getSum = [...getSum, ..._testStatisticCalculation[i]];
                         }
-
-
+                        //maps the values in getSum so they are in sequential order as how they were calculated and converts the to float
+                        //because currently they are in string format
                         let mapGetSum = getSum.map(parseFloat);
 
+                        //calcluates the sum of the indiviaul test statistics to get the overall test statistic to 2 decimal points
                         let sumOfTestValues = mapGetSum.reduce((a, b) => a + b).toFixed(2);
 
-                        // console.log("printing sumOfTestValues " + sumOfTestValues)
-
+                        //update test statistic value 
                         this.testStatistic = sumOfTestValues;
 
-                        // console.log("printing this.testStatistic " + this.testStatistic)
-
-                        //calculate degrees of freedom
+                        //calculate degrees of freedom using formula: [(#rows  - 1) * (#columns - 1)]
                         let degreesOfFreedom = (numRow - 1) * (numCols - 1);
 
-
-
+                        //update degrees of freedom value
                         this.dof = degreesOfFreedom;
-
-                        // console.log("Printing this.dof " + this.dof);
-
-
-
-                        this.expectedTable = _expectedValues
 
                     },
                     addGraph() {
-                        const x = [];
-                        const y = [];
-
+                        let x = [];
+                        let y = [];
+                        let a = [];
+                        let b = [];
                         let numRow = this.rows;
+                        let numCols = this.cols;
+
+                        // calculate category variables frequency
+                        const categoryFreq = (col) => this.table.slice(1).reduce((s, row) => {
+                            if (typeof row[col] === 'string') return s;
+                            return s + row[col];
+                        }, 0);
+
+                        //put all category variables frequency data in one array called categoryTotals
+                        const categoryTotals = [];
+                        for (let col = 0; col < this.cols; col++) {
+                            categoryTotals.push(categoryFreq(col + 1));
+                        }
 
                         //filling up x and y
                         for (let i = 1; i < numRow + 1; i++) {
                             x.push(this.table[i][0])
                             y.push(this.table[i].slice(1).reduce((a, b) => a + b));
                         }
+                        //filling up a and b
+                        for (let i = 1; i < numCols + 1; i++) {
+                            a.push(this.table[0][i])
+                        }
+                        b.push(categoryTotals);
 
+                        //get all the category and group variable names and store them in x array
+                        x = [...x, ...a];
+                        //get all the category and group variable data associated with the above x values and store them
+                        //in y array
+                        y = [...y, ...categoryTotals];
 
+                        //create the bar graph using plotly
                         Plotly.newPlot(this.$refs.plot, [{
                             x,
                             y,
-                            type: "bar"
+                            type: "bar",
+                            marker: {
+                                color: 'rgba(222,45,38,0.8)'
+                            }
                         }], {
-                                barmode: 'stack',
+                                title: "Frequency of Group and Category Variables",
                                 autosize: true
                             })
                     },
+                    //function that activates every time an input cell is changed so that 
+                    //the tables are updated in real time
                     onCellChange(row, col, value) {
+                        //gets the user observed values input data and stores it in value as a float and makes sure it is a number > 0
+                        //we dont want any negative observed values as that doesn't make sense
+
                         if (!(row === 0 || col === 0)) {
                             value = Math.abs(parseFloat(value));
                         }
+                        //update the value at that particular row and column where the user made the change
                         this.table[row][col] = value;
+
+                        //call all the update functions for the different tables that get updated on cell change
                         this.update();
                         this.updateExpectedTable();
                         this.updateFreqTable();
                         this.updateFreqTable2();
                         this.updateContingencyTable();
-                        // this.originalDataValues();
                         this.$forceUpdate();
-                        // alert(`${row}, ${col} = ${value}`);
 
-                        // console.log("printing in onCellChange rows " + this.row + " and cols " + this.cols);
                     },
+                    //updates the Frequency Table for Group Variables
                     updateFreqTable() {
                         let numRow = this.rows;
                         const relFreqs = this.groupTotals.map(freq => freq / this.tableTotal);
                         const data = []; // variable | freq | relFreq | percentFreq
                         for (let row = 0; row < numRow; row++) {
                             data.push([
-                                this.table[row + 1][0],
-                                this.groupTotals[row],
-                                relFreqs[row].toFixed(2),
-                                Math.round(relFreqs[row] * 100) + "%"
+                                this.table[row + 1][0], //variable
+                                this.groupTotals[row], //freq
+                                relFreqs[row].toFixed(2), //relFreq
+                                Math.round(relFreqs[row] * 100) + "%" //percentFreq
                             ]);
                         }
                         this.freqTable = data;
-                        // console.log("printing data" + data)
-                        // console.log("printing this.freqTable" + this.freqTable)
-                        // console.log("printing in updateFreqTable rows " + this.row + " and cols " + this.cols);
+
                     },
+                    //updates teh Frequency Table for Category Variables
                     updateFreqTable2() {
                         const relFreqs = this.categoryTotals.map(freq => freq / this.tableTotal);
 
@@ -531,23 +587,23 @@
                         const data = []; // variable | freq | relFreq | percentFreq
                         for (let col = 0; col < numCols; col++) {
                             data.push([
-                                this.table[0][col + 1],
-                                this.categoryTotals[col],
-                                relFreqs[col].toFixed(2),
-                                Math.round(relFreqs[col] * 100) + "%"
+                                this.table[0][col + 1], //variable
+                                this.categoryTotals[col], //freq
+                                relFreqs[col].toFixed(2), //relFreq
+                                Math.round(relFreqs[col] * 100) + "%" //percentFreq
                             ]);
                         }
                         this.freqTable2 = data;
                     },
+                    //updates the Contingency Table
                     updateContingencyTable() {
-                        //copy of table
+                        //make a copy of the original table 
                         const _table = this.table.map(row => row.slice());
-
                         let numRow = this.rows;
 
-                        // console.log("Printing _table: " + _table)
+                        //create a "Total" row for the Category Totals
                         _table.push(["Total", ...this.categoryTotals]);
-                        // console.log("printing _table.length " + _table.length + " printing _table data " + _table)
+                        //create a "Total" column for the Group Totals
                         const lastCol = ["Total", ...this.groupTotals, this.tableTotal];
 
                         for (let i = 0; i < numRow + 2; i++) {
@@ -556,46 +612,45 @@
                         this.contingencyTable = _table;
                     },
                     updateExpectedTable() {
-
-                        // const _table = this.expectedTable.map(row => row.slice());
-                        // const lastCol = [" ", " ", " "];
+                        //map the first row to the rows of the original user input table
                         const firstRow = [...this.table.map(row => row[0])];
-                        // console.log("Prining firstRow " + firstRow + " printing firstRow.length " + firstRow.length)
-
+                        //get the first col from the original user input table
                         const firstCol = [...this.table[0].slice(1)];
 
-
-                        // for (let i = 0; i < this.rows + 1; i++) {
-                        //     _table[i].push(lastCol[i]);
-                        // }
                         const _table = [firstRow];
                         let numCols = this.cols;
 
+                        //loop through the table and put the expected values in with the category/group variable names
+                        //this table is transposed to the original user input table so the category/group variable name placements have interchanged 
+                        //did this so not all the tables look repetitive in the way they display the info
                         for (let i = 0; i < numCols; i++) {
-                            // console.log("printing expected table with iterations " + this.expectedTable)
                             _table.push([firstCol[i], ...this.expectedTable[i]]);
                         }
                         this.expectedTable = _table;
 
-                        // console.log("printing in updateExpectedTable rows " + this.row + " and cols " + this.cols);
                     },
-
+                    //function to compute the chi square value and display it along with DOF
                     chiSquaredComputed() {
-                        // console.log("Printing this.testStatistic in chiSquared " + this.testStatistic)
-                        // console.log("Printing this.dof in chiSquared " + this.dof)
-                        window.alert('The chi-squared p-value is: ' + (jStat.chisquare.pdf(this.testStatistic, this.dof)).toFixed(4));
+                        //displays the p-value, test statistic, and DOF as an alert using the jStat.chisquare.cdf() function
+                        window.alert('The test statistic is: ' + this.testStatistic + '\nThe degrees of freedom are: ' + this.dof + '\nThe chi-squared p-value is: ' + (1 - (jStat.chisquare.cdf(this.testStatistic, this.dof))).toFixed(4));
                     }
                 },
+                //validating user input
                 watch: {
+                    //make sure that user cannot enter more than 6 rows or less than 2 rows
                     rows(val) {
                         if (val > 6) {
+                            //if they do try to enter more than 6, auto set the table to max of 6 rows
                             this.rows = 6;
                         }
                         else if (val < 2) {
+                            //if they do try to enter less than 2 rows, auto set the table to min of 2 rows
                             this.rows = 2;
                         }
+                        //make sure the user cannot make a table of negative rows 
                         else { this.rows = Math.abs(val); }
                     },
+                    //same checks as for rows above
                     cols(val) {
                         if (val > 6) {
                             this.cols = 6;
@@ -605,9 +660,10 @@
                         }
                         else { this.cols = Math.abs(val); }
                     }
-                    // dataNumbers(val) {
-                    //     this.dataNumbers = Math.abs(val);
-                    // }
+
+                    //user validation for the individual data values to make sure they do not 
+                    //enter negative observed values is done above in the table() method
+
                 }
             });
         </script>
