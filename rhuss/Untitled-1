@@ -1,0 +1,286 @@
+<html lang="en">
+
+<head>
+    <title>Confidence Intervals</title>
+    <style>
+        .gridcontainer {
+            min-height: 100%;
+            display: grid;
+            grid-template:
+                'input'
+                'confidence-intervals'
+                'sample-statistics'
+        }
+        @media screen and (min-width: 792px) {
+            .gridcontainer {
+                min-height: 100%;
+                display: grid;
+                grid-template:
+                    'input confidence-intervals''sample-statistics confidence-intervals'
+            }
+        }
+        .size {
+            max-height: 70vh;
+            max-width: 70vh;
+        }
+        #input {
+            grid-area: input;
+        }
+        #confidence-intervals {
+            grid-area: confidence-intervals;
+        }
+        #sample-statistics {
+            grid-area: sample-statistics;
+        }
+        #pageSelection {
+            cursor: pointer;
+            margin: 0px;
+            padding: 10px;
+            text-align: center;
+            border: 1px black;
+            border-style: solid;
+            min-width: 45%;
+        }
+        .selected {
+            background-color: #00838F;
+        }
+    </style>
+</head>
+
+
+
+<body style="margin: 0;">
+    <div id="app" class="gridcontainer">
+        <div id="input">
+            <div id="title grid-items">
+                <h2 style="text-align: center; margin: 20px;">Simulating Confidence Intervals</h2>
+                <div style="margin: 10px;text-align: center; display: flex;">
+                    <div id="pageSelection" :class="{selected: pageIdx == index}" v-for="(page, index) in pages"
+                        :key:="index" @click="pageIdx = index">
+                        {{ page }}
+                    </div>
+                </div>
+            </div>
+            <div id="input grid-items" style="margin: 20px;">
+                <div class="row">Population Proportion: <input type="number" size="2" v-model="popProp"></div>
+                <div class="row">Sample Size: <input type="number" size="2" v-model="sampleSize"></div>
+                <div class="row">Confidence Level: <input type="number" size="2" v-model="confInt"> %</div>
+                <div class="row">Number of Iterations: <input type="number" size="2" v-model="numIt"></div>
+                <div class="row">
+                    <button id="enter" @click="this.iterations">Enter</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="sample-statistics">
+            <div class="grid-items">
+                <h4>Sample Statistics</h4>
+                <p>Bar chart, use your imagination</p>
+                <canvas ref="bar" width="200" height="200"></canvas>
+            </div>
+        </div>
+
+        <div id="confidence-intervals">
+            <div class="grid-items">
+                <h4>Confidence Intervals</h4>
+                <!-- <div>({{lowerBound}} , {{upperBound}})</div> -->
+                <canvas ref="cigraph" class="size"></canvas>
+            </div>
+        </div>
+
+    </div>
+    <script src="//cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.5/chartjs-plugin-annotation.js"></script>
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                pages: [
+                    "Proportion",
+                    "Mean"
+                ],
+                pageIdx: 0,
+                bardata: [{
+                    x: -10
+                }, {
+                    x: 0
+                }, {
+                    x: 10
+                }],
+                lineData: {
+                    data: [
+                        {
+                            x: 5,
+                            y: 5
+                        }, {
+                            x: 5,
+                            y: 6
+                        }
+                    ]
+                }
+                ,
+                allConfInt: [{}],
+                lineChart: {},
+                barChart: {},
+                isProportions: true,
+                popProp: 0.5,
+                sampleSize: 30,
+                confInt: 95,
+                numIt: 10,
+                popMean: 5,
+                popStDev: 0.5,
+                meanSampleSize: 30,
+                meanConfInt: 95,
+                meanNumIt: 10,
+                sampleProp: 0.5,
+                zScore: 1.96,
+                lowerBound: 0.25,
+                upperBound: 0.75
+            },
+            methods: {
+                enter() {
+                    let sum = 0;
+                    for (let i = 0; i < this.sampleSize; i++) {
+                        const y = Math.random();
+                        if (y < this.popProp) {
+                            sum++;
+                        }
+                    }
+                    this.sampleProp = sum / this.sampleSize;
+                    this.zScore = jStat.normal.inv(1 - ((1 - (this.confInt / 100)) / 2), 0, 1);
+                    this.lowerBound = this.sampleProp - this.zScore * Math.sqrt((this.sampleProp * (1 - this.sampleProp) / this.sampleSize))
+                    this.upperBound = this.sampleProp + this.zScore * Math.sqrt((this.sampleProp * (1 - this.sampleProp) / this.sampleSize))
+                },
+                iterations() {
+                    this.allConfInt = [{}];
+                    for (var i = 0; i < this.numIt; i++) {
+                        this.enter();
+                        this.allConfInt.push({ left: this.lowerBound, mid: this.sampleProp, right: this.upperBound });
+                    }
+                    this.ciGraph();
+                },
+                ciGraph() {
+                    const data = [];
+                    const lines = [
+                        {
+                            type: "line",
+                            mode: "vertical",
+                            scaleID: "x-axis-1",
+                            value: this.popProp,
+                            borderColor: "red",
+                            label: {
+                                content: "Population Proportion",
+                                enabled: true,
+                                position: "top"
+                            }
+                        }
+                    ]
+                    var j = 1;
+                    var backColor;
+                    for (var i = 0; i < this.numIt * 3; i += 3) {
+                        if (this.allConfInt[j].left > this.popProp || this.allConfInt[j].right < this.popProp)
+                            backColor = 'red'
+                        else
+                            backColor = 'green'
+                        lines.push(
+                            {
+                                type: 'box',
+                                // optional drawTime to control layering, overrides global drawTime setting
+                                drawTime: 'beforeDatasetsDraw',
+                                // optional annotation ID (must be unique)
+                                //  id: 'a-box-1',
+                                // ID of the X scale to bind onto
+                                xScaleID: 'x-axis-1',
+                                // ID of the Y scale to bind onto
+                                yScaleID: 'y-axis-1',
+                                // Left edge of the box. in units along the x axis
+                                xMin: this.allConfInt[j].left,
+                                // Right edge of the box
+                                xMax: this.allConfInt[j].right,
+                                // Top edge of the box in units along the y axis
+                                yMax: i + 1,
+                                // Bottom edge of the box
+                                yMin: i,
+                                // Stroke color
+                                //  borderColor: 'red',
+                                // Stroke width
+                                borderWidth: 2,
+                                // Fill color
+                                backgroundColor: backColor,
+                            }
+                        );
+                        //console.log(j);
+                        j++;
+                    }
+                    let ctx = this.$refs.cigraph;
+                    window.myScatter = Chart.Scatter(ctx, {
+                        data: {},
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                xAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                        max: 1
+                                    }
+                                }],
+                                yAxes: [{
+                                    display: false,
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            },
+                            annotation: {
+                                annotations: lines,
+                            }
+                        }
+                    }
+                    );
+                },
+                
+            },
+            watch: {
+                popProp(val) {
+                    if (val > 1) { this.popProp = 1; }
+                    else { this.popProp = Math.abs(val); }
+                },
+                sampleSize(val) {
+                    if (val < 1) { this.sampleSize = 1; }
+                    else { this.sampleSize = Math.round(val); }
+                },
+                confInt(val) {
+                    if (val > 99) { this.confInt = 99; }
+                    else { this.confInt = Math.abs(val); }
+                },
+                numIt(val) {
+                    this.numIt = Math.abs(val)
+                    if (val > 10000) { this.numIt = 10000; }
+                    else { this.numIt = Math.round(val); }
+                },
+                meanSampleSize(val) {
+                    if (val < 1) { this.meanSampleSize = 1; }
+                    else { this.meanSampleSize = Math.round(val); }
+                },
+                meanConfInt(val) {
+                    if (val > 99) { this.meanConfInt = 99; }
+                    else { this.meanConfInt = Math.abs(val); }
+                },
+                meanNumIt(val) {
+                    this.numIt = Math.abs(val)
+                    if (val > 10000) { this.meanNumIt = 10000; }
+                    else { this.meanNumIt = Math.round(val); }
+                }
+            },
+            mounted() {
+                // this.ciGraph();
+            }
+        });
+    </script>
+</body>
+
+</html>
