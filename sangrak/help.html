@@ -21,7 +21,8 @@
 
     <p>When the website is loaded, the first thing that the user needs to do is enter the number of rows and columns.
         The number of rows and colums are capped at 6 and a min of 2. The default values in the rows and columns are 2
-        for both.
+        for both. The input is binded so that the table is automatically rendered when the rows/columns value is
+        changed. This way the user does not have to click a button to create the input table.
     </p>
 
     <p>The user should enter a number of rows and columns appropriate to the number of categorical data they want to
@@ -39,17 +40,20 @@
     </p>
 
     <p>The user will next, input their data in the table they created, and make sure they place the categorical and
-        group variables in the appropriate place. These inputs should typically be text and not numbers. Then they can
-        enter the data for those variables. These inputs can be either whole numbers or decimal numbers; they cannot be
-        negative numbers or strings/text. The data is validated so that they cannot enter negative observed values or
-        strings.
+        group variables in the appropriate place. Placholders are situated for "Group" and "Category" so the user knows
+        where the categorical data variables go. These inputs should typically be text and not numbers. Then they can
+        enter the data for those variables. These cells are marked by the placeholder "3". These inputs can be either
+        whole numbers or decimal numbers; they cannot be negative numbers or strings/text. The data is validated so that
+        they cannot enter negative observed values or strings.
     </p>
 
     <p>The user then will press the "Create Graph!" button to create a graph that displays the frequencies of their
         observed data values for each category/group variable. The type of graph that is created is a bar graph, and the
         bars are grouped in a similar color for the variable names. As seen in the following screenshot, the category
         variables "male" and "female" are grouped together as dark blue in color, and the "tall", "short", "medium"
-        group variables are grouped together by color in a rose pink color.
+        group variables are grouped together by color in a rose pink color. The graph is "hoverable" and shows the
+        frequency count of each individual bar on the bar itself and if you hover over it.
+
         <br>
         <img src="barGraph2.jpg" alt="barGraphPic" style="width: 450px;height: 500px">
 
@@ -87,6 +91,10 @@
     <img src="alert.jpg" alt="alertPic" style="width: 450px;height: 200px">
     <br>
 
+    <p>Note: The Input Table values have to be entered and filled out before you hit the "Create Graph!" or "Get
+        Chi-Square Stats" buttons. If those inputs are not filled out, the buttons will print out a garbage graph
+        and test statistics
+    </p>
     <p>If you have any questions that are not addressed on this page, please contact the webpage developer: Sangram
         Kadam</p>
 
