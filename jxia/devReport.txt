@@ -1,0 +1,14 @@
+My page is limited by the user having to know the population mean, population standard deviation and sample size.
+It is not able to calculate the confidence interval even if one of these inputs is missing.
+
+Problems with my code/implementation is it is very slow if repetitions is greater than 1000 and the graph is not 
+readable with such high number of reptitions. The population mean is also not always centered
+
+I would like to add feature where user can copy and paste their population set and it would generate a graph.
+I would also like to add feature where user can drag the confidence intervals around on the graph and the page 
+would give them a population mean and deviation that is associated with the new confidence intervals
+
+It works using Jstat to calculate a normal value set from user input. Then it uses Jstat to calculate T value which is then plugged
+into confidence interval formula to calculate the confidence intervals. All confidence intervals are stored in an array
+which is used by chartJS to create the chart.
+

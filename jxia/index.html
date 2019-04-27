@@ -8,6 +8,7 @@
 
   <!-- <script type="text/javascript" src="canvasjs.min.js"></script> -->
   <style>
+    /* header */
     h1 {
       background: url(./images/confidenceInterval.jpg) -80px -80px;
 
@@ -21,18 +22,7 @@
       text-align: center;
     }
 
-    input[type=text],
-    select {
-
-      width: 100%;
-      padding: 12px 20px;
-      margin: 8px 0;
-      display: inline-block;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-    }
-
+    /* submit and show defineition buttons */
     .button {
       background-color: #4CAF50;
       /* Green */
@@ -45,7 +35,7 @@
       font-size: 16px;
     }
 
-
+    /* page layout */
     .grid-container {
       display: grid;
       width: 100vw;
@@ -73,7 +63,7 @@
       /* overflow: hidden; */
     }
 
-
+    /* title */
     .header {
       grid-area: header;
       /* font-size: 50px; */
@@ -81,6 +71,7 @@
 
     }
 
+    /* form */
     .form {
 
       display: flex;
@@ -103,6 +94,7 @@
 
     }
 
+    /* picture part of graph */
     .pic {
       margin: auto;
       grid-area: pic;
@@ -110,6 +102,7 @@
       max-height: 70vh;
     }
 
+    /* number of missed intervals counter */
     .counter {
       grid-area: counter;
       text-align: center;
@@ -189,7 +182,7 @@
         confidence interval is {{left}} to {{right}} <br>
       </p>
     </div>
-
+    <!-- bottom left section - form -->
 
     <div class="form">
 
@@ -209,7 +202,7 @@
         <button type="button" class="button" v-on:click="onSubmit()">Submit</button>
       </form>
     </div>
-
+    <!-- bottom right section - graph -->
 
     <div class="graph">
       <div>
@@ -230,7 +223,7 @@
   </div>
   </div>
 
-  <!-- <script src="./Chart.bundle.js"></script> -->
+
   <script src="//cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -243,22 +236,27 @@
 
       data: {
         buttonText: "What is confidence interval?",
+
+
+        // inputs
         repeat: 5,
-        mean: 0.0,
-        size: 10,
-        deviation: 5.0,
-        confidence: 0.95,
-        seen: false,
-        done: false,
+        mean: 0.0, //population mean
+        size: 10,  //sample size
+        deviation: 5.0,  //population standard deviation
+        confidence: 0.95, //confidence interval
+
+
+        seen: false, //has the definition been seen
+        done: false, //show graph
         samepleMean: 0.0,
         sampleDeviation: 0.0,
         x: 0,
         y: 0,
         left: 0,
         right: 0,
-        normalValues: [],
-        intervals: [{}],
-        countRed: 0,
+        normalValues: [], //stores sample generated from inputs
+        intervals: [{}], // stores confidence intervals
+        countRed: 0, //storese number of intervals that don't include the mean
         chart: {},
         hidden: true
       },
@@ -268,28 +266,31 @@
       },
       methods: {
 
+        // calculates sample mean and deviation from inputs
+
         setSampleMeanAndDeviation() {
-          // var sum = 0;
-          // for (var i = 0; i < this.normalValues.length; i++) {
-          //   sum += this.normalValues[i];
-          // }
+
           this.samepleMean = jStat.mean(this.normalValues);
 
-          // console.log(this.samepleMean);
+
           this.sampleDeviation = jStat.stdev(this.normalValues, true);
-          //console.log(this.sampleDeviation);
+
         },
 
+        // generates a random population from the inputs
+
         generateNormalValues() {
-          // console.log("mean is               " + this.mean);
+
 
           for (var i = 0; i < this.size; i++) {
             this.normalValues.push(parseFloat(jStat.normal.sample(parseFloat(this.mean), parseFloat(this.deviation))));
           }
-          // console.log(this.normalValues);
+
 
 
         },
+
+        // handles What is confidence interval button
 
         onWhat() {
           this.seen = !this.seen;
@@ -299,6 +300,8 @@
             this.buttonText = "I understand (Hide Definition)"
 
         },
+
+        // handles submit button
 
         onSubmit() {
 
@@ -316,33 +319,31 @@
             this.setSampleMeanAndDeviation();
             this.confidenceInterval();
           }
-          // console.log(this.intervals[1].left);
+
           this.graph();
 
-          //   this.add();
+
         },
 
-
+        // calcualtes and stores all the confidence intervals
         confidenceInterval() {
           var t;
-          // console.log(this.size);
-          // console.log(this.confidence);
+
+
           var temp = parseFloat(this.confidence) + parseFloat(((1 - this.confidence) / 2));
-          //  console.log(temp);
+
           t = jStat.studentt.inv(temp, this.size - 1);
-          // console.log(t);
+
           this.left = this.samepleMean - (t * (this.sampleDeviation / Math.sqrt(this.size)));
           this.right = this.samepleMean + (t * (this.sampleDeviation / Math.sqrt(this.size)));
-          //console.log(this.left);
-          // console.log(this.right);
           this.intervals.push({ left: parseFloat(this.left.toFixed(2)), right: parseFloat(this.right.toFixed(2)) });
         },
 
 
 
-
+        // creates the graph
         graph() {
-          // console.log(this.repeat);
+
           const data = [];
           const lines = [
             {
@@ -360,20 +361,20 @@
 
           ]
           var j = 1;
-          //console.log(this.intervals.length);
+
           var backColor;
-          // console.log(this.intervals);
+
           this.deviation = parseFloat(this.deviation);
           var maxRight = parseFloat(0.0);
           var maxLeft = parseFloat(this.mean);
-          //  console.log(typeof this.intervals[j].left);
+
           for (var i = 0; i < this.repeat * 3; i += 3) {
             if (this.intervals[j].right > maxRight)
               maxRight = this.intervals[j].right;
             if (this.intervals[j].left < maxLeft)
               maxLeft = this.intervals[j].left;
 
-            // console.log(typeof this.mean + "     " + typeof maxLeft + "   " + typeof maxRight + "     " + typeof this.deviation);
+
             this.mean = parseFloat(this.mean);
             if (this.intervals[j].left > this.mean || this.intervals[j].right < this.mean) { backColor = 'red'; this.countRed++; }
             else
@@ -419,12 +420,11 @@
 
               }
             );
-            //console.log(j);
+
             j++;
           }
-          //console.log(lines);
-          //  console.log(maxLeft);
-          //console.log(maxRight);
+
+
           let ctx = this.$refs.plot;
           var scatterChartData = {
             datasets: [{
