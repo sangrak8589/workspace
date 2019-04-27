@@ -27,9 +27,9 @@
         <img src="formula.jpg" alt="testStatFormula" style="width: 450px; height: 200px">
         <br>
         The p-value is found by calling the jStat.chisquare.cdf() function, where the test
-        statistic and degrees of freedom are passed in. To get the p-value however, you have to do 1 - the value
-        returned by the jStat function because it is showing the value to the right of the test statistic, and you want
-        the area to the left.
+        statistic and degrees of freedom are passed in. Degrees of freedom are calculated by the formula: (#rows - 1) *
+        (#columns - 1). To get the p-value however, you have to do 1 - the value returned by the jStat function because
+        it is showing the value to the right of the test statistic, and you want the area to the left.
     </p>
 
     <p>When the website is loaded, the first thing that the user needs to do is enter the number of rows and columns.
