@@ -15,8 +15,21 @@
     <p>This page allows the user to study and observe the distribution and association between a max of 6 variables for
         each type of data set. The frequency (sum of each variable) is shown as a graphical representation.
         This distribution can also be analyzed from a variety of tables including frequency, relative frequency, and
-        contingency tables. The web page also conducts a chi-square test on the variables and produces a p-value based
-        on a computed test statistic and the degrees of freedom.
+        contingency tables. The relative frequency is essentially the frequency of each variable dividied by the table
+        total (total of all observed values). The frequency percent essentially converts the relative frequency into a
+        percent by multiplying it by 100. The web page also conducts a chi-square test on the variables and produces
+        a p-value based on a computed test statistic and the degrees of freedom. The chi-square test is computed in the
+        following manner. First you take the observed and expected values and you subtract each observed observed value
+        from its respective expected value and square the result. You then divide by the expected value for each
+        respective observed value. Finally, you take the sum of all these "individual" test statistics to get the
+        overall test statistic. The test statistic formula is shown in the following screenshot:
+        <br>
+        <img src="formula.jpg" alt="testStatFormula" style="width: 450px; height: 200px">
+        <br>
+        The p-value is found by calling the jStat.chisquare.cdf() function, where the test
+        statistic and degrees of freedom are passed in. To get the p-value however, you have to do 1 - the value
+        returned by the jStat function because it is showing the value to the right of the test statistic, and you want
+        the area to the left.
     </p>
 
     <p>When the website is loaded, the first thing that the user needs to do is enter the number of rows and columns.
