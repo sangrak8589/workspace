@@ -1,0 +1,36 @@
+This outlines the User Input for my "Analyzing Data From Contingency Tables" webpage
+
+The user input for rows and columns, which is the first thing that the user should input 
+is in the form of a number. The UI for this was vmodel.number which allowed me to bind the 
+user inputted rows and columns so that the resulting table was created without the need for
+the user to hit a submit button. The input for rows and columns are capped at 6 and a minimum 
+of 2. If the user tries to enter a number greater than 6, then it will automatically set the 
+rows and columns to 6. If they try to enter a number less than 0, it will automatically set 
+the number of rows and columns to 2. By default, the number of rows and columns are set to 2
+at the beginning when the webpage is loaded. 
+
+The user input for "Enter Data" section can be broken down in two parts. The "category" and "group" 
+are of type text. The placeholders are there that indicate which cells are "category" and which 
+cells are "group". The rest of the inputs in the input table (the ones that are not on row and column 1)
+are of type number. These cells have the placeholder "3" in them. In my coding file, I validate the input 
+these data cells in two ways. First, I validate that the user cannot enter a negative observed value.
+Second, I validate that the user can only enter a numerical value and not a string or text. 
+
+These are the only two areas where user input is needed apart from the buttons. 
+
+The buttons on the webpage work in a typical manner. The info button labeled "Why is the table 
+one row and size bigger" is a hover-span button that, when clicked, explains why the user 
+input table is one row and column size bigger than what the user inputted. When this button 
+is clicked again, the explanation goes away. 
+
+The "Create Graph" button creates a bar graph when clicked that displays the frequency of the 
+"Group" and "Category" variables. These bars are color blocked/grouped with the type of variable 
+they are (Group or Category). The graph is "hoverable", so that when you hover over a bar it shows 
+its' frequency value. The frequency value itself is printed on the top of each individual bar as well.
+
+The "Get Chi-Square Stats" button creates an alert that displays the p-value, degrees of freedom, and 
+the test statistic for the user entered data. 
+
+It should be noted that before the "Create Graph" or "Get Chi-Square Stats" button are clicked, the user
+should enter all the input data for the input table otherwise garbage stats and graphs will be 
+created.
