@@ -11,12 +11,62 @@ to test the association between. I decided to max the number of variables at 6 b
 chi-squared calculators, I found that the max variables they allowed was at most 4, which seemed pretty trivial if 
 someone had more variables they wanted to test the associations between. I didn't want to clutter up the page too 
 much with the tables so 6 was a good medium to cap the number of rows and columns at. Again, I set the minimum 
-number of rows and columns to 2 because a contingency table requires at least 2 variables to be compared to. 
+number of rows and columns to 2 because a contingency table requires at least 2 variables to be compared to. The 
+input is binded so that the table is automatically rendered when the rows/columns value is changed. 
+This way the user does not have to click a button to create the input table.
 
 I decided to use a table for holding the user input because it was easily iterable and easy to set up using 
 for loops. Also a table was the best way for me to transfer the data into an array, as you can iterate through 
 an array the same way you can iterate through a table. The table was essentially a 2d array, and this made it 
-easy for processing.
+easy for processing. The input table is binded with an "$event.target.value" target property of the Event listener.
+Essentially what this does is that every time an Event occurs such as the input is changed in the input table, 
+it listens for it, gets which cell in the table the event occurred at, and gets its value. This was 
+placed in a onCellChange function which basically set the value from the event listener to a particular 
+row and column where it occurred so that each data input was at a certain (row,value). On cell change basically, 
+updates all the updateFunctions for the different tables, statistics, and charts on the webpage in real time, 
+every time the user changes an input in the input table. 
+
+
+Here is a brief summary/implementation of each of the functions found in the code (You can look at the code comments
+for a more detailed explanation of what goes on at the lines):  
+
+    table(): creates a 2d array table based on the user rows and columns inputted. Returns the table as a 2d array
+
+    update(): Updates all the different tables values every time the user enters 
+              something in the input fields so that almost everything is done in real time. 
+              It sets the update values for the frequency tables, the expected table, category totals, 
+              group totals, contingency table, test-statistics, degrees of freedom, and transposes 
+              the expected values matrix. 
+
+    addGraph(): Uses Plot.ly to create a bar graph to display the frequencies of each categorical variable. 
+                The chart attributes added to the graph allow for hoverability, marker positioning, color-clustering
+                individual bars, and displaying frequency counts on the graphs. It also adds the axes and 
+                chart title. 
+
+    updateFreqTable(): takes the updated frequency values for the group totals and puts them in an array 
+                       which is then pushed into a table to be displayed in the proper formatting on the webpage. 
+                       Here, I had to do some logic checks to append the "Totals" and the groupTotals to an 
+                       already existing table. Returns this.freqTable which is an array that holds the 
+                       variable, freq, relFreq, percentFreq values. 
+
+    updateFreqTable2(): same thing as UpdateFreqTable, except I had to loop through the columns. Returns this.updateFreqTable2
+                         which is an array that holds the variable, freq, relFreq, percentFreq values. 
+
+    updateContingencyTable(): Takes the input table and appends a total and table total values for the data. 
+                              Done by looping through the already existing input table and appending an extra 
+                              row and column to the table. Returns this.contingencyTable which is an array. 
+
+    updateExpectedTable(): This puts the updated expected values from the update() function and transposes them and 
+                           puts them in an table with array structure with the appropriate "category" and "group" headings. 
+                           Returns this.expectedTable which is an array. 
+
+    chiSquareComputed(): This function displays an alert to the window of the test statistic, degrees of freedom, and the associated 
+                         p-value. This is done using the jStat.chisquare.cdf(x,dof) function. X is the test statistic which is 
+                         passed in from the update() function and so is the dof. 
+
+
+
+
 
 I added a button on the screen that helped explain some confusion that might be caused to the user regarding the size
 of their input table. You can read more about this in the help.html page. 
