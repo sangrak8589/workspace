@@ -1,22 +1,56 @@
+The Developer Report For Analyzing Data From Contingency Tables
+
+This page allows the user to input categorical variables and their associated data to test the relationship 
+and association between them. It analyzes the data and outputs a bar graph based on the data frequency for 
+each categorical variable and lists their frequency, relative frequencies, expected values, degrees of freedom,
+chi-squared test statistic, and p-value.
+
+I set out creating this page by first getting user input on how many variables they wanted to compare. The rows and 
+columns were important for this as their determined how many of a certain type of variable the user wanted 
+to test the association between. I decided to max the number of variables at 6 because after sifting through online 
+chi-squared calculators, I found that the max variables they allowed was at most 4, which seemed pretty trivial if 
+someone had more variables they wanted to test the associations between. I didn't want to clutter up the page too 
+much with the tables so 6 was a good medium to cap the number of rows and columns at. Again, I set the minimum 
+number of rows and columns to 2 because a contingency table requires at least 2 variables to be compared to. 
+
+I decided to use a table for holding the user input because it was easily iterable and easy to set up using 
+for loops. Also a table was the best way for me to transfer the data into an array, as you can iterate through 
+an array the same way you can iterate through a table. The table was essentially a 2d array, and this made it 
+easy for processing.
+
+I added a button on the screen that helped explain some confusion that might be caused to the user regarding the size
+of their input table. You can read more about this in the help.html page. 
+
+I wanted to represent the data for the user in a graphical manner so that they could more visually comprehend it. 
+As such, I used Plotly to create a bar graph that displayed each categorical variable and its frequency. I added 
+advanced chart attributes such as hoverabilty attributes, color attributes, axes, titles, and markers, so that 
+the information in the chart could be visually pleasing and practical. 
+
+The website works by doing several mathematical operations on user inputted data. Behind the scenes, the user data 
+for each category and group are held in multiple array data structures. These data structures are analyzed by 
+conducting several operations such as the reduce() function to find the sum of the user data values for each category 
+and group, division of array indexes to get the frequency, relative frequency, expected values, and chi-square test 
+statistics. The sum of the group totals and category totals are used by Plotly to create a bar graph that displays the 
+respective totals. The information from the expected data is used in tandem from the original user input to get the 
+x^2 test statistic and the degrees of freedom. These two values are then passed into by Jstat (Jstat.chisquare.cdf()) to 
+calculate the p-value. However, the value is of the area right of the test statistic, and you want the area left of it. 
+So I did 1 - the value of the Jstat function to get the p-value. 
+
+
 My page is limited by the fact that the user can only enter up to 6 rows and columns, meaning that at most, 
-only the distribution and association between 6 variables. 
-
-There is also a min constraint of 2 rows and variables, as by definition to study the relationship 
-between variables requires at least two variables. 
-
+only the distribution and association between 6 variables. I wish I could have made it more flexible, but 
+I would have had to sacrifice space and clarity on the page to achieve this. My page is also limited by the fact that 
+you have to fill the input table with values first before you can create a chart or get the stat values. 
 
 Problems with my code/implementation is that the user has to use the keyboard "up/down" buttons to enter the number 
-of rows and columns at the very beginning to create the input matrix. Besides that, there are no other implementation problems.  
+of rows and columns at the very beginning to create the input matrix. Besides that, there are no other implementation 
+problems.  
 
 If I had more time, I would like to add a features where the user can conduct different types of chi-square tests and conduct 
 them on different confidence intervals and significance levels. I would also like to make the graph more colorful and allow 
-to toggle for different statistics. 
+to toggle for different statistics to be displayed. I also would like to have allowed the user to test whether their 
+p-value was in the region of accepted values for a certain level of significance so that they could see if the p-value 
+was rejected or accepted for their hypothesis. 
 
-The website works by doing several mathematical operations on user inputted data. Behind the scenes, the user data for each category 
-and group are held in multiple array data structures. These data structures are analyzed by conducting several operations such
-as the reduce() function to find the sum of the user data values for each category and group, division of array indexes to 
-get the frequency, relative frequency, expected values, and chi-square test statistics. 
-The sum of the group totals and category totals are used by Plotly to create a bar graph that displays the respective totals. 
-The information from the expected data is used in tandem from the original user input to get the x^2 test statistic and the degrees of freedom. 
-These two values are then used by Jstat (Jstat.chisquare.cdf()) to calculate the p-value. 
+
 
